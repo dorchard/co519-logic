@@ -6,7 +6,7 @@
 \usepackage[table,x11names]{xcolor}
 \usepackage{logicproof}
 \usepackage{url}
-
+\usepackage{fancyhdr}
 \usepackage{enumitem}
 
 % For restatables
@@ -29,7 +29,10 @@
 \title{\vspace{-3em}CO519 - Theory of Computing - Logic \\
   {\large{Part A : Propositional logic and its natural deduction
       proofs}}}
-\author{Dominic Orchard}
+\author{Dominic Orchard \\
+  {\small{School of Computing, University of Kent}}}
+
+\date{Version 1.0.0.0}
 
 \begin{document}
 \maketitle
@@ -128,7 +131,7 @@ propositional logic as $\bot$ (pronounced
   doing proofs-by-contradiction, as we will see in
   Section~\ref{sec:negation}.}
 
-\paragraph{Properties of formula}
+\subsection{Properties of formula}
 
 We will consider three kinds of properties of formula.
 
@@ -146,11 +149,39 @@ We will consider three kinds of properties of formula.
   $a \mapsto \mathsf{T}$ and $b \mapsto \mathsf{T}$. A valid formulae
   is trivially satisfiable (true for all assignments).
 %
-  \item \emph{unsatisfiable}: a formula which is always false (\ie{}, all
+  \item \emph{unsatisfiable}: a formula which is always false (all
   rows in the truth table are false) regardless of assignments to the
-  variables/atoms. For example, $P \wedge \neg (P \vee Q)$. We can
+  variables/atom, \eg{} $P \wedge \neg (P \vee Q)$. We can
   prove a formula is unsatisfiable by proving its negation is valid.
 \end{itemize}
+
+\subsubsection{Entailment and sequents}
+\label{sec:entailment}
+
+Suppose we have a set of formulas $P_1, \ldots, P_n$ from which we
+want to prove $Q$ by applying the rules of a particular logic
+(propositional logic here). The formulas $P_1, \ldots, P_n$ are the
+premises and $Q$ is our goal conclusion. This is often written using the
+following notation called a \emph{sequent}:
+%
+\begin{equation*}
+P_1, \ldots, P_n \vdash Q
+\end{equation*}
+%
+The turnstile symbol $\vdash$ is read as \emph{entails} and the
+premises to the left are sometimes call the \emph{context} of assumed
+formulae. This is a compact representation of a formula $Q$ along with
+any assumptions used to deduce it.
+
+We say this sequent is \emph{valid} if there is a proof that can be
+constructed by deriving the conclusion from the premises. For example,
+$P \wedge Q \vdash Q \wedge P$ is valid, meaning from $P \wedge Q$
+there is a proof of $Q \wedge P$.
+
+When there are no premises, we often drop the $\vdash$, \ie{},
+writing something like ``\emph{$(P \wedge Q) \rightarrow P$ is valid}''
+instead of ``\emph{$\vdash (P \wedge Q) \rightarrow P$ is
+valid}''.
 
 \subsection{Conjunction (``and'')}
 
@@ -215,7 +246,8 @@ Let's write a proof with just these rules by stacking them together.
 
 \begin{example}
 \label{exm:assoc-conj}
-  For any propositional formula $P$, $Q$ and $R$ then given $P \wedge (Q \wedge
+  For any formula $P$, $Q$, $R$ then $P \wedge (Q \wedge
+  R) \vdash (P \wedge Q) \wedge R$ is valid, \ie{} given $P \wedge (Q \wedge
   R)$ we can prove $(P \wedge Q) \wedge R$.
 %
 \newcommand{\conge}[1]{\wedge_{e#1}}
@@ -242,9 +274,8 @@ The following exercise is to prove the converse of the above property.
 %
 \begin{restatable}{exc}{assoc}
   \label{exm:assoc}
-  Prove that if $(P \wedge Q) \wedge R$ then
-  $P \wedge (Q \wedge R)$ by instantiating and stacking
-  together inference rules.
+  Prove that $(P \wedge Q) \wedge R \vdash P \wedge (Q \wedge R)$ is
+  valid by instantiating and stacking together inference rules.
 \end{restatable}
 %
 This proof, and the one above, together imply that conjunction
@@ -395,15 +426,16 @@ are of the form:
 %
 There is an alternate presentation of natural deduction called
 \emph{sequent-style natural deduction}, which is described in
-Appendix~\ref{app:sequent} here. This won't be assessed on the course,
-but is worth looking at if you want to read more widely on
-logic. Another proof calculus (also due to Gentzen) is the
-\emph{sequent calculus} which won't be described here, but there is 
+Appendix~\ref{app:sequent}, where the inference rules are expressed in
+terms of sequents $P_1, \ldots, P_n \vdash Q$. This won't be assessed
+on the course, but is worth looking at if you want to read more widely
+on logic. Another proof calculus (also due to Gentzen) is the
+\emph{sequent calculus} which won't be described here, but there is
 plenty of information online.
 
  \begin{example}
    The following simple formula about conjunction and implication is
-   valid: $(P \wedge Q) \rightarrow (Q \wedge P)$. Here is its proof
+   valid: $\vdash (P \wedge Q) \rightarrow (Q \wedge P)$. Here is its proof
    in Fitch-style:
 %
 \begin{logicproof}{2}
@@ -600,7 +632,7 @@ R) \rightarrow P$ is valid.
 \end{example}
 
 \begin{restatable}{exc}{orassoc}
-  Prove $P \vee Q \rightarrow Q \vee P$.
+  Prove $P \vee Q \rightarrow Q \vee P$ is valid.
 \end{restatable}
 
 \begin{remark}
@@ -670,11 +702,10 @@ logical inconsistency on our hands and so end up proving false:
 $P$ and $\neg P$ cannot both be true at the same time.
 
 \begin{example}
-For all $P, Q$ then $(P \rightarrow Q) \rightarrow (\neg Q \rightarrow
-\neg P)$.
+For all $P, Q$ then $P \rightarrow Q \vdash \neg Q \rightarrow
+\neg P$.
 %
 \begin{logicproof}{3}
-  \begin{subproof}
     P \rightarrow Q  & assumption \\
     \begin{subproof}
       \neg Q        & assumption \\
@@ -686,9 +717,6 @@ For all $P, Q$ then $(P \rightarrow Q) \rightarrow (\neg Q \rightarrow
       \neg P       & $\neg_i$, 3-5
      \end{subproof}
     \neg Q \rightarrow \neg P & $\rightarrow_i$, 2-6
-  \end{subproof}
-  (P \rightarrow Q) \rightarrow (\neg Q \rightarrow \neg P) &
-  $\rightarrow_i$, 1-7
 \end{logicproof}
 \end{example}
 
@@ -715,7 +743,8 @@ natural deduction reasoning contains no admissible rules.
 \end{remark}
 
 \begin{restatable}{exc}{disproveEx}
-  Disprove $(P \vee Q) \rightarrow (P \wedge Q)$.
+  Disprove $(P \vee Q) \rightarrow (P \wedge Q)$ (\ie{}, prove it is
+  not valid).
  \end{restatable}
 
 \subsubsection{Double negation}
@@ -755,9 +784,9 @@ Of course, $\Delta$ might be much longer than 3 lines, but we use
 the numbering in the above proof for clarity. 
 \end{example}
 
-\subsection{True and falsity}
+\subsection{Truth and falsity}
 
-If have false, then we can derive any formula:
+If we have $\bot$ (false), then we can derive any formula:
 %
 \begin{align*}
 \dfrac{\bot}{P} \; {\bot_e}
@@ -765,7 +794,6 @@ If have false, then we can derive any formula:
 %
 There is no $\bot$ introduction as such, though $\neg_{e}$
 provides a kind of $\bot$ introduction (from conflicting formula).
-
 Dually, we can always introduce truth from no premises, but there
 is no elimination:
 %
@@ -773,6 +801,139 @@ is no elimination:
 \dfrac{\qquad}{\top} \; {\top_i}
 \end{align*}
 %
+
+\subsection{A further derived rule: Law of Excluded Middle}
+
+An interesting rule that we can derive in the propositional logic
+is called the \emph{Law of Excluded Middle} or LEM for short. It says
+that for any formula $P$ we have the following valid rule:
+%
+\begin{equation*}
+\dfrac{\qquad\qquad}{P \vee \neg P} \textsc{lem}
+\end{equation*}
+%
+\ie{}, whatever $P$ is, then either $P$ is true or $\neg P$ is true. Here
+is its derivation:
+%
+\begin{logicproof}{2}
+  \begin{subproof}
+    \neg (P \vee \neg P) & ass. \\
+    \begin{subproof}
+      P  & ass. \\
+      P \vee \neg P & $\vee_{i1}$, 2 \\
+      \bot          & $\neg_e$, 3, 1
+    \end{subproof}
+    \neg P          & $\neg_i$, 2-4 \\
+    P \vee \neg P   & $\vee_{i2}$, 5 \\
+    \bot            & $\neg_e$, 6, 1
+  \end{subproof}
+\neg \neg (P \vee \neg P) & $\neg_i$, 1-7 \\
+P \vee \neg P & $\neg\neg_e$, 8
+\end{logicproof}
+%
+Thus rule can be useful in particular proofs.
+
+\begin{restatable}{exc}{lemp}
+Using LEM, prove that $\,p \rightarrow q \vdash \neg p \vee q\,$ is valid.
+\end{restatable}
+
+\paragraph{Aside: constructive vs non-constructive logic}
+
+In this course, we study a particular kind of propositional logic
+called \emph{classical} or \emph{non-constructive} 
+logic. Another variant is known as \emph{intuitionistic} or
+\emph{constructive} logic which has a slightly different
+set of inference rules: $\neg\neg_e$ is not included. By removing
+double-negation elimination we can no longer derive
+proof-by-contradiction or LEM.
+
+The central principle of constructive logic is to reason about
+\emph{proof} rather than \emph{truth} (as in classical logic). In
+constructive log, a
+formula $P$ represents the proof of formula $P$: a mathematical object
+witnessing the truth of $P$ which we can separately analyse. The
+inference rules of natural deduction are now about preserving proof
+rather than truth, \eg{}, conjunction elimination says given a proof
+of $P \wedge Q$ then we can prove $P$.
+
+In constructive logic, $\neg\neg_e$ is rejected since it would mean we
+can get a proof of $P$ from a proof of the negation of the negation of
+$P$, but this proof is not a proof of $P$. This is particularly
+troublesome when using $\neg\neg_e$ to prove LEM. If LEM was allowed
+in constructive logic, then for any formula $P$ we can construct
+either a proof of $P$ or a proof of $\neg P$. But what is that proof
+and where has it come from? Out of thin air! (LEM has no
+premises). The essence of constructive logic is to disallow such
+things so that we always know we have a concrete proof for our
+formulae, constructing from proofs of its subformulas. Section 1.2.5
+of the Huth and Ryan course textbook gives some more detail and shows
+an example mathematical proof about rational numbers in classical logic 
+which cannot be proved constructively.
+
+Constructive logics are useful because they correspond to type systems
+in functional programming: a result known as the \emph{Curry-Howard
+  correspondence}. Unfortunately, we will not have time to study that here.
+
+\newpage
+
+\section{Collected rules of natural deduction}
+
+\vspace{2em}
+
+\setlength{\tabcolsep}{1.54em}
+\renewcommand{\arraystretch}{1}
+\begin{tabular}{r||c|c}
+ & \textit{Introduction} & \textit{Elimination} \\[0.5em] \hline \hline
+  $\wedge$
+& \rule{0cm}{0.75cm} $\dfrac{P \qquad Q}
+         {P \wedge Q} \; {\wedge_i}$
+& $\dfrac{P \wedge Q}
+        {P} \; {\wedge_{e1}}
+  \qquad
+      \dfrac{P \wedge Q}
+  {Q} \; {\wedge_{e2}}$ \\[1.25em] \hline
+  %%%%%%%%%%%
+  $\vee$
+& $\begin{array}{c}\dfrac{P}
+  {P \vee Q} \; {\vee_{i1}}
+  \qquad
+    \dfrac{Q}
+  {P \vee Q} \; {\vee_{i2}}\\[3.25em]\end{array}$
+& \rule{0cm}{2.15cm} $\setlength{\arraycolsep}{0em}
+\dfrac{\begin{array}{c} \\ \\[0.7em] P \vee Q\end{array} \quad
+\fbox{$\begin{array}{c} P \\ \vdots \\ R\end{array}$}
+\quad
+\fbox{$\begin{array}{c} Q \\ \vdots \\ R\end{array}$}}{R}
+\;
+{\vee_e}$ \\[1em] \hline
+  %%%%%%%%%%%
+  $\rightarrow$
+ & \rule{0cm}{2.15cm} $\setlength{\arraycolsep}{0em}\dfrac{\fbox{$\begin{array}{c} P \\ \vdots \\ Q\end{array}$}}
+      {P \rightarrow Q} {\rightarrow_i}$
+ & $\begin{array}{c}\dfrac{P \rightarrow Q \qquad P}{Q}
+      {\rightarrow_e} \\[3em]\end{array}$
+  \\[1em] \hline
+  $\neg$
+ & \rule{0cm}{2.15cm}
+   $\setlength{\arraycolsep}{0em}\dfrac{\fbox{$\begin{array}{c} P \\ \vdots \\ \bot\end{array}$}}
+  {\neg P} \; {\neg_i}$
+ & $\begin{array}{c}\dfrac{P \qquad \neg P}{\bot} {\neg_e} \\[3em] \end{array}$ \\[0.5em] \hline
+  $\top$
+& \rule{0cm}{0.75cm}$\dfrac{\qquad}{\top} \; {\top_i}$ \\[1.25em] \hline
+  $\bot$
+ & & \rule{0cm}{0.75cm}$\dfrac{\bot}{P} \; {\bot_e}$ \\[1.25em] \hline
+   $\neg\neg$
+ & \rule{0cm}{0.75cm}{\textcolor{gray}{(derivable: $\dfrac{P}{\neg \neg P} \;\; {\neg\neg_i}$)}}  & \rule{0cm}{0.75cm}$\dfrac{\neg \neg P}{P} \;\; {\neg\neg_e}$ 
+\end{tabular}
+
+\vspace{3em}
+
+\noindent
+These are all the rules we have and need for propositional proofs. We
+derived can derive other useful rules like modus tollens,
+proof-by-contradiction, and law-of-excluded-middle from these.
+
+\newpage
 
 \section{Exercises}
 
@@ -787,6 +948,7 @@ is no elimination:
   \biimplRules*
   \orassoc*
   \disproveEx*
+  \lemp*
 
 \appendix
 
@@ -800,11 +962,11 @@ any assumptions used to deduce $P$, written in the following form:
 P_1, \ldots, P_n \vdash P
 \end{equation*}
 %
-An argument in this form is referred to as a \emph{judgment}; the
-turnstile symbol $\vdash$ is read as \emph{entails} and the premises
-to the left are the \emph{context} of assumed formulae. The right hand
-side is referred to as the \emph{conclusion}.  For example, the
-following judgment captures the idea of conjunction introduction:
+(as introduced in Section~\ref{sec:entailment}). The turnstile symbol
+$\vdash$ is read as \emph{entails} and the premises to the left are
+the \emph{context} of assumed formulae. The right hand side is
+referred to as the \emph{conclusion}.  For example, the following
+judgment captures the idea of conjunction introduction:
 %
 \begin{equation*}
 P, Q \vdash P \wedge Q
