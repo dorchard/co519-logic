@@ -42,7 +42,7 @@ a counterpart to the lectures, but do not replace them; the lectures
 will provide content, detail, and discussion not given in these notes.
 
 These notes also provide a counterpart to the course textbook,
-\emph{Logic in Computer Science} (by Huth and Ryan) which I 
+\emph{Logic in Computer Science} (by Huth and Ryan) which I
 recommend. We will only cover material from the first two chapters due
 to the short length of this part of the course. I recommend reading
 these chapters, but the assessable material for this course is
@@ -72,8 +72,8 @@ Instead, logicians have constructed formal languages (calculi) for
 building complex chains of reasoning (proofs) in a more
 compact form. In this course, we use the \emph{natural deduction} calculus
 due to 20$^{th}$ century logicians such as Gerhard Gentzen
-(who formulated natural deduction in 1934) and Dag Pravitz who 
-promoted this style in the 1960s (and converted 
+(who formulated natural deduction in 1934) and Dag Pravitz who
+promoted this style in the 1960s (and converted
 various other results of Gentzen into the natural deduction style).
 
 Natural deduction provides a system of \emph{inference rules} which
@@ -328,8 +328,8 @@ Depending on what is being proved, a top-down approach (starting
 from the premises) or bottom-up approach (starting
 from the goal/conclusion) can be easier. In practice, if you are
 stuck it can help to start \emph{at both ends} and work towards the
-middle. You can do this by putting the goal near a bottom of a piece 
-of paper, giving enough space to meet in the middle. 
+middle. You can do this by putting the goal near a bottom of a piece
+of paper, giving enough space to meet in the middle.
 
 It doesn't matter if things get messy-- the primary goal is to reach a
 proof. You can rewrite it afterwards to be more clear; you should
@@ -352,14 +352,14 @@ Recall the truth table for implication:
 %
 Implication $P \rightarrow Q$ is interesting because if
 $\neg P$ (if $P$ is false) then $Q$ can be true or false, \ie{},
-$Q$ can be anything if $P$ is false (the top two lines). 
+$Q$ can be anything if $P$ is false (the top two lines).
 
 \begin{restatable}{exc}{implProperty}
 Recall that $P \rightarrow Q = \neg P \vee Q$. Show this is true
 by comparing the truth tables for each side of this equation.
 \end{restatable}
 
-As with conjunction, we'll consider the two style of 
+As with conjunction, we'll consider the two style of
 rule: elimination and introduction.
 The elimination rule for implication in natural deduction is:
 \begin{align*}
@@ -378,7 +378,7 @@ There are various other natural deduction rules one might construct by
 looking at the truth table-- but this one can be used to derive the
 others. The particular set of natural deduction rules we look at was
 carefully honed by logicians to provide a kind of ``minimal'' calculus
-for proofs. 
+for proofs.
 
 Introduction of an implication $P \rightarrow Q$ follows from a
 \emph{subproof} (which is drawn in a box) which starts with an
@@ -410,7 +410,7 @@ are of the form:
   \emph{This is an important point}: when proving a theorem we
   have to be careful not to introduce additional assumptions which are
   not part of the theorem. For example, let's say we are proving a
-  theorem expressed by a formula $Q$ but in doing so we assume $P$ 
+  theorem expressed by a formula $Q$ but in doing so we assume $P$
   but $P$ is not one of $Q$'s assumptions.  Then
   instead we will have proved $P \rightarrow Q$ rather than $Q$.  This
   is something to keep in mind when writing complex
@@ -455,7 +455,7 @@ case 1-4).
 \begin{remark}
 In Example~\ref{exm:assoc-conj} we proved
 that given $P \wedge (Q \wedge R)$ then $(P \wedge Q) \wedge
-R$. We can turn this into an implication 
+R$. We can turn this into an implication
 $P \wedge (Q \wedge R) \rightarrow (P \wedge Q) \wedge R$
 simply by using implication introduction on the original
 proof.
@@ -466,13 +466,13 @@ The following is valid:
 \begin{align*}
 (P \rightarrow (Q \rightarrow R))
 \rightarrow
-((P \rightarrow Q) 
+((P \rightarrow Q)
 \rightarrow
 (P \rightarrow R))
 \end{align*}
 %
 Here is its proof:
-% 
+%
 \begin{logicproof}{5}
  \begin{subproof}
   P \rightarrow (Q \rightarrow R) & ass. \\ % 1
@@ -485,7 +485,7 @@ Here is its proof:
    R               & $\rightarrow_{e}$ 4, 5 % 6
   \end{subproof}
    P \rightarrow R & $\rightarrow_{i}$ 3-6 % 7
-  \end{subproof} 
+  \end{subproof}
   (P \rightarrow Q) \rightarrow (P \rightarrow R) & $\rightarrow_{i}$
   2-7 % 8
   \end{subproof}
@@ -510,7 +510,7 @@ $\leftrightarrow$ also read as ``\emph{if and only if}'' and sometimes
 written as \emph{iff} (double f). A bi-implication $P \leftrightarrow Q$ is
 equivalent to the conjunction of two implications, pointing in
 opposite directions:
-% 
+%
 \begin{align*}
 P \leftrightarrow Q \; = \; (P \rightarrow Q) \wedge (Q \rightarrow P)
 \end{align*}
@@ -699,7 +699,7 @@ falsehood $\bot$ then we know $\neg P$, this is similar to the notion of
 
 Elimination states that given a proof of $P$ and a simultaneous proof of
 $\neg P$ then we conclude falsehood $\bot$, \ie{}, we have a
-logical inconsistency on our hands and so end up proving false: 
+logical inconsistency on our hands and so end up proving false:
 $P$ and $\neg P$ cannot both be true at the same time.
 
 \begin{example}
@@ -782,7 +782,7 @@ called $\Delta$, then we construct the following proof:
 P           & $\neg\neg_e$ 4
 \end{logicproof}
 Of course, $\Delta$ might be much longer than 3 lines, but we use
-the numbering in the above proof for clarity. 
+the numbering in the above proof for clarity.
 \end{example}
 
 \subsection{Truth and falsity}
@@ -841,7 +841,7 @@ Using LEM, prove that $\,p \rightarrow q \vdash \neg p \vee q\,$ is valid.
 \paragraph{Aside: constructive vs non-constructive logic}
 
 In this course, we study a particular kind of propositional logic
-called \emph{classical} or \emph{non-constructive} 
+called \emph{classical} or \emph{non-constructive}
 logic. Another variant is known as \emph{intuitionistic} or
 \emph{constructive} logic which has a slightly different
 set of inference rules: $\neg\neg_e$ is not included. By removing
@@ -868,7 +868,7 @@ premises). The essence of constructive logic is to disallow such
 things so that we always know we have a concrete proof for our
 formulas, constructing from proofs of its subformulas. Section 1.2.5
 of the Huth and Ryan course textbook gives some more detail and shows
-an example mathematical proof about rational numbers in classical logic 
+an example mathematical proof about rational numbers in classical logic
 which cannot be proved constructively.
 
 Constructive logics are useful because they correspond to type systems
@@ -924,7 +924,7 @@ in functional programming: a result known as the \emph{Curry-Howard
   $\bot$
  & & \rule{0cm}{0.75cm}$\dfrac{\bot}{P} \; {\bot_e}$ \\[1.25em] \hline
    $\neg\neg$
- & \rule{0cm}{0.75cm}{\textcolor{gray}{(derivable: $\dfrac{P}{\neg \neg P} \;\; {\neg\neg_i}$)}}  & \rule{0cm}{0.75cm}$\dfrac{\neg \neg P}{P} \;\; {\neg\neg_e}$ 
+ & \rule{0cm}{0.75cm}{\textcolor{gray}{(derivable: $\dfrac{P}{\neg \neg P} \;\; {\neg\neg_i}$)}}  & \rule{0cm}{0.75cm}$\dfrac{\neg \neg P}{P} \;\; {\neg\neg_e}$
 \end{tabular}
 
 \vspace{3em}
@@ -1011,7 +1011,7 @@ make have the same set of assumptions (see below).
 \dfrac{\Gamma \vdash P \quad \Gamma \vdash Q}{\Gamma \vdash P \wedge
   Q} {\wedge_i}
 \quad
-\dfrac{\Gamma \vdash P \wedge Q}{\Gamma \vdash P} {\wedge_{e1}} 
+\dfrac{\Gamma \vdash P \wedge Q}{\Gamma \vdash P} {\wedge_{e1}}
 \quad
 \dfrac{\Gamma \vdash P \wedge Q}{\Gamma \vdash Q} {\wedge_{e2}}
 \end{align*}
@@ -1075,5 +1075,5 @@ in this style:
 The sequent-style of natural deduction is not assessed in CO519, but
 is included here in these notes for completeness and to help you with
 any further reading you might do.
-  
+
 \end{document}
