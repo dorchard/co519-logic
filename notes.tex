@@ -445,7 +445,7 @@ P          & $\wedge_{e1}$, 1 \\
 Q          & $\wedge_{e1}$, 1 \\
 Q \wedge P & $\wedge_i$, 2, 3
 \end{subproof}
-P \wedge Q \rightarrow Q \wedge P & $\rightarrow_i$, 1-4
+P \wedge Q \rightarrow Q \wedge P & $\rightarrow_i$, 1-4 $\qquad \Box$
 \end{logicproof}
 In the last line, we apply implication introduction and we
 label it with the range of the lines of the subproof used (in this
@@ -491,7 +491,7 @@ Here is its proof:
   \end{subproof}
 (P \rightarrow (Q \rightarrow R))
 \rightarrow ((P \rightarrow Q) \rightarrow (P \rightarrow R))
-& $\rightarrow_i$ 1-8
+& $\rightarrow_i$ 1-8 $\quad \Box$
 \end{logicproof}
 %
 Here we have an example of multiple nesting of subproofs.
@@ -566,7 +566,7 @@ Prove $(P \wedge Q) \rightarrow (P \vee Q)$ is valid.
     P          & $\wedge_{e1}$, 1 \\
     P \vee Q   & $\vee_{i1}$, 2
   \end{subproof}
-  P \wedge Q \rightarrow P \vee Q & $\rightarrow_i$, 1-3
+  P \wedge Q \rightarrow P \vee Q & $\rightarrow_i$, 1-3 $\quad \Box$
   \end{logicproof}
   %
   This could have been written equivalently as a natural deduction tree:
@@ -622,7 +622,8 @@ R) \rightarrow P$ is valid.
       \end{subproof}
         P          & $\vee_{e}$, 1, 2-3, 4-5
     \end{subproof}
-    (P \wedge Q) \vee (P \wedge R) \rightarrow P & $\rightarrow_{i}$, 1-6
+    (P \wedge Q) \vee (P \wedge R) \rightarrow P & $\rightarrow_{i}$,
+    1-6 $\quad \Box$
   \end{logicproof}
   You can see that the application of disjunction elimination $\vee_e$
   involves three things: a disjunctive formula (line 1) and two
@@ -716,7 +717,7 @@ For all $P, Q$ then $P \rightarrow Q \vdash \neg Q \rightarrow
       \end{subproof}
       \neg P       & $\neg_i$, 3-5
      \end{subproof}
-    \neg Q \rightarrow \neg P & $\rightarrow_i$, 2-6
+    \neg Q \rightarrow \neg P & $\rightarrow_i$, 2-6 $\qquad \Box$
 \end{logicproof}
 \end{example}
 
@@ -828,7 +829,7 @@ is its derivation:
     \bot            & $\neg_e$, 6, 1
   \end{subproof}
 \neg \neg (P \vee \neg P) & $\neg_i$, 1-7 \\
-P \vee \neg P & $\neg\neg_e$, 8
+P \vee \neg P & $\neg\neg_e$, 8 $\;\;\Box$
 \end{logicproof}
 %
 Thus rule can be useful in particular proofs.
