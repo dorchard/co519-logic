@@ -58,12 +58,12 @@ pull request with any suggested changes.
 \section{Natural deduction for propositional logic}
 
 Truth tables are a handy way to give meaning to logical operators and
-formulae, in terms of truth or falsehood. But they are difficult to
-use for reasoning about anything but small formulae since the number
+formulas, in terms of truth or falsehood. But they are difficult to
+use for reasoning about anything but small formulas since the number
 of rows is $2^n$ where $n$ is the number of contingent
-formulae. For example, the truth table for
+formulas. For example, the truth table for
 $P \vee (Q \wedge R) \rightarrow (P \vee Q) \wedge (P \vee R)$ has
-$2^3 = 8$ rows as there are three contingent formulae: $P$, $Q$, and
+$2^3 = 8$ rows as there are three contingent formulas: $P$, $Q$, and
 $R$ whose truth or falsehood determines the truth or falsehood of the
 overall formula. Calculating even this modest truth table takes some
 significant calculation to enumerate all possibilities.
@@ -77,9 +77,9 @@ promoted this style in the 1960s (and converted
 various other results of Gentzen into the natural deduction style).
 
 Natural deduction provides a system of \emph{inference rules} which
-explain how to construct and deconstruct formulae to build
+explain how to construct and deconstruct formulas to build
 a logical argument. These rules represent the derivation of one formula
-(the \emph{conclusion}) from several other formulae that are assumed or known to be true
+(the \emph{conclusion}) from several other formulas that are assumed or known to be true
 (the \emph{premises}) via the notation:
 %
 \begin{equation*}
@@ -138,7 +138,7 @@ We will consider three kinds of properties of formula.
 \begin{itemize}[leftmargin=1.5em]
   \item \emph{valid}: a formula which is always true (also
   called a \emph{tautology}). In this part of the course, we will
-  mostly prove the validity of formulae. For example, $P \wedge Q
+  mostly prove the validity of formulas. For example, $P \wedge Q
   \rightarrow Q \wedge P$ is true no matter the
   truth/falsehood of $P$ and $Q$. This will be the main property we
   consider in \emph{Part A} (these notes).
@@ -146,7 +146,7 @@ We will consider three kinds of properties of formula.
   \item \emph{satisfiable}: a formula which is true for
   \emph{some} assignments of truth/falsehood to the atoms/variables it contains, \eg{},
   $a \wedge b$ is satisfiable, and the \emph{satisfying assignment} is that
-  $a \mapsto \mathsf{T}$ and $b \mapsto \mathsf{T}$. A valid formulae
+  $a \mapsto \mathsf{T}$ and $b \mapsto \mathsf{T}$. A valid formula
   is trivially satisfiable (true for all assignments).
 %
   \item \emph{unsatisfiable}: a formula which is always false (all
@@ -170,7 +170,7 @@ P_1, \ldots, P_n \vdash Q
 %
 The turnstile symbol $\vdash$ is read as \emph{entails} and the
 premises to the left are sometimes call the \emph{context} of assumed
-formulae. This is a compact representation of a formula $Q$ along with
+formulas. This is a compact representation of a formula $Q$ along with
 any assumptions used to deduce it.
 
 We say this sequent is \emph{valid} if there is a proof that can be
@@ -223,7 +223,7 @@ to something like this if we needed it:
 %
 What about elimination?
 Reading the highlighted line in the truth table from right-to-left shows how to
-\emph{eliminate} a conjunction, i.e., what smaller formulae
+\emph{eliminate} a conjunction, i.e., what smaller formulas
 can we conclude are true if we know that $P \wedge Q$ is true? We get
 two rules:
 %
@@ -402,7 +402,7 @@ are of the form:
 %
 \begin{remark} (\textbf{important})
 %
-  When we start a subproof box, the first formulae is always an
+  When we start a subproof box, the first formula is always an
   assumption. When the box is closed, the assumption does not go away
   but becomes the premise of the implication when applying the
   $\rightarrow_i$ rule.
@@ -586,7 +586,7 @@ Prove $(P \wedge Q) \rightarrow (P \vee Q)$ is valid.
 %
 What about disjunction elimination? Given the knowledge that $P \vee Q$ is true
 then what can be conclude? Either $P$ is true, or $Q$ is true, or both
-are true. Therefore, we don't know exactly what true formulae we can derive
+are true. Therefore, we don't know exactly what true formulas we can derive
 from the truth of $P \vee Q$, we just know a selection of
 possibilities.
 
@@ -626,7 +626,7 @@ R) \rightarrow P$ is valid.
   \end{logicproof}
   You can see that the application of disjunction elimination $\vee_e$
   involves three things: a disjunctive formula (line 1) and two
-  subproofs (lines 2-3 and lines 4-5) which respectively assume the two subformulae of
+  subproofs (lines 2-3 and lines 4-5) which respectively assume the two subformulas of
   disjunction and conclude with the same formula ($P$), which forms the
   conclusion of the subproof on line 6.
 \end{example}
@@ -865,7 +865,7 @@ either a proof of $P$ or a proof of $\neg P$. But what is that proof
 and where has it come from? Out of thin air! (LEM has no
 premises). The essence of constructive logic is to disallow such
 things so that we always know we have a concrete proof for our
-formulae, constructing from proofs of its subformulas. Section 1.2.5
+formulas, constructing from proofs of its subformulas. Section 1.2.5
 of the Huth and Ryan course textbook gives some more detail and shows
 an example mathematical proof about rational numbers in classical logic 
 which cannot be proved constructively.
@@ -964,7 +964,7 @@ P_1, \ldots, P_n \vdash P
 %
 (as introduced in Section~\ref{sec:entailment}). The turnstile symbol
 $\vdash$ is read as \emph{entails} and the premises to the left are
-the \emph{context} of assumed formulae. The right hand side is
+the \emph{context} of assumed formulas. The right hand side is
 referred to as the \emph{conclusion}.  For example, the following
 judgment captures the idea of conjunction introduction:
 %
@@ -974,7 +974,7 @@ P, Q \vdash P \wedge Q
 %
 The usual introduction and elimination rules of natural deduction are
 recast in the sequent form, making explicit the assumptions
-and the context of the formulae. A key rule that was implicit in the
+and the context of the formula. A key rule that was implicit in the
 previous formulation of natural deduction is the use of an assumption
 as a formula. This is usually called the \emph{axiom} rule:
 %
