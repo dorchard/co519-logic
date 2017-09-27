@@ -503,6 +503,22 @@ time, which was made easier by typing the proof).
 Prove $P \rightarrow (Q \rightarrow P)$ is valid.
 \end{restatable}
 
+\noindent
+Occasionally it is useful to ``copy'' a
+formula from earlier in a proof. For example, 
+the following proof of $\vdash P \rightarrow P$ copies
+a formula from one line of the proof to the other in order
+to introduce a trivial implication:
+%
+\begin{logicproof}{2}
+\begin{subproof}
+P  & assumption \\
+P  & copy 1
+\end{subproof}
+P \rightarrow P & $\rightarrow_i$ 1-2 $\quad \Box$
+\end{logicproof}
+
+
 \subsubsection{Bi-implication  (``if and only if`'')}
 
 Propositional logic often includes the bi-implication operator
