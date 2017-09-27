@@ -218,7 +218,7 @@ to something like this if we needed it:
 %
 \begin{equation*}
 \dfrac{(P \vee R \rightarrow Q) \quad S}
-      {(P \vee R \rightarrow Q) \wedge S} {\wedge_i}
+      {(P \vee R \rightarrow Q) \wedge S} \; {\wedge_i}
 \end{equation*}
 %
 What about elimination?
@@ -295,12 +295,12 @@ The above proof is rewritten in the following way in Fitch notation:
 %
   \begin{logicproof}{2}
     P \wedge (Q \wedge R) & premise \\
-    P                     & $\wedge_{e1}$, 1 \\
-    Q \wedge R            & $\wedge_{e2}$, 1 \\
-    Q                     & $\wedge_{e1}$, 3 \\
-    R                     & $\wedge_{e2}$, 3 \\
-    P \wedge Q            & $\wedge_i$, 2, 4 \\
-    (P \wedge Q) \wedge R & $\wedge_i$, 6, 5 $\quad \Box$
+    P                     & $\wedge_{e1}$ 1 \\
+    Q \wedge R            & $\wedge_{e2}$ 1 \\
+    Q                     & $\wedge_{e1}$ 3 \\
+    R                     & $\wedge_{e2}$ 3 \\
+    P \wedge Q            & $\wedge_i$ 2, 4 \\
+    (P \wedge Q) \wedge R & $\wedge_i$ 6, 5 $\quad \Box$
   \end{logicproof}
 %
   The proof follows in a number of linear steps. On the left we number
@@ -441,11 +441,11 @@ plenty of information online.
 \begin{logicproof}{2}
 \begin{subproof}
 P \wedge Q & assumption    \\
-P          & $\wedge_{e1}$, 1 \\
-Q          & $\wedge_{e1}$, 1 \\
-Q \wedge P & $\wedge_i$, 2, 3
+P          & $\wedge_{e1}$ 1 \\
+Q          & $\wedge_{e1}$ 1 \\
+Q \wedge P & $\wedge_i$ 2, 3
 \end{subproof}
-P \wedge Q \rightarrow Q \wedge P & $\rightarrow_i$, 1-4 $\qquad \Box$
+P \wedge Q \rightarrow Q \wedge P & $\rightarrow_i$ 1-4 $\qquad \Box$
 \end{logicproof}
 In the last line, we apply implication introduction and we
 label it with the range of the lines of the subproof used (in this
@@ -563,10 +563,10 @@ Prove $(P \wedge Q) \rightarrow (P \vee Q)$ is valid.
   \begin{logicproof}{2}
     \begin{subproof}
     P \wedge Q & assumption \\
-    P          & $\wedge_{e1}$, 1 \\
-    P \vee Q   & $\vee_{i1}$, 2
+    P          & $\wedge_{e1}$ 1 \\
+    P \vee Q   & $\vee_{i1}$ 2
   \end{subproof}
-  P \wedge Q \rightarrow P \vee Q & $\rightarrow_i$, 1-3 $\quad \Box$
+  P \wedge Q \rightarrow P \vee Q & $\rightarrow_i$ 1-3 $\quad \Box$
   \end{logicproof}
   %
   This could have been written equivalently as a natural deduction tree:
@@ -614,13 +614,13 @@ R) \rightarrow P$ is valid.
       (P \wedge Q) \vee (P \wedge R) & assumption \\
       \begin{subproof}
         P \wedge Q  & assumption \\
-        P           & $\wedge_{e1}$, 2
+        P           & $\wedge_{e1}$ 2
       \end{subproof}
       \begin{subproof}
         P \wedge R & assumption \\
-        P          & $\wedge_{e1}$, 4 
+        P          & $\wedge_{e1}$ 4
       \end{subproof}
-        P          & $\vee_{e}$, 1, 2-3, 4-5
+        P          & $\vee_{e}$ 1, 2-3, 4-5
     \end{subproof}
     (P \wedge Q) \vee (P \wedge R) \rightarrow P & $\rightarrow_{i}$,
     1-6 $\quad \Box$
@@ -712,12 +712,12 @@ For all $P, Q$ then $P \rightarrow Q \vdash \neg Q \rightarrow
       \neg Q        & assumption \\
       \begin{subproof}
         P           & assumption \\
-        Q           & $\rightarrow_{e}$, 1, 3 \\
-        \bot        & $\neg_{e}$, 2, 4
+        Q           & $\rightarrow_{e}$ 1, 3 \\
+        \bot        & $\neg_{e}$ 2, 4
       \end{subproof}
-      \neg P       & $\neg_i$, 3-5
+      \neg P       & $\neg_i$ 3-5
      \end{subproof}
-    \neg Q \rightarrow \neg P & $\rightarrow_i$, 2-6 $\qquad \Box$
+    \neg Q \rightarrow \neg P & $\rightarrow_i$ 2-6 $\qquad \Box$
 \end{logicproof}
 \end{example}
 
@@ -778,8 +778,8 @@ called $\Delta$, then we construct the following proof:
 \Delta & $\vdots$ \\
 \bot &
 \end{subproof}
-\neg \neg P & $\neg_i$, 1-3 \\
-P           & $\neg\neg_e$, 4
+\neg \neg P & $\neg_i$ 1-3 \\
+P           & $\neg\neg_e$ 4
 \end{logicproof}
 Of course, $\Delta$ might be much longer than 3 lines, but we use
 the numbering in the above proof for clarity. 
@@ -821,15 +821,15 @@ is its derivation:
     \neg (P \vee \neg P) & ass. \\
     \begin{subproof}
       P  & ass. \\
-      P \vee \neg P & $\vee_{i1}$, 2 \\
-      \bot          & $\neg_e$, 3, 1
+      P \vee \neg P & $\vee_{i1}$ 2 \\
+      \bot          & $\neg_e$ 3, 1
     \end{subproof}
-    \neg P          & $\neg_i$, 2-4 \\
-    P \vee \neg P   & $\vee_{i2}$, 5 \\
-    \bot            & $\neg_e$, 6, 1
+    \neg P          & $\neg_i$ 2-4 \\
+    P \vee \neg P   & $\vee_{i2}$ 5 \\
+    \bot            & $\neg_e$ 6, 1
   \end{subproof}
-\neg \neg (P \vee \neg P) & $\neg_i$, 1-7 \\
-P \vee \neg P & $\neg\neg_e$, 8 $\;\;\Box$
+\neg \neg (P \vee \neg P) & $\neg_i$ 1-7 \\
+P \vee \neg P & $\neg\neg_e$ 8 $\;\;\Box$
 \end{logicproof}
 %
 Thus rule can be useful in particular proofs.
