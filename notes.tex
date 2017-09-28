@@ -320,6 +320,13 @@ The above proof is rewritten in the following way in Fitch notation:
 We haven't used any sub-proofs yet (which have a box drawn around
 them); these appear in the next subsection on implication.
 
+ \textbf{Order of numbers in labels} $\;$
+Note that the order of the line numbers in labels tells us the order
+of the premises to a natural deduction rule and so the order is
+important. For example, line 6 above applies ($\wedge_i$ 2, 4) to
+introduce $P \wedge Q$, but if it was actually ($\wedge_i$ 4, 2) we
+would be introducing $Q \wedge P$ which is not our intended goal.
+
 \begin{restatable}{exc}{andReproof}
 Rewrite your proof to Exercise~\ref{exm:assoc} using
 Fitch style.
