@@ -977,28 +977,32 @@ for propositional proofs.
 \section{Sequent-style natural deduction}
 \label{app:sequent}
 
-A sequent is a compact representation of a formula $P$ along with
-any assumptions used to deduce $P$, written in the following form:
+Recall from Section~\ref{sec:entailment} that 
+a sequent is a compact representation of a formula $P$ along with
+any assumptions used to deduce it, written in the form:
 %
 \begin{equation*}
 P_1, \ldots, P_n \vdash P
 \end{equation*}
 %
-(as introduced in Section~\ref{sec:entailment}). The turnstile symbol
-$\vdash$ is read as \emph{entails} and the premises to the left are
-the \emph{context} of assumed formulas. The right hand side is
-referred to as the \emph{conclusion}.  For example, the following
+The turnstile symbol $\vdash$ is read as \emph{entails} and the premises to the left are
+called the \emph{context} of assumed formulas. The right-hand side is
+the \emph{conclusion}.  For example, the following
 judgment captures the idea of conjunction introduction:
 %
 \begin{equation*}
 P, Q \vdash P \wedge Q
 \end{equation*}
 %
-The usual introduction and elimination rules of natural deduction are
-recast in the sequent form, making explicit the assumptions
-and the context of the formula. A key rule that was implicit in the
-previous formulation of natural deduction is the use of an assumption
-as a formula. This is usually called the \emph{axiom} rule:
+An alternate formulation of natural deduction gives the usual
+introduction and elimination rules in sequent form, making explicit
+the assumption context of the formula. This sequent-style of natural
+deduction is not assessed in CO519, but is included here for
+completeness and to help with any wider reading.
+
+A key rule that was implicit in the previous formulation of natural
+deduction is the use of an assumption as a formula. This is usually
+called the \emph{axiom} rule:
 %
 \begin{align*}
 \dfrac{\qquad}{\Gamma, P \vdash P} \; (\textit{axiom})
@@ -1010,13 +1014,14 @@ gamma)\footnote{Gamma $\Gamma$ is the third letter of the Greek
   alphabet, corresponding to Latin $C$, hence $\Gamma$ for
   ``Context''. Logicians like Greek as it gives them lots more symbols
   to use to represent things tersely. These are conventions which take
-  some getting used to.} then we can conclude $P$.  The order of
-assumptions on the left of $\vdash$ is not important (we can freely
-move assumptions around).  The sequent style captures that there may
-be other assumptions $\Gamma$ in scope.
+  some getting used to.} then we can conclude $P$.  This is similar to
+the idea of copying in Fitch-style proofs.
 
-A meta rule says that we can add arbitrary redundant assumptions into
-our context (called \emph{weakening}):
+The order of assumptions on the left of $\vdash$ is not important (we
+can freely move assumptions around).  The sequent style captures that
+there may be other assumptions $\Gamma$ in scope.  A meta rule says
+that we can add arbitrary redundant assumptions into our context
+(called \emph{weakening}):
 %
 \begin{equation*}
   \dfrac{\Gamma \vdash A}
@@ -1024,7 +1029,9 @@ our context (called \emph{weakening}):
   \end{equation*}
   %
 This is useful when we have two subproofs that we want to
-make have the same set of assumptions (see below).
+make have the same set of assumptions (see below). The rest
+of the rules are the introduction and elimination rules
+for operators.
 
 \paragraph{Conjunction}
 %
@@ -1038,8 +1045,8 @@ make have the same set of assumptions (see below).
 \end{align*}
 %
 These rules are very similar to the previously shown natural
-deduction rules, but they now each carry a context of assumptions
-$\Gamma$. If the context of assumptions doesn't match between
+deduction rules, but they now carry a context of assumptions
+$\Gamma$. If the context doesn't match between
 two premises, weakening (above) can be applied so that they match.
 
 \paragraph{Disjunction}
@@ -1093,8 +1100,5 @@ in this style:
   \dfrac{}{\Gamma \vdash \top} {\top_i}
 \end{align*}
 %
-The sequent-style of natural deduction is not assessed in CO519, but
-is included here in these notes for completeness and to help you with
-any further reading you might do.
 
 \end{document}
