@@ -1,3 +1,4 @@
+-- A short implementation of DPLL in Haskell
 module Sat where
 
 import Control.Monad.Trans.Writer.Strict
@@ -8,7 +9,7 @@ import Data.List (intercalate)
 -- CNF representation
 type CNF         = [Disjunction]
 type Disjunction = [Atom]
-data Atom = Positive String | Negative String deriving (Eq, Show)
+data Atom        = Positive String | Negative String deriving (Eq, Show)
 
 -- Results are a list of satisfying assignments
 type Results = WriterT [(String, Bool)] []
@@ -26,8 +27,8 @@ sat formula
    -- Simplify
    formula <- unitPropagation . removeTautologies $ formula
    formula <- pureLiteralElimination formula
-   -- Split the computation in two
-   formula <- split formula
+   -- Split the computation in two, making an assignment for an atom
+   formula <- caseSplitOnAnAtom formula
    sat formula
 
 -- Actions on atoms
@@ -53,7 +54,6 @@ removeTautologies = filter (not . isTautology)
 -- *** DPLL step 2 - unit propagation
 -- a disjunction with a single positive atom must be true, propagate this fact
 -- a disjunction with a single negative atom must be false, propagate this fact
-
 unitPropagation :: CNF -> Results CNF
 unitPropagation xs = unitPropagation' [] xs
   where
@@ -69,39 +69,36 @@ unitPropagation xs = unitPropagation' [] xs
 -- *** DPLL step 3 - find any atoms that occur with only one polarity in the
 -- the formula, set their assignment and update the formula
 pureLiteralElimination :: CNF -> Results CNF
-pureLiteralElimination xs = onConjunct [] xs
+pureLiteralElimination xs = onConjuncts [] xs
   where
-
-    onConjunct left [] = return left
-    onConjunct left (r:right) = do
+    onConjuncts left [] = return left
+    onConjuncts left (r:right) = do
      (left', r', right') <- onDisjunction left r right
      case r' of
-       Nothing -> onConjunct left right
-       Just r' -> onConjunct (r':left) right
-
+       Nothing -> onConjuncts left right
+       Just r' -> onConjuncts (r':left) right
     onDisjunction :: CNF -> Disjunction -> CNF -> Results (CNF, Maybe Disjunction, CNF)
     onDisjunction left [] right = return (left, Just [], right)
     onDisjunction left (a:as) right
        | not (any (elem (neg a)) left) && not (any (elem (neg a)) right) = do
-         (left', right') <- assignAndUpdate a (toBool a) left right
-         return (left', Nothing, right')
-
-      | otherwise = do
-         (left', as', right') <- onDisjunction left as right
-         case as' of
-           Nothing -> return (left', Nothing, right')
-           Just as' -> return (left', Just $ a:as', right')
+          (left', right') <- assignAndUpdate a (toBool a) left right
+          return (left', Nothing, right')
+       | otherwise = do
+          (left', as', right') <- onDisjunction left as right
+          case as' of
+            Nothing  -> return (left', Nothing, right')
+            Just as' -> return (left', Just $ a:as', right')
 
 -- **** DPLL step 4 - Split the computation into two non-deterministic paths by
 -- picking an atom and assign it to true and false
-split :: CNF -> Results CNF
-split ((a:as):rest) =
+caseSplitOnAnAtom :: CNF -> Results CNF
+caseSplitOnAnAtom ((a:as):rest) =
     amb (assignAndUpdate' a True rest) (assignAndUpdate' a False (as:rest))
   where
     assignAndUpdate' a val rest = uncurry (++) <$> assignAndUpdate a val [] rest
     amb :: Results a -> Results a -> Results a
     amb m n = WriterT $ runWriterT m ++ runWriterT n
-split cnf = return cnf
+caseSplitOnAnAtom cnf = return cnf
 
 -- Helpers for assigning a true to an atom and updating a pair of CNF formula
 -- accordingly
@@ -118,7 +115,6 @@ assignAndUpdate a val left right = do
     assign :: Atom -> Bool -> Results ()
     assign (Positive s) b = tell [(s, b)]
     assign (Negative s) b = tell [(s, not b)]
-
 
 -- Update a disjunction by replacing an atom with a boolean
 -- This may trigger the deletion of the disjunction (i.e., makes it true)
