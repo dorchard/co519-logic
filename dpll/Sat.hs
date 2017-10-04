@@ -24,10 +24,13 @@ sat formula
  | any null formula = return False
 
  | otherwise = do
-   -- Simplify
-   formula <- unitPropagation . removeTautologies $ formula
+   -- Step 1: Remove any tautological disjunctions
+   formula <- return $ removeTautologies formula
+   -- Step 2: Perform unit propagation
+   formula <- unitPropagation formula
+   -- Step 3: Remove atoms that don't have their opposite in the formula
    formula <- pureLiteralElimination formula
-   -- Split the computation in two, making an assignment for an atom
+   -- Step 4: Branch the algorithm: try two possible assignments for an atom
    formula <- caseSplitOnAnAtom formula
    sat formula
 
