@@ -47,7 +47,7 @@ var :: Atom -> String
 var (Positive s) = s
 var (Negative s) = s
 
--- *** DPLL step 1 - Replace any tautological disjunctions (contain x and not x)
+-- *** DPLL step 1 - Replace any tautological clauses (contain x and not x)
 removeTautologies :: CNF -> CNF
 removeTautologies = filter (not . isTautology)
   where
@@ -55,8 +55,8 @@ removeTautologies = filter (not . isTautology)
    isTautology disjs = any (\a -> elem (neg a) disjs) disjs
 
 -- *** DPLL step 2 - unit propagation
--- a disjunction with a single positive atom must be true, propagate this fact
--- a disjunction with a single negative atom must be false, propagate this fact
+-- a clause with a single positive atom must be true, propagate this fact
+-- a clause with a single negative atom must be false, propagate this fact
 unitPropagation :: CNF -> Results CNF
 unitPropagation xs = unitPropagation' [] xs
   where
@@ -64,7 +64,7 @@ unitPropagation xs = unitPropagation' [] xs
    unitPropagation' left ([a]:right) = do
      -- Singleton, remember its assignment
      (left', right') <- assignAndUpdate a (toBool a) left right
-     -- Drop this singleton disjunct and apply unit propagation to the rest
+     -- Drop this singleton clause and apply unit propagation to the rest
      unitPropagation' left' right'
    -- Not a singleton
    unitPropagation' left (r:right) = unitPropagation' (r:left) right
@@ -135,8 +135,7 @@ replaceAtom a new (a':as)
    polarise (Negative _) (Positive _) b = not b
    polarise _            _            b = b
 
--- ***** Helpers for testing and output the results
--- Test the assignment (for confidence in the algorithm)
+-- Helper that tests the assignment (for confidence in the algorithm)
 test :: CNF -> Results Bool -> Bool
 test cnf results =
    all checkAssignment (runWriterT results)
@@ -147,6 +146,7 @@ test cnf results =
     replaceWithBool assignment a =
        fromMaybe True (lookup (var a) assignment)
 
+-- Helper that pretty prints the result of the SAT algorithm
 pretty :: Results Bool -> IO ()
 pretty results =
     if all fst results'

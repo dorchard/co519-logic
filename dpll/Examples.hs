@@ -12,6 +12,8 @@ import Sat
 -- Examples
 contradict = [[Positive "x"], [Negative "x"]]
 
+taut = [[Positive "x", Negative "x"]]
+
 example =
     [[Positive "x", Negative "y"],
      [Positive "y", Positive "z"],
