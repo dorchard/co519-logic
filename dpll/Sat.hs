@@ -15,20 +15,6 @@ type CNF         = [Disjunction]
 type Disjunction = [Atom]
 data Atom        = Positive String | Negative String deriving (Eq, Ord)
 
-instance Show Atom where
-  show (Positive s) = s
-  show (Negative s) = "¬" ++ s
-
-instance {-# OVERLAPS #-} Show [Atom] where
-  show as = "(" ++ (intercalate " ∨ " $ map show as) ++ ")"
-
-instance {-# OVERLAPS #-} Show CNF where
-  show [] = "T"
-  show formula =
-    if (any null formula)
-     then "F"
-     else intercalate " ∧ " $ map show formula
-
 data Log = Msg String | Assign (String, Bool)
 
 -- Results are a list of satisfying assignments
@@ -56,7 +42,7 @@ sat formula
 
 fixM f x = do
   y <- f x
-  if (sort x == sort y)
+  if sort x == sort y
     then return y
     else fixM f y
 
@@ -211,6 +197,19 @@ pretty results =
       ++ "\n     "
       ++ intercalate "\n     " (map show log)
 
+-- Pretty Show instances using unicode
 instance Show Log where
   show (Assign (s, b)) = "{" ++ s ++ " = " ++ show b ++ "}"
   show (Msg s)         = "- " ++ s
+
+instance Show Atom where
+  show (Positive s) = s
+  show (Negative s) = "¬" ++ s
+
+instance {-# OVERLAPS #-} Show [Atom] where
+  show as = "(" ++ intercalate " ∨ " (map show as) ++ ")"
+
+instance {-# OVERLAPS #-} Show CNF where
+  show [] = "T"
+  show formula | any null formula = "F"
+  show formula = intercalate " ∧ " $ map show formula
