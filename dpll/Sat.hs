@@ -197,16 +197,19 @@ pretty results =
     if all fst results'
       then do
         putStrLn "Satisfiable."
-        mapM_ (putStrLn . prettyLog . snd) results'
+        mapM_ (putStrLn . prettyLog True . snd) results'
       else do
         putStrLn "Unsatisfiable."
-        mapM_ (putStrLn . prettyLog . snd) results'
+        mapM_ (putStrLn . prettyLog False . snd) results'
   where
     results' = runWriterT results
-    prettyLog log = "\n" ++ "Satisfying assignment: "
-                  ++ intercalate "," (map (show . Assign) (justAssigns log))
-                  ++ "\n     "
-                  ++ intercalate "\n     " (map show log)
+    prettyLog showAssign log =
+       (if showAssign
+        then "---------\nSatisfying assignment: "
+           ++ intercalate "," (map (show . Assign) (justAssigns log))
+        else "---------")
+      ++ "\n     "
+      ++ intercalate "\n     " (map show log)
 
 instance Show Log where
   show (Assign (s, b)) = "{" ++ s ++ " = " ++ show b ++ "}"
