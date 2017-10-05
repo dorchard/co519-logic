@@ -81,7 +81,7 @@ unitPropagation xs = unitPropagation' [] xs
    unitPropagation' left [] = return left
    unitPropagation' left ([a]:right) = do
 
-     tell [Msg $ "Unit propagation of " ++ show a ++ " for " ++ show xs]
+     tell [Msg $ "Unit propagation of " ++ show a ++ " for " ++ show (left ++ [a] : right)]
      --
      -- Singleton, remember its assignment
      (left', right') <- assignAndUpdate a (toBool a) left right
@@ -139,6 +139,7 @@ assignAndUpdate a val left right = do
     -- Update the rest of the disjuncts with this fact
     let left'  = mapMaybe (replaceAtom a val) left
     let right' = mapMaybe (replaceAtom a val) right
+    tell [Msg ("Updated formula:   " ++ show (left' ++ right') ++ "\n")]
     return (left', right')
   where
     -- Update our assignment of variables
