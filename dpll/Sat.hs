@@ -198,7 +198,9 @@ pretty results =
       then do
         putStrLn "Satisfiable."
         mapM_ (putStrLn . prettyLog . snd) results'
-      else putStrLn "Unsatisfiable."
+      else do
+        putStrLn "Unsatisfiable."
+        mapM_ (putStrLn . prettyLog . snd) results'
   where
     results' = runWriterT results
     prettyLog log = "\n" ++ "Satisfying assignment: "
