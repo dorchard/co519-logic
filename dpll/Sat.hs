@@ -158,7 +158,7 @@ assignAndUpdate a val left right = do
     -- Update our assignment of variables
     assign :: Atom -> Bool -> Results ()
     assign (Positive s) b = tell [Assign (s, b)]
-    assign (Negative s) b = tell [Assign (s, b)]
+    assign (Negative s) b = tell [Assign (s, not b)]
 
 -- Update a disjunction by replacing an atom with a boolean
 -- This may trigger the deletion of the disjunction (i.e., makes it true)
