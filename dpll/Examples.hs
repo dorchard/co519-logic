@@ -33,7 +33,19 @@ example2 =
     ,[Negative "a", Negative "b", Positive "c"]
     ,[Negative "a", Negative "b", Negative "c"]]
 
-example2' =
+example3 =
     [[Positive "a", Positive "b", Positive "c"]
     ,[Negative "a", Positive "b", Positive "c"]
     ,[Negative "a", Negative "b", Positive "c"]]
+
+trafficLight =
+    [[Negative "r", Positive "g'"]
+    ,[Negative "r", Negative "r'"]
+    ,[Negative "g", Negative "g'"]
+    ,[Negative "g", Positive "r'"]
+    ,[Positive "r", Positive "g"]
+    ,[Negative "r", Negative "g"]
+    ,[Negative "r'", Positive "r'"]
+    ,[Negative "r'", Positive "g'"]
+    ,[Negative "g'", Positive "r'"]
+    ,[Negative "g'", Positive "g'"]]
