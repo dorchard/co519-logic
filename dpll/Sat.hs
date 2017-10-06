@@ -120,8 +120,14 @@ pureLiteralElimination xs = onConjuncts [] xs
 -- picking an atom and assign it to true and false
 caseSplitOnAnAtom :: CNF -> Results CNF
 caseSplitOnAnAtom cnf@((a:as):rest) =
-    amb (assignAndUpdate' (variable a) True (as:rest)) (assignAndUpdate' (variable a) False (as:rest))
+    amb (assignAndUpdate' (variable a) True restT) (assignAndUpdate' (variable a) False restF)
   where
+    restT = case a of
+             Positive _ -> rest
+             Negative _ -> (as:rest)
+    restF = case a of
+             Positive _ -> (as:rest)
+             Negative _ -> rest
     assignAndUpdate' var val rest = do
       tell [Msg $ "Case " ++ var ++ " = " ++ show val ++ " for " ++ show cnf]
       --
