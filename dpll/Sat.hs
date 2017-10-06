@@ -184,21 +184,18 @@ assigns _               = []
 
 -- Helper that pretty prints the result of the SAT algorithm
 pretty :: Results Bool -> IO ()
-pretty results =
-    if all fst results'
-      then do
-        putStrLn "Satisfiable."
-        mapM_ (putStrLn . prettyLog True . snd) results'
-      else do
-        putStrLn "Unsatisfiable."
-        mapM_ (putStrLn . prettyLog False . snd) results'
+pretty results = do
+    if any fst results'
+      then putStrLn "Satisfiable."
+      else putStrLn "Unsatisfiable."
+    mapM_ (putStrLn . prettyLog) results'
   where
     results' = runWriterT results
-    prettyLog showAssign log =
-       (if showAssign
+    prettyLog (result, log) =
+       (if result
         then "---------\nSatisfying assignment: "
            ++ intercalate "," (map (show . Assign) (justAssigns log))
-        else "---------")
+        else "---------\nReached false: ")
       ++ "\n     "
       ++ intercalate "\n     " (map show log)
 
