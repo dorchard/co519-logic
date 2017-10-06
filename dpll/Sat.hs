@@ -162,15 +162,15 @@ test :: CNF -> Results Bool -> Bool
 test cnf results =
    all checkAssignment (runWriterT results)
   where
-    checkAssignment (False, _) = True
-    checkAssignment (True, assignment) =
-      and . map or . map (map (replaceWithBool (justAssigns assignment))) $ cnf
+    checkAssignment (b, assignment) =
+      b == (and . map or . map (map (replaceWithBool (justAssigns assignment))) $ cnf)
     replaceWithBool assignment (Positive v) =
        fromMaybe True (lookup v assignment)
     replaceWithBool assignment (Negative v) =
        not $ fromMaybe False (lookup v assignment)
 
 check x = test x $ sat x
+dpll    = pretty . sat
 
 justAssigns = concatMap assigns
 assigns (Assign (s, b)) = [(s, b)]
