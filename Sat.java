@@ -4,9 +4,9 @@ public class Sat {
     public static void main(String[] args) {
 	boolean a = false;
 	boolean b = false;
-	boolean c = false;
+	boolean c = true;
 
-	// What is a satisfying assignment for this formula?
+	// What is a satisfying assignment for this formula? (The above three lines)
 	boolean p =   (a || b || c)
 	      	   && (!a || b || c)
 	       	   && (!a || !b || c);

@@ -49,3 +49,6 @@ trafficLight =
     ,[Negative "r'", Positive "g'"]
     ,[Negative "g'", Positive "r'"]
     ,[Negative "g'", Positive "g'"]]
+
+-- Run tests
+testSuite = all check [contradict, taut, example, example0, example1, example2, example3, trafficLight]

@@ -55,9 +55,9 @@ toBool :: Atom -> Bool
 toBool (Positive _) = True
 toBool (Negative _) = False
 
-var :: Atom -> String
-var (Positive s) = s
-var (Negative s) = s
+variable :: Atom -> String
+variable (Positive s) = s
+variable (Negative s) = s
 
 -- *** DPLL step 1 - Replace any tautological clauses (contain x and not x)
 removeTautologies :: CNF -> Results CNF
@@ -84,7 +84,7 @@ unitPropagation xs = unitPropagation' [] xs
      tell [Msg $ "Unit propagation of " ++ show a ++ " for " ++ show (left ++ [a] : right)]
      --
      -- Singleton, remember its assignment
-     (left', right') <- assignAndUpdate a (toBool a) left right
+     (left', right') <- assignAndUpdate (variable a) (toBool a) left right
      -- Drop this singleton clause and apply unit propagation to the rest
      unitPropagation' left' right'
    -- Not a singleton
@@ -108,7 +108,7 @@ pureLiteralElimination xs = onConjuncts [] xs
 
           tell [Msg $ "Pure literal elim " ++ show a ++ " for " ++ show cnf]
           --
-          (left', right') <- assignAndUpdate a (toBool a) left right
+          (left', right') <- assignAndUpdate (variable a) (toBool a) left right
           return (left', Nothing, right')
        | otherwise = do
           (left', as', right') <- onDisjunction cnf left as right
@@ -120,48 +120,42 @@ pureLiteralElimination xs = onConjuncts [] xs
 -- picking an atom and assign it to true and false
 caseSplitOnAnAtom :: CNF -> Results CNF
 caseSplitOnAnAtom cnf@((a:as):rest) =
-    amb (assignAndUpdate' a True rest) (assignAndUpdate' a False (as:rest))
+    amb (assignAndUpdate' (variable a) True (as:rest)) (assignAndUpdate' (variable a) False (as:rest))
   where
-    assignAndUpdate' a val rest = do
-      tell [Msg $ "Case " ++ show a ++ " = " ++ show val ++ " for " ++ show cnf]
+    assignAndUpdate' var val rest = do
+      tell [Msg $ "Case " ++ var ++ " = " ++ show val ++ " for " ++ show cnf]
       --
-      uncurry (++) <$> assignAndUpdate a val [] rest
+      uncurry (++) <$> assignAndUpdate var val [] rest
     amb :: Results a -> Results a -> Results a
     amb m n = WriterT $ runWriterT m ++ runWriterT n
 caseSplitOnAnAtom cnf = return cnf
 
 -- Helpers for assigning a true to an atom and updating a pair of CNF formula
 -- accordingly
-assignAndUpdate :: Atom -> Bool -> CNF -> CNF -> Results (CNF, CNF)
-assignAndUpdate a val left right = do
+assignAndUpdate :: String -> Bool -> CNF -> CNF -> Results (CNF, CNF)
+assignAndUpdate var val left right = do
     -- Set an assignment for a to match its polarity
-    assign a val
+    tell [Assign (var, val)]
     -- Update the rest of the disjuncts with this fact
-    let left'  = mapMaybe (replaceAtom a val) left
-    let right' = mapMaybe (replaceAtom a val) right
+    let left'  = mapMaybe (replaceAtom var val) left
+    let right' = mapMaybe (replaceAtom var val) right
     tell [Msg ("Updated formula:   " ++ show (left' ++ right') ++ "\n")]
     return (left', right')
-  where
-    -- Update our assignment of variables
-    assign :: Atom -> Bool -> Results ()
-    assign (Positive s) b = tell [Assign (s, b)]
-    assign (Negative s) b = tell [Assign (s, not b)]
 
 -- Update a disjunction by replacing an atom with a boolean
 -- This may trigger the deletion of the disjunction (i.e., makes it true)
 -- which is represented by Nothing
-replaceAtom :: Atom -> Bool -> Disjunction -> Maybe Disjunction
-replaceAtom a _ [] = Just []
-replaceAtom a new (a':as)
+replaceAtom :: String -> Bool -> Disjunction -> Maybe Disjunction
+replaceAtom _ _ [] = Just []
+replaceAtom var new (a:as)
   -- satisfied a disjunct
-  | var a == var a' && polarise a a' new = Nothing
+  | var == variable a && polarise a new = Nothing
   -- Matching but replace with false, so delete an atom
-  | var a == var a' = replaceAtom a new as
-  | otherwise       = replaceAtom a new as >>= (\as' -> return $ a' : as')
+  | var == variable a = replaceAtom var new as
+  | otherwise         = replaceAtom var new as >>= (\as' -> return $ a : as')
   where
-   polarise (Positive _) (Negative _) b = not b
-   polarise (Negative _) (Positive _) b = not b
-   polarise _            _            b = b
+   polarise (Positive _) b = b
+   polarise (Negative _) b = not b
 
 -- Helper that tests the assignment (for confidence in the algorithm)
 test :: CNF -> Results Bool -> Bool
@@ -171,8 +165,12 @@ test cnf results =
     checkAssignment (False, _) = True
     checkAssignment (True, assignment) =
       and . map or . map (map (replaceWithBool (justAssigns assignment))) $ cnf
-    replaceWithBool assignment a =
-       fromMaybe True (lookup (var a) assignment)
+    replaceWithBool assignment (Positive v) =
+       fromMaybe True (lookup v assignment)
+    replaceWithBool assignment (Negative v) =
+       not $ fromMaybe False (lookup v assignment)
+
+check x = test x $ sat x
 
 justAssigns = concatMap assigns
 assigns (Assign (s, b)) = [(s, b)]
