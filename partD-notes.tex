@@ -518,28 +518,6 @@ can then conclude $R$ (but without using $x_0$ since the scope box
 ends here) then we can conclude $R$ overall. Note that this box is
 both a subproof \emph{and} a variable scope for $x_0$.
 
-\begin{example}
-  Prove $\exists x . \rel{P}(X), \forall y . (\rel{P}(y) \rightarrow
-  \rel{Q}(y)) \vdash \forall z . \rel{Q} (z)$ is valid.
-
-\begin{logicproof}{2}
-  \exists x . \rel{P}(x) & premise \\
-  \forall y . (\rel{P}(y) \rightarrow \rel{Q}(y)) & premise \\
-  \begin{subproof}
-    \hspace{-1em}\textcolor{blue}{x_0}
-    \;\; & \\
-    \begin{subproof}
-\hspace{-0.5em}\textcolor{blue}{x_0}
-\;\; \rel{P}(x_0) & assumption \\
-\;\;\;\; \rel{P}(x_0) \rightarrow \rel{Q}(x_0) & $\forall_e$ 2 \\
-\;\;\;\; \rel{Q}(x_0) & $\rightarrow_e$ 5, 4
-\end{subproof}
-\rel{Q}(x_0) & $\exists_e$ 1, 4-6
-\end{subproof}
-\forall z . \rel{Q}(z) & $\forall_i$ 3-7 $\quad \Box$
-\end{logicproof}
-\end{example}
-
 \begin{restatable}{exc}{existsOr}
 Prove $\exists x . (P \vee Q) \vdash \exists x . P \vee \exists x . Q$
 \end{restatable}
