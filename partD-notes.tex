@@ -94,7 +94,7 @@ We can then express the above sentence in predicate logic as:
 \end{equation}
 %
 We can read this exactly as \emph{it is not true that for all $x$, if
-  $x$ is a bird then $x$ can fly}. Another way to write this is 
+  $x$ is a bird then $x$ can fly}. Another way to write this is
 that there are some birds which cannot fly:
 %
 \begin{equation}
@@ -141,7 +141,7 @@ and bound variables $u$ and $v$:
 \rel{R}(u) \, \rightarrow \exists v . \, (\, \rel{P}(v) \, \wedge \, \rel{Q}(x) \,))
 \end{equation*}
 %
-The following repeats the formula and 
+The following repeats the formula and
 highlights the binders in yellow, the bound variables
 in green, and the free variables in red:
 %
@@ -184,7 +184,7 @@ $=_{\alpha}$ the following equality and inequality hold:
 %
 \begin{equation*}
 \exists x . \rel{P}(x) \rightarrow \rel{P}(y)
-  \;\;\; =_{\alpha} \;\;\; 
+  \;\;\; =_{\alpha} \;\;\;
 \exists z . \rel{P}(z) \rightarrow \rel{P}(y)
  \;\;\; \neq_{\alpha} \;\;\; \exists y . \rel{P}(y) \rightarrow \rel{P}(y)
 \end{equation*}
@@ -221,7 +221,7 @@ following we have a free $x$ and a bound $x$, so substitution only
 affects the free $x$ as such:
 %
 \begin{equation*}
-(\rel{P}(x) \wedge \forall x . \rel{P}(x))[t/x] 
+(\rel{P}(x) \wedge \forall x . \rel{P}(x))[t/x]
 = \rel{P}(t) \wedge \forall x . \rel{P}(x)
 \end{equation*}
 %
@@ -359,7 +359,7 @@ introduction is then:
 \end{equation*}
 %
 This says that there is a \emph{scope} (not subproof) that has a
-variable $x_0$ (marked in blue in the top corner) which appears in a 
+variable $x_0$ (marked in blue in the top corner) which appears in a
 proof concluding with $P[x_0/x]$. If this variable $x_0$ is only used
 in this scope, then we can leave the scope and conclude $\forall x
 . P$. Thus, the proof inside the scope is of $P$ but where $x$ is replaced by
@@ -395,7 +395,7 @@ The following is a proof:
 \noindent
 We start with the two premises. The proof then proceeds
 with a scope box on lines 3-5: \emph{but remember this is not
-a subproof}, it merely serves to delimit the scope of 
+a subproof}, it merely serves to delimit the scope of
 the fresh variable $x_0$ which starts on line 3 when
 the ``for all'' on line 1 is eliminated.
 
@@ -421,7 +421,7 @@ objects $z$ we have $\rel{Q}(z)$, expressed as $\forall z
 \subsubsection{Existential quantification (\emph{there exists})}
 
 Whilst universal quantification generalises conjunction,
-existential quantification generalises disjunction. 
+existential quantification generalises disjunction.
 If existential quantification binds variables ranging
 over the objects $a_0, a_1, \ldots a_n$ then:
 %
@@ -504,7 +504,7 @@ This gives us the existential elimination rule:
 %
 \begin{equation*}
 \setlength{\arraycolsep}{0.2em}
-\dfrac{\begin{array}{l} \\[2em] \exists x . P\end{array} \quad 
+\dfrac{\begin{array}{l} \\[2em] \exists x . P\end{array} \quad
 \fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & P[x_0/x]
          \\ &  \vdots \\ & R \end{array}$}}{R} \;\; {\exists_e}
    \qquad\qquad \textit{$x_0$ is free for $x$ in $P$}
@@ -579,9 +579,10 @@ look at a few here.
 %
 The above example and exercise together give us the following equality:
 %
-\begin{align*}
- \neg \forall x . P & \equiv \exists x . \neg P \\
-\end{align*}
+\begin{align}
+\label{eq:quantifier-dual}
+ \neg \forall x . P & \equiv \exists x . \neg P
+\end{align}
 %
 \begin{restatable}{exc}{dualityTwo}
   Prove $\neg \exists x . P \equiv \forall x . \neg P$ using
@@ -590,18 +591,27 @@ The above example and exercise together give us the following equality:
 \end{restatable}
 %
 \begin{example}
-We can now go back to the example from the introduction
-that \emph{not all birds can fly}, which we formulated as both
-$\neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x))$ and
-$\exists x . \rel{B}(x) \wedge \neg \rel{F}(x)$. We can show these
-two statement are equivalent by using the above results:
+  We can now go back to the example from the introduction that
+  \emph{not all birds can fly}. We formulated this sentence as both
+  $\neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x))$ and
+  $\exists x . \rel{B}(x) \wedge \neg \rel{F}(x)$.
+
+  We can show these two statements are equivalent by using the above
+  results:
 %
 \begin{align*}
-    & \neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x)) \\
-  \equiv \;\; &  \exists x . \, \neg (\rel{B}(x) \rightarrow \rel{F}(x)) \\
-  \equiv \;\; & \exists x . \,\neg (\neg \rel{B}(x) \vee \rel{F}(x)) \\
-  \equiv \;\; & \exists x . \,\neg \neg \rel{B}(x) \wedge \neg \rel{F}(x) \\
-  \equiv \;\; & \exists x . \,\rel{B}(x) \wedge \neg \rel{F}(x) \qquad\quad \Box
+\begin{array}{rll}
+    & \neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x)) & \\[0.4em]
+  \equiv \;\; &  \exists x . \, \neg (\rel{B}(x) \rightarrow
+                \rel{F}(x)) & \{\textit{by \eqref{eq:quantifier-dual}}\} \\[0.4em]
+  \equiv \;\; & \exists x . \,\neg (\neg \rel{B}(x) \vee \rel{F}(x))
+& \{\textit{$P \rightarrow Q \equiv \neg P \vee Q$}\} \\[0.4em]
+  \equiv \;\; & \exists x . \,\neg \neg \rel{B}(x) \wedge \neg
+                \rel{F}(x)
+& \{\textit{De Morgan's}\} \\[0.4em]
+  \equiv \;\; & \exists x . \,\rel{B}(x) \wedge \neg \rel{F}(x) &
+\{\textit{Double negation elim}\} \qquad\qquad \Box
+\end{array}
 \end{align*}
 \end{example}
 
@@ -623,14 +633,14 @@ two statement are equivalent by using the above results:
 \; {\forall_i}$
 & $\dfrac{\forall x . P}
   {P [t/x]} \; {\forall e} \;$ \\[1.25em] \hline
-$\exists$ 
+$\exists$
 &
 \rule{0cm}{0.75cm}
 $\dfrac{P[t/x]}{\exists x . P} \;\exists_i$
 &
 \rule{0cm}{2.25cm}
 $\setlength{\arraycolsep}{0.2em}
-\dfrac{\begin{array}{l} \\[2em] \exists x . P\end{array} \quad 
+\dfrac{\begin{array}{l} \\[2em] \exists x . P\end{array} \quad
 \fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & P[x_0/x]
  \\ &  \vdots \\ & R \end{array}$}}{R}\;\exists_e$
 \end{tabular}
