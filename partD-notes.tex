@@ -539,6 +539,7 @@ look at a few here.
 \begin{example}
   Prove $\exists x . \rel{P}(x),
   \forall x . \rel{P}(x) \rightarrow \rel{Q}(x) \vdash \exists x . \rel{Q}(x)$
+  is valid.
 
   \begin{logicproof}{2}
     \exists x . \rel{P}(x) & premise \\
@@ -548,14 +549,15 @@ look at a few here.
       assumption \\
       \quad \rel{P}(x_0) \rightarrow \rel{Q}(x_0) &
       $\forall_e$ 2 \\
-      \quad \rel{Q}(x_0) & $\rightarrow_e$ 4, 3
+      \quad \rel{Q}(x_0) & $\rightarrow_e$ 4, 3 \\
+      \quad \exists x . \rel{Q}(x) & $\exists_i$ 5
     \end{subproof}
 \exists x . \rel{Q}(x) & $\exists_e$ 1, 3-6 $\qquad \Box$
 \end{logicproof}
 \end{example}
 
 \begin{example}
-  Prove $\exists x . \neg P \vdash \neg \forall x . \neg P$
+  Prove $\exists x . \neg P \vdash \neg \forall x . \neg P$ is valid.
 
   \begin{logicproof}{2}
     \exists x . \neg P & assumption \\
@@ -574,7 +576,7 @@ look at a few here.
 \end{example}
 
 \begin{restatable}{exc}{duality}
-  Prove $\neg \forall x . P \vdash \exists x . \neg P$
+  Prove $\neg \forall x . P \vdash \exists x . \neg P$ is valid.
 \end{restatable}
 %
 The above example and exercise together give us the following equality:
@@ -585,9 +587,10 @@ The above example and exercise together give us the following equality:
 \end{align}
 %
 \begin{restatable}{exc}{dualityTwo}
-  Prove $\neg \exists x . P \equiv \forall x . \neg P$ using
-  $\neg \forall x . P \equiv \exists x . \neg P$ and $P \equiv
-  \neg\neg P$.
+  Prove $\neg \exists x . P \equiv \forall x . \neg P$ is valid using
+  the equations for quantifier duality
+  $\neg \forall x . P \equiv \exists x . \neg P$ and double negation
+  idempotency $P \equiv \neg\neg P$.
 \end{restatable}
 %
 \begin{example}
