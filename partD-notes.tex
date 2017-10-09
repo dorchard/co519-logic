@@ -241,15 +241,20 @@ $a_0, a_1, \ldots a_n \in \mathcal{U}$ then universal quantification
 of $x$ over a formula $P$ is equivalent to taking the repeated
 conjunction of $P$ substituting each object for $x$, \ie{}
 %
-\begin{equation*}
+\begin{equation}
 \forall x . P = P[a_0/x] \wedge P[a_1/x] \wedge
 \ldots \wedge P[a_{n}/x]
-\end{equation*}
+\label{eq:forall-meaning}
+\end{equation}
 %
-(Note that there may be an infinite number of such objects). 
-This perspective helps us to understand elimination and introduction
-for universal quantification as a generalisation of elimination and
-introduction for conjunction:
+(Note that there may be an infinite number of such objects).
+
+The notion of universal quantification as generalised conjunction
+helps us to understand the elimination and introduction rules for universal
+quantification.
+
+\paragraph{Elimination} As a reminder, here
+are the conjunction elimination rules:
 %
 \begin{equation*}
 \dfrac{P \wedge Q}
@@ -257,12 +262,24 @@ introduction for conjunction:
 \;\;
 \dfrac{P \wedge Q}
   {Q} \; {\wedge_{e2}}
-\;\;
-\dfrac{P \qquad Q}
-         {P \wedge Q} \; {\wedge_i}
 \end{equation*}
 %
-The elimination rule for universal quantification is then as follows:
+Using equation~\eqref{eq:forall-meaning}, we could apply the two
+eliminations repeatedly to get any formula in the long conjunction of
+formulas. Eliminating to get the $i^{th}$ part of the conjunction
+would give us the inference:
+%
+\begin{equation*}
+  \dfrac{P[a_0/x] \wedge P[a_1/x] \wedge \ldots \wedge P[a_{n}/x]}
+  {P[a_i/x]}
+\end{equation*}
+%
+This is essentially how we do universal quantification elimination.
+Universal quantification differs to conjunction in that each one of the things
+being ``conjuncted'' together is of the same form: they are all $P$
+with some variable $x$ replaced by an atom. Therefore, eliminations
+always give us some formula $P$ but with $x$ replaced by different objects. This is how
+we define universal quantification elimination, with the rule:
 %
 \begin{equation*}
   \dfrac{\forall x . P}
@@ -270,15 +287,12 @@ The elimination rule for universal quantification is then as follows:
     replacing $x$ in $P$}
 \end{equation*}
 %
-The intuition is that we can eliminate a $\forall$ by replacing the
-bound variable $x$ with an arbitrary variable $t$ which represents \emph{any} of
-things ranged over by the $\forall$. This is similar to conjunction
-elimination where we eliminate to either of the left or right-hand sides of
-the conjunction.
-
+The intuition is that we eliminate $\forall$ by replacing the bound
+variable $x$ with an arbitrary variable $t$ which represents
+\emph{any} of things ranged over by the $\forall$.
 The side condition requires that the variable $t$ is a free variable
  when it is substituted for $x$ in $P$. We'll see an example of
-why this is needed. \footnote{The textbook (Huth and Ryan) uses the
+why this is needed.\footnote{The textbook (Huth and Ryan) uses the
   phrase ``\emph{$t$ is free for $x$ in $P$}'' which is a little
   confusing, but means the same as the above side condition for
   $\forall$ elimination: that the variable $t$ remains a free variable
@@ -303,9 +317,40 @@ performing the substitution $(\exists y. (x < y))[y/x]$ we have
 which then changed the meaning of the formula. This is why we have the
 side condition.
 
-Next we will see introduction. This uses boxes like we used for
-subproofs previously, but the boxes are no longer subproofs, but
-instead mark out the scope of a variable. The rule is as follows:
+\begin{example}
+  Prove $\forall x . (\rel{P}(x) \rightarrow Q) \vdash \rel{P}(t)
+  \rightarrow Q$
+
+  \begin{logicproof}{2}
+    \forall x . (\rel{P}(x) \rightarrow Q) & premise \\
+    \begin{subproof}
+      \rel{P}(t) & assumption \\
+      \rel{P}(t) \rightarrow Q & $\forall_e$ 1 \\
+      Q & $\rightarrow_e$ 3, 2
+    \end{subproof}
+    \rel{P}(t) \rightarrow Q & $\rightarrow_i \qquad \Box$
+  \end{logicproof}
+\end{example}
+
+\paragraph{Introduction} Recall conjunction introduction:
+%
+\begin{equation*}
+ \dfrac{P \qquad Q}{P \wedge Q} \; \wedge_i
+\end{equation*}
+%
+Following equation~\eqref{eq:forall-meaning} again, universal
+quantification is equivalent to a large conjunction, but every formula
+being conjuncted is of the form $P[t/x]$. We could therefore define an
+introduction for universal quantification if we had $P[t/x]$ for
+all abstract objects $t$, but this is usually not possible (the universe
+could be infinite). Instead, it suffices to know that $P[x_0/x]$ is true
+for an arbitrary variable $x_0$ about which we know nothing else and
+which is no long used once we bind it by the universal
+quantifier; it is then ``out of scope''.
+
+We denote the scope of such arbitrary variables using boxes like we
+used for subproofs previously, but the boxes are no longer subproofs. The rule for
+introduction is then:
 %
 \begin{equation*}
 \setlength{\arraycolsep}{0.2em}
@@ -331,7 +376,7 @@ how I have used different names for the bound variables for the sake
 of clarity, but the formula would have the exact same meaning if each
 bound variable was called $x$ here.
 
-The proof proceeds:
+The following is a proof:
   \begin{logicproof}{2}
   \forall x . (\rel{P}(x) \rightarrow \rel{Q}(x)) & premise \\
   \forall y . \rel{P}(y)                          & premise \\
@@ -342,6 +387,7 @@ The proof proceeds:
     \;\; \rel{Q}(x_0)                          & $\rightarrow_e$ 3, 4
   \end{subproof}
   \forall z . \rel{Q}(z)                       & $\forall i$ 3-5
+  $\qquad \Box$
   \end{logicproof}
 \end{example}
 %
@@ -359,13 +405,17 @@ elimination on line 3. Line 5 uses modus ponens to get $\rel{Q}(x_0)$
 which gives us the formula on which we apply $\forall
 i$.
 
-Philosophically we are applying universal quantification introduction
+Logically, we are applying universal quantification introduction
 only on $\rel{Q}(x_0)$, but we state the lines in which $x_0$ is
 in scope. Once we close this scope box, we can't do anything with
 $x_0$. The proof has shown that if we pick an arbitrary object $x_0$
 then we get $Q(x_0)$ and so we can conclude that for all
 objects $z$ we have $\rel{Q}(z)$ (expressed as $\forall z
 . \rel{Q}(z)$).
+
+\begin{restatable}{exc}{forallAndElim}
+  Prove $\forall x . (\rel{P}(x) \wedge \rel{Q}(x)) \vdash \forall x . \rel{P}(x)$
+\end{restatable}
 
 Existential quantification is more restrictive.
 
@@ -383,26 +433,24 @@ over the objects $a_0, a_1, \ldots a_n$ then:
 \end{equation}
 %
 That is, existential quantification is equivalent to the disjunction
-of $P$ for every object in the universe, replacing $x$.
+of $P$ for every object in the universe, replacing $x$. We can use
+this perspective to help understand the existential quantification
+rules.
 
-Recall the introduction and elimination rules for disjunction:
+\paragraph{Introduction} Recall the introduction rules for disjunction:
 %
 \begin{align*}
-\begin{array}{c}\dfrac{P}
+    \dfrac{P}
   {P \vee Q} \; {\vee_{i1}}
   \qquad
     \dfrac{Q}
-  {P \vee Q} \; {\vee_{i2}}\\[3.25em]\end{array}
-\qquad \setlength{\arraycolsep}{0em}
-\dfrac{\begin{array}{c} \\ \\[0.7em] P \vee Q\end{array} \quad
-\fbox{$\begin{array}{c} P \\ \vdots \\ R\end{array}$}
-\quad
-\fbox{$\begin{array}{c} Q \\ \vdots \\ R\end{array}$}}{R}
-\;
-{\vee_e}
+  {P \vee Q} \; {\vee_{i2}}
 \end{align*}
 %
-Disjunction introduction generalises to the following existential
+Given some formula, we can ``or'' with anything else. Following
+the idea of equation~\eqref{eq:exists-meaning}, we are taking a
+disjunction with lots of other formula of the same form $P[a_i/x]$.
+Thus, disjunction introduction generalises to the following existential
 introduction rule:
 %
 \begin{align*}
@@ -414,7 +462,7 @@ That is, we can introduce $\exists x . P$ if we have
 $P$ where some other variable $t$ replaces $x$. This
 is a bottom-up reading of the rule, where the substitution
 is applied to the premise. Note how this rule is essentially
-the converse of $\forall elimination$ and thus we can
+the converse of $\forall$ elimination and thus we can
 rather directly prove the following:
 %\begin{align*}
 %\dfrac{P}{\exists x . P[x/t]} \;\; \exists_i
@@ -429,28 +477,95 @@ rather directly prove the following:
     \exists x . \rel{P}(x) & $\exists_i$ $\qquad \Box$
    \end{logicproof}
  \end{example}
+ %
+ \paragraph{Introduction} Recall disjunction introduction is:
+ %
+\begin{align*}
+\setlength{\arraycolsep}{0em}
+\dfrac{\begin{array}{c} \\ \\[0.7em] P \vee Q\end{array} \quad
+\fbox{$\begin{array}{c} P \\ \vdots \\ R\end{array}$}
+\quad
+\fbox{$\begin{array}{c} Q \\ \vdots \\ R\end{array}$}}{R}
+\;
+{\vee_e}
+\end{align*}
 %
-Existential elimination resembles disjunction elimination
-but now combines the notion of a variable scope box with a subproof
-box:
+We previously needed two subproofs for each case of the disjunct.
+However, with an existential, we have a disjunction of many formula
+of the same form $P[a_i/x]$. Rather than requiring a subproof for
+each of them, concluding in some common formula $R$, we can capture
+all such subproofs by a single subproof replacing $x$ with an
+arbitrary variable $x_0$ which is in scope only for the subproof.
+This gives the rule:
 %
 \begin{equation*}
 \setlength{\arraycolsep}{0.2em}
 \dfrac{\begin{array}{l} \\[2em] \exists x . P\end{array} \quad 
 \fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & P[x_0/x]
- \\ &  \vdots \\ & Q \end{array}$}}{Q}
+ \\ &  \vdots \\ & R \end{array}$}}{R}
 \end{equation*}
 %
 The intuition is that the subproof here represents a case for every
 single part of the disjunction in~\eqref{eq:exists-meaning} by using
 an arbitrary variable $x_0$ that we know nothing about to represent
 each atom in the universe. Similarly to disjunction elimination, if we
-can then conclude $Q$ (but without using $x_0$ since the scope box
-ends here) then we can conclude $Q$ overall.
+can then conclude $R$ (but without using $x_0$ since the scope box
+ends here) then we can conclude $R$ overall. Note that this box is
+both a subproof \emph{and} a variable scope for $x_0$.
+
+\begin{example}
+  Prove $\exists x . \rel{P}(X), \forall y . (\rel{P}(y) \rightarrow
+  \rel{Q}(y)) \vdash \forall z . \rel{Q} (z)$.
+
+\begin{logicproof}{2}
+  \exists x . \rel{P}(x) & premise \\
+  \forall y . (\rel{P}(y) \rightarrow \rel{Q}(y)) & premise \\
+  \begin{subproof}
+    \hspace{-1em}\textcolor{blue}{x_0}
+    \;\; & \\
+    \begin{subproof}
+\hspace{-0.5em}\textcolor{blue}{x_0}
+\;\; \rel{P}(x_0) & assumption \\
+\;\;\;\; \rel{P}(x_0) \rightarrow \rel{Q}(x_0) & $\forall_e$ 2 \\
+\;\;\;\; \rel{Q}(x_0) & $\rightarrow_e$ 5, 4
+\end{subproof}
+\rel{Q}(x_0) & $\exists_e$ 1, 4-6
+\end{subproof}
+\forall z . \rel{Q}(z) & $\forall_i$ 3-7
+\end{logicproof}
+\end{example}
+
+\begin{restatable}{exc}{allExists}
+  Prove $\forall x . (\rel{P}(x) \rightarrow \rel{Q}(x)), \exists x
+  . \rel{P}(x) \vdash \exists x . \rel{Q}(x)$
+\end{restatable}
+
+\begin{restatable}{exc}{existsOr}
+Prove $\exists x . (P \vee Q) \vdash \exists x . P \vee \exists x . Q$
+\end{restatable}
+
+\begin{example}
+  Prove $\exists x . \neg P \vdash \neg \forall x . \neg P$
+
+  \begin{logicproof}{2}
+    \exists x . \neg P & assumption \\
+    \begin{subproof}
+      \forall x . P & assumption \\
+      \begin{subproof}
+        \hspace{-0.5em}{\textcolor{blue}{x_0}}
+        \;\; \neg P[x_0/x] & assumption \\
+        \quad P[x_0/x] & $\forall_e$ 2 \\
+        \quad \bot & $\neg_e$ 4, 3
+      \end{subproof}
+      \bot & $\exists_e$ 1, 2-5
+    \end{subproof}
+    \neg \forall x . P & $\neg_i$ 2-6
+  \end{logicproof}
+\end{example}
 
 
 \begin{restatable}{exc}{duality}
-  $\neg \forall x . \rel{P} (x) \vdash \exists x . \neg \rel{P} (x)$
+  Prove $\neg \forall x . P \vdash \exists x . \neg P$
 \end{restatable}
 
 \section{Collected rules of natural deduction for
@@ -482,11 +597,14 @@ $\dfrac{P[t/x]}{\exists x . P} \;\exists_i$ {\small{$\begin{array}{c}\textit{whe
 $\setlength{\arraycolsep}{0.2em}
 \dfrac{\begin{array}{l} \\[2em] \exists x . P\end{array} \quad 
 \fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & P[x_0/x]
- \\ &  \vdots \\ & Q \end{array}$}}{Q}$
+ \\ &  \vdots \\ & R \end{array}$}}{R}$
 \end{tabular}
 
 \section{Exercises}
 
+\forallAndElim*
+\allExists*
+\existsOr*
 \duality*
 
 \end{document}

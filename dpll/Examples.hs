@@ -56,5 +56,10 @@ example4 =
     ,[Negative "x", Positive "z", Negative "w"]
     ,[Positive "y", Positive "w"]]
 
+example5 =
+    [[Positive "a", Positive "b", Positive "c"]
+    ,[Negative "a", Positive "b"]
+    ,[Negative "a", Negative "b", Negative "c"]]
+
 -- Run tests
 testSuite = all check [contradict, taut, example, example0, example1, example2, example3, trafficLight]
