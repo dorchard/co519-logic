@@ -454,7 +454,7 @@ disjunction introduction generalises to the following existential
 introduction rule:
 %
 \begin{align*}
-\dfrac{P[t/x]}{\exists x . P} \;\; \exists_i \;\;\;\;
+\dfrac{P[t/x]}{\exists x . P} \; \exists_i \;\;\;\;
 \textit{$t$ is free for $x$ in $P$}
 \end{align*}
 %
@@ -477,8 +477,8 @@ rather directly prove the following:
 
   \begin{logicproof}{2}
     \forall x . \rel{P}(x) & premise \\
-    \rel{P}(t)             & $\forall_e$ \\
-    \exists x . \rel{P}(x) & $\exists_i$ $\qquad \Box$
+    \rel{P}(t)             & $\forall_e$ 1 \\
+    \exists x . \rel{P}(x) & $\exists_i$ 2 $\qquad \Box$
    \end{logicproof}
  \end{example}
  %
@@ -500,7 +500,7 @@ of the same form $P[a_i/x]$. Rather than requiring a subproof for
 each of them, concluding in some common formula $R$, we can capture
 all such subproofs by a single subproof replacing $x$ with an
 arbitrary variable $x_0$ which is in scope only for the subproof.
-This gives the rule:
+This gives us the existential elimination rule:
 %
 \begin{equation*}
 \setlength{\arraycolsep}{0.2em}
@@ -520,7 +520,7 @@ both a subproof \emph{and} a variable scope for $x_0$.
 
 \begin{example}
   Prove $\exists x . \rel{P}(X), \forall y . (\rel{P}(y) \rightarrow
-  \rel{Q}(y)) \vdash \forall z . \rel{Q} (z)$.
+  \rel{Q}(y)) \vdash \forall z . \rel{Q} (z)$ is valid.
 
 \begin{logicproof}{2}
   \exists x . \rel{P}(x) & premise \\
