@@ -592,7 +592,7 @@ The above example and exercise together give us the following equality:
   Prove $\neg \exists x . P \equiv \forall x . \neg P$ is valid using
   the equations for quantifier duality
   $\neg \forall x . P \equiv \exists x . \neg P$ and double negation
-  idempotency $P \equiv \neg\neg P$.
+  idempotence $P \equiv \neg\neg P$.
 \end{restatable}
 %
 \begin{example}
@@ -625,8 +625,11 @@ The above example and exercise together give us the following equality:
 
 \section{Collected rules for first-order logic}
 
-\vspace{2em}
+\noindent
+The natural deduction rules for first-order logic including
+all those of propositional logic plus the following: \\
 
+\begin{center}
 \setlength{\tabcolsep}{1.54em}
 \renewcommand{\arraystretch}{1}
 \begin{tabular}{r||c|c}
@@ -636,12 +639,12 @@ The above example and exercise together give us the following equality:
 \dfrac{\fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & \\ & \vdots \\ & P[x_0/x] \end{array}$}}
 {\forall x . P}
 \; {\forall_i}$
-& $\dfrac{\forall x . P}
-  {P [t/x]} \; {\forall e} \;$ \\[1.25em] \hline
+& $\begin{array}{l}\dfrac{\forall x . P}
+  {P [t/x]} \; {\forall_e} \\[2.5em]\end{array}$ \\[1.25em] \hline
 $\exists$
 &
 \rule{0cm}{0.75cm}
-$\dfrac{P[t/x]}{\exists x . P} \;\exists_i$
+$\begin{array}{l}\dfrac{P[t/x]}{\exists x . P} \;\exists_i\\[2.5em]\end{array}$
 &
 \rule{0cm}{2.25cm}
 $\setlength{\arraycolsep}{0.2em}
@@ -649,10 +652,10 @@ $\setlength{\arraycolsep}{0.2em}
 \fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & P[x_0/x]
  \\ &  \vdots \\ & R \end{array}$}}{R}\;\exists_e$
 \end{tabular}
-\\[2em]
-In all of the rules we have the requirement that the substitution
-is \emph{capture avoiding}, \eg{}, $x_0$ is free for $x$ in $P$ and
-$t$ is free for $x$ in $P$ in the relevant places.
+\end{center}
+In each of the rules we have the requirement that the substitution
+is \emph{capture avoiding}, \eg{}, \emph{$x_0$ is free for $x$ in $P$} and
+\emph{$t$ is free for $x$ in $P$} in the relevant places.
 
 \section{Exercises}
 
