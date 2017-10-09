@@ -41,7 +41,7 @@
 \author{Dominic Orchard \\
   {\small{School of Computing, University of Kent}}}
 
-\date{Last updated on \today $\;\;\;$ (\textcolor{red}{incomplete})}
+\date{Last updated on \today}
 
 \begin{document}
 \maketitle
@@ -283,20 +283,16 @@ we define universal quantification elimination, with the rule:
 %
 \begin{equation*}
   \dfrac{\forall x . P}
-  {P [t/x]} \; {\forall_e} \quad \textit{where $t$ is free when
-    replacing $x$ in $P$}
+  {P [t/x]} \; {\forall_e} \quad \textit{where $t$ is free for $x$ in $P$}
 \end{equation*}
 %
 The intuition is that we eliminate $\forall$ by replacing the bound
 variable $x$ with an arbitrary variable $t$ which represents
 \emph{any} of things ranged over by the $\forall$.
 The side condition requires that the variable $t$ is a free variable
- when it is substituted for $x$ in $P$. We'll see an example of
-why this is needed.\footnote{The textbook (Huth and Ryan) uses the
-  phrase ``\emph{$t$ is free for $x$ in $P$}'' which is a little
-  confusing, but means the same as the above side condition for
-  $\forall$ elimination: that the variable $t$ remains a free variable
-  even once it replaces $x$ inside of $P$.}
+ when it is substituted for $x$ in $P$-- that is the meaning of the
+ phrase \emph{where $t$ is free for $x$ in $P$}. We'll see an example of
+why this is needed.
 
 Consider the following statement about integers, that for
 every integer there exists a bigger integer:
@@ -357,14 +353,18 @@ introduction is then:
 \dfrac{\fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & \\ & \vdots \\ & P[x_0/x] \end{array}$}}
 {\forall x . P}
 \; {\forall_i}
+\qquad
+\textit{where $x_0$ is free for $x$ in $P$}
 \end{equation*}
 %
 This says that there is a \emph{scope} (not subproof) that has a
 variable $x_0$ (marked in blue in the top corner) which appears in a 
 proof concluding with $P[x_0/x]$. If this variable $x_0$ is only used
 in this scope, then we can leave the scope and conclude $\forall x
-. P$. Thus, the proof inside is of $P$ but where $x$ is replaced by
-$x_0$. Here's an example to make this idea more clear:
+. P$. Thus, the proof inside the scope is of $P$ but where $x$ is replaced by
+$x_0$. Note that there is the same side condition as in $\forall_e$.
+
+Here's an example to make this idea more clear:
 %
 \begin{example}
 Prove $\forall x . (\rel{P}(x) \rightarrow \rel{Q}(x)), \forall y
@@ -410,14 +410,12 @@ only on $\rel{Q}(x_0)$, but we state the lines in which $x_0$ is
 in scope. Once we close this scope box, we can't do anything with
 $x_0$. The proof has shown that if we pick an arbitrary object $x_0$
 then we get $Q(x_0)$ and so we can conclude that for all
-objects $z$ we have $\rel{Q}(z)$ (expressed as $\forall z
-. \rel{Q}(z)$).
+objects $z$ we have $\rel{Q}(z)$, expressed as $\forall z
+. \rel{Q}(z)$.
 
 \begin{restatable}{exc}{forallAndElim}
   Prove $\forall x . (\rel{P}(x) \wedge \rel{Q}(x)) \vdash \forall x . \rel{P}(x)$
 \end{restatable}
-
-Existential quantification is more restrictive.
 
 \subsubsection{Existential quantification (\emph{there exists})}
 
@@ -432,10 +430,10 @@ over the objects $a_0, a_1, \ldots a_n$ then:
 \label{eq:exists-meaning}
 \end{equation}
 %
-That is, existential quantification is equivalent to the disjunction
-of $P$ for every object in the universe, replacing $x$. We can use
-this perspective to help understand the existential quantification
-rules.
+Thus, existential quantification is equivalent to the repeated
+disjunction of the formula $P$ with each object in the universe
+replacing $x$. We can use this perspective to help understand the
+existential quantification rules.
 
 \paragraph{Introduction} Recall the introduction rules for disjunction:
 %
@@ -447,21 +445,26 @@ rules.
   {P \vee Q} \; {\vee_{i2}}
 \end{align*}
 %
-Given some formula, we can ``or'' with anything else. Following
-the idea of equation~\eqref{eq:exists-meaning}, we are taking a
-disjunction with lots of other formula of the same form $P[a_i/x]$.
-Thus, disjunction introduction generalises to the following existential
+Given some true formula $P$ then the disjunction of $P$ with any other
+formula ($Q$) is true. Following the idea of
+equation~\eqref{eq:exists-meaning}, existential quantification is a
+disjunction of formulas all of the same form $P[a_i/x]$.  Thus,
+disjunction introduction generalises to the following existential
 introduction rule:
 %
 \begin{align*}
-\dfrac{P[t/x]}{\exists x . P} \; \exists_i \;\;
+\dfrac{P[t/x]}{\exists x . P} \;\; \exists_i \;\;\;\;
 \textit{$t$ is free for $x$ in $P$}
 \end{align*}
 %
 That is, we can introduce $\exists x . P$ if we have
 $P$ where some other variable $t$ replaces $x$. This
 is a bottom-up reading of the rule, where the substitution
-is applied to the premise. Note how this rule is essentially
+is applied to the premise. Similarly to $\forall_e$ there is a
+side condition which states that $t$ must be free when substituted
+for $x$ in $P$.
+
+Note how this rule is essentially
 the converse of $\forall$ elimination and thus we can
 rather directly prove the following:
 %\begin{align*}
@@ -494,7 +497,7 @@ We previously needed two subproofs for each case of the disjunct.
 However, with an existential, we have a disjunction of many formula
 of the same form $P[a_i/x]$. Rather than requiring a subproof for
 each of them, concluding in some common formula $R$, we can capture
-all such subproofs by a single subproof replacing $x$ with an
+all such subproofs by a single subproowf replacing $x$ with an
 arbitrary variable $x_0$ which is in scope only for the subproof.
 This gives the rule:
 %
@@ -502,7 +505,8 @@ This gives the rule:
 \setlength{\arraycolsep}{0.2em}
 \dfrac{\begin{array}{l} \\[2em] \exists x . P\end{array} \quad 
 \fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & P[x_0/x]
- \\ &  \vdots \\ & R \end{array}$}}{R}
+         \\ &  \vdots \\ & R \end{array}$}}{R} \;\; {\exists_e}
+   \qquad\qquad \textit{$x_0$ is free for $x$ in $P$}
 \end{equation*}
 %
 The intuition is that the subproof here represents a case for every
@@ -531,18 +535,45 @@ both a subproof \emph{and} a variable scope for $x_0$.
 \end{subproof}
 \rel{Q}(x_0) & $\exists_e$ 1, 4-6
 \end{subproof}
-\forall z . \rel{Q}(z) & $\forall_i$ 3-7
+\forall z . \rel{Q}(z) & $\forall_i$ 3-7 $\quad \Box$
 \end{logicproof}
 \end{example}
-
-\begin{restatable}{exc}{allExists}
-  Prove $\forall x . (\rel{P}(x) \rightarrow \rel{Q}(x)), \exists x
-  . \rel{P}(x) \vdash \exists x . \rel{Q}(x)$
-\end{restatable}
 
 \begin{restatable}{exc}{existsOr}
 Prove $\exists x . (P \vee Q) \vdash \exists x . P \vee \exists x . Q$
 \end{restatable}
+
+
+%\begin{restatable}{exc}{allExists}
+%  Prove $\forall x . (\rel{P}(x) \rightarrow \rel{Q}(x)), \exists x
+%  . \rel{P}(x) \vdash \exists x . \rel{Q}(x)$
+%\end{restatable}
+
+\subsubsection{Proofs involving both existential and universal
+  quantification}
+
+There are intersting formula and sequents that are valid
+involving the interaction of existential and universal quantifiers. We
+look at a few here.
+
+
+\begin{example}
+  Prove $\exists x . \rel{P}(x),
+  \forall x . \rel{P}(x) \rightarrow \rel{Q}(x) \vdash \exists x . \rel{Q}(x)$
+
+  \begin{logicproof}{2}
+    \exists x . \rel{P}(x) & premise \\
+    \forall x . \rel{P}(x) \rightarrow \rel{Q}(x) & premise \\
+    \begin{subproof}
+      \hspace{-0.5em}\textcolor{blue}{x_0} \;\; \rel{P}(x_0) &
+      assumption \\
+      \quad \rel{P}(x_0) \rightarrow \rel{Q}(x_0) &
+      $\forall_e$ 2 \\
+      \quad \rel{Q}(x_0) & $\rightarrow_e$ 4, 3
+    \end{subproof}
+\exists x . \rel{Q}(x) & $\exists_e$ 1, 3-6 $\qquad \Box$
+\end{logicproof}
+\end{example}
 
 \begin{example}
   Prove $\exists x . \neg P \vdash \neg \forall x . \neg P$
@@ -557,19 +588,48 @@ Prove $\exists x . (P \vee Q) \vdash \exists x . P \vee \exists x . Q$
         \quad P[x_0/x] & $\forall_e$ 2 \\
         \quad \bot & $\neg_e$ 4, 3
       \end{subproof}
-      \bot & $\exists_e$ 1, 2-5
+      \bot & $\exists_e$ 1, 3-5
     \end{subproof}
-    \neg \forall x . P & $\neg_i$ 2-6
+    \neg \forall x . P & $\neg_i$ 2-6 $\qquad \Box$
   \end{logicproof}
 \end{example}
-
 
 \begin{restatable}{exc}{duality}
   Prove $\neg \forall x . P \vdash \exists x . \neg P$
 \end{restatable}
+%
+The above example and exercise together give us the following equality:
+%
+\begin{align*}
+ \neg \forall x . P & \equiv \exists x . \neg P \\
+\end{align*}
+%
+\begin{restatable}{exc}{dualityTwo}
+  Prove $\neg \exists x . P \equiv \forall x . \neg P$ using
+  $\neg \forall x . P \equiv \exists x . \neg P$ and $P \equiv
+  \neg\neg P$.
+\end{restatable}
+%
+\begin{example}
+We can now go back to the example from the introduction
+that \emph{not all birds can fly}, which we formulated as both
+$\neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x))$ and
+$\exists x . \rel{B}(x) \wedge \neg \rel{F}(x)$. We can show these
+two statement are equivalent by using the above results:
+%
+\begin{align*}
+    & \neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x)) \\
+  \equiv \;\; &  \exists x . \, \neg (\rel{B}(x) \rightarrow \rel{F}(x)) \\
+  \equiv \;\; & \exists x . \,\neg (\neg \rel{B}(x) \vee \rel{F}(x)) \\
+  \equiv \;\; & \exists x . \,\neg \neg \rel{B}(x) \wedge \neg \rel{F}(x) \\
+  \equiv \;\; & \exists x . \,\rel{B}(x) \wedge \neg \rel{F}(x) \qquad\quad \Box
+\end{align*}
+\end{example}
 
-\section{Collected rules of natural deduction for
-first-order logic}
+
+
+
+\section{Collected rules for first-order logic}
 
 \vspace{2em}
 
@@ -583,15 +643,11 @@ first-order logic}
 {\forall x . P}
 \; {\forall_i}$
 & $\dfrac{\forall x . P}
-  {P [t/x]} \; {\forall e} \;$ {\small{$\begin{array}{c}\textit{where $t$ is
-                                  free when} \\
-\textit{replacing $x$ in $P$}\end{array}$}} \\[1.25em] \hline
+  {P [t/x]} \; {\forall e} \;$ \\[1.25em] \hline
 $\exists$ 
 &
 \rule{0cm}{0.75cm}
-$\dfrac{P[t/x]}{\exists x . P} \;\exists_i$ {\small{$\begin{array}{c}\textit{where $t$ is
-                                  free when} \\
-\textit{replacing $x$ in $P$}\end{array}$}}
+$\dfrac{P[t/x]}{\exists x . P} \;\exists_i$
 &
 \rule{0cm}{2.25cm}
 $\setlength{\arraycolsep}{0.2em}
@@ -599,12 +655,16 @@ $\setlength{\arraycolsep}{0.2em}
 \fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & P[x_0/x]
  \\ &  \vdots \\ & R \end{array}$}}{R}\;\exists_e$
 \end{tabular}
+\\[2em]
+In all of the rules we have the requirement that the substitution
+is \emph{capture avoiding}, \eg{}, $x_0$ is free for $x$ in $P$ and
+$t$ is free for $x$ in $P$ in the relevant places.
 
 \section{Exercises}
 
 \forallAndElim*
-\allExists*
 \existsOr*
 \duality*
+\dualityTwo*
 
 \end{document}
