@@ -239,7 +239,7 @@ Universal quantification essentially generalises conjunction.  That
 is, if the objects in the universe over which we are quantifying are
 $a_0, a_1, \ldots a_n \in \mathcal{U}$ then universal quantification
 of $x$ over a formula $P$ is equivalent to taking the repeated
-conjunction of $P$ substituting each object for $x$, \ie{}
+conjunction of $P$, substituting each object for $x$, \ie{}
 %
 \begin{equation}
 \forall x . P = P[a_0/x] \wedge P[a_1/x] \wedge
@@ -288,7 +288,7 @@ we define universal quantification elimination, with the rule:
 %
 The intuition is that we eliminate $\forall$ by replacing the bound
 variable $x$ with an arbitrary variable $t$ which represents
-\emph{any} of things ranged over by the $\forall$.
+\emph{any} of things ranged over by the $\forall$ quantified variable.
 The side condition requires that the variable $t$ is a free variable
  when it is substituted for $x$ in $P$-- that is the meaning of the
  phrase \emph{where $t$ is free for $x$ in $P$}. We'll see an example of
@@ -304,14 +304,15 @@ In a natural deduction proof, we can eliminate the $\forall$ with
 $t = x_0$ (some fresh variable) to get $\exists y . (x_0 < y)$. We
 know nothing about $x_0$, it is just a variable representing any
 object (integer) in the set of things ranged over by the $\forall$.
-If we instead performed the elimination with the substitution where
+If we performed the elimination with the substitution where
 $t = y$ (violating the side condition) then we would get
 $\exists y . (y < y)$ which is no longer true: it says that there
 exists a number which is greater than itself. The problem is that by
 performing the substitution $(\exists y. (x < y))[y/x]$ we have
 ``captured'' the binding of $y$ with the $y$ we are substituting in,
 which then changed the meaning of the formula. This is why we have the
-side condition.
+side condition which prevents us substituting a variable which
+gets inadvertently bound.
 
 \begin{example}
   Prove $\forall x . (\rel{P}(x) \rightarrow Q) \vdash \rel{P}(t)
@@ -341,8 +342,8 @@ introduction for universal quantification if we had $P[t/x]$ for
 all abstract objects $t$, but this is usually not possible (the universe
 could be infinite). Instead, it suffices to know that $P[x_0/x]$ is true
 for an arbitrary variable $x_0$ about which we know nothing else and
-which is no long used once we bind it by the universal
-quantifier; it is then ``out of scope''.
+which is no longer used once we bind it with the universal
+quantifier (it is then out of scope).
 
 We denote the scope of such arbitrary variables using boxes like we
 used for subproofs previously, but the boxes are no longer subproofs. The rule for
