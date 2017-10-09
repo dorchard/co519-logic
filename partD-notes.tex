@@ -109,11 +109,11 @@ example, penguins then both \eqref{eq:nonflying1} and
 We can prove that these two statements (\eqref{eq:nonflying1} and
 \eqref{eq:nonflying2}) are equivalent in predicate logic via two
 proofs, one for:
-$$\neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x)) \vdash
+$$\neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x)) \; \vdash \;
 \exists x . \rel{B}(x) \wedge \neg \rel{F}(x)$$
 and one for:
 $$
-\exists x . \rel{B}(x) \wedge \neg \rel{F}(x) \vdash
+\exists x . \rel{B}(x) \wedge \neg \rel{F}(x) \; \vdash \;
 \neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x))
 $$
 We will do this later once we have explained more about the
@@ -206,7 +206,7 @@ From now on we will use a more compact syntax for substitution
 written $$P[t/x]$$ which means: \emph{replace variable $x$
 with the variable $t$ in formula $P$} (akin to $\textit{replace}(x, t,
 P)$). We will only replace variables with other variables.
-Note however that in predicate logic we have to careful
+Note however that in predicate logic we have to be careful
 about free and bound variables. Thus, $P[t/x]$ means replace any
 \emph{free} occurrences of $x$ in $P$ with object $t$. (One way to remember
 this notation is to observe that the letters used in the general
@@ -226,14 +226,14 @@ affects the free $x$ as such:
 \end{equation*}
 %
 In general, it is best practice to give bound variables a different name
-to all other free and bound names in a formula, in order to avoid confusion.
+to all other free and bound names in a formula in order to avoid confusion.
 
 \subsection{Natural deduction rules}
 
-As with propositional logic, we will have elimination and introduction
-rules for the new logical operators in first-order logic.
+As with propositional logic, there are elimination and introduction
+rules for the additional logical operators of first-order logic.
 
-\subsubsection{Universal quantification (\emph{for all})}
+\subsubsection{Universal quantification $\forall$ (\emph{for all})}
 
 Universal quantification essentially generalises conjunction.  That
 is, if the objects in the universe over which we are quantifying are
@@ -247,7 +247,9 @@ conjunction of $P$, substituting each object for $x$, \ie{}
 \label{eq:forall-meaning}
 \end{equation}
 %
-(Note that there may be an infinite number of such objects).
+Thus, $\forall x . P$ means that we want $P$ to be true for
+all the objects in the universe being used.
+Note that there may be an infinite number of such objects.
 
 The notion of universal quantification as generalised conjunction
 helps us to understand the elimination and introduction rules for universal
@@ -277,7 +279,7 @@ would give us the inference:
 This is essentially how we do universal quantification elimination.
 Universal quantification differs to conjunction in that each one of the things
 being ``conjuncted'' together is of the same form: they are all $P$
-with some variable $x$ replaced by an atom. Therefore, eliminations
+with some variable $x$ replaced by an object. Therefore, eliminations
 always give us some formula $P$ but with $x$ replaced by different objects. This is how
 we define universal quantification elimination, with the rule:
 %
@@ -310,7 +312,7 @@ $\exists y . (y < y)$ which is no longer true: it says that there
 exists a number which is greater than itself. The problem is that by
 performing the substitution $(\exists y. (x < y))[y/x]$ we have
 ``captured'' the binding of $y$ with the $y$ we are substituting in,
-which then changed the meaning of the formula. This is why we have the
+which then changes the meaning of the formula. This is why we have the
 side condition which prevents us substituting a variable which
 gets inadvertently bound.
 
@@ -339,15 +341,17 @@ Following equation~\eqref{eq:forall-meaning} again, universal
 quantification is equivalent to a large conjunction, but every formula
 being conjuncted is of the form $P[t/x]$. We could therefore define an
 introduction for universal quantification if we had $P[t/x]$ for
-all abstract objects $t$, but this is usually not possible (the universe
-could be infinite). Instead, it suffices to know that $P[x_0/x]$ is true
+all objects $t$ in the universe being used, 
+but this is usually not possible (the universe
+could be infinite, \eg{}, integers). 
+Instead, it suffices to know that $P[x_0/x]$ is true
 for an arbitrary variable $x_0$ about which we know nothing else and
 which is no longer used once we bind it with the universal
 quantifier (it is then out of scope).
 
-We denote the scope of such arbitrary variables using boxes like we
-used for subproofs previously, but the boxes are no longer subproofs. The rule for
-introduction is then:
+We denote the scope of such arbitrary variables using boxes like those
+used previously for subproofs, but these boxes are not subproofs. The rule for
+introduction of universal quantifiers is:
 %
 \begin{equation*}
 \setlength{\arraycolsep}{0.2em}
@@ -358,12 +362,17 @@ introduction is then:
 \textit{where $x_0$ is free for $x$ in $P$}
 \end{equation*}
 %
-This says that there is a \emph{scope} (not subproof) that has a
+This says that there is a \emph{scope} (not a subproof) that has a
 variable $x_0$ (marked in blue in the top corner) which appears in a
-proof concluding with $P[x_0/x]$. If this variable $x_0$ is only used
-in this scope, then we can leave the scope and conclude $\forall x
-. P$. Thus, the proof inside the scope is of $P$ but where $x$ is replaced by
-$x_0$. Note that there is the same side condition as in $\forall_e$.
+proof concluding with $P[x_0/x]$. We can distinguish subproofs from
+scope boxes by the fact that scope boxes declare their variable in the
+top-left, and by the fact that they will not start with any
+assumptions.
+
+If this variable $x_0$ above is only used in this scope, then we can leave
+the scope and conclude $\forall x . P$. Thus, the proof inside the
+scope is of $P$ but where $x$ is replaced by $x_0$. Note that there is
+the same side condition as in $\forall_e$.
 
 Here's an example to make this idea more clear:
 %
@@ -401,7 +410,7 @@ the ``for all'' on line 1 is eliminated.
 
 When we eliminate $\forall y . \rel{P}(y)$ on line 4 we use the same
 $x_0$. Since the quantification is universal we can pick the same
-object $x_0$ to eliminate line 4 that we ``picked'' for the
+object $x_0$ to eliminate line 4 that was given to us by the
 elimination on line 3. Line 5 uses modus ponens to get $\rel{Q}(x_0)$
 which gives us the formula on which we apply $\forall
 i$.
@@ -415,9 +424,17 @@ objects $z$ we have $\rel{Q}(z)$, expressed as $\forall z
 . \rel{Q}(z)$.
 
 \begin{restatable}{exc}{forallAndElim}
-  Prove $\forall x . (\rel{P}(x) \wedge \rel{Q}(x)) \vdash \forall x
+  Prove $\forall x . \rel{P}(x) \wedge \rel{Q}(x) \vdash \forall x
   . \rel{P}(x)$ is valid.
 \end{restatable}
+%
+\begin{remark}
+Recall that quantification binds more loosely than 
+any of the other logical operators, so $\forall x . \rel{P}(x)
+\wedge \rel{Q}(x)$ is equivalent to $\forall x . (\rel{P}(x) \wedge
+\rel{Q}(x))$ rather than $(\forall x . \rel{P} (x)) \rightarrow
+\rel{Q}(x)$.
+\end{remark}
 
 \subsubsection{Existential quantification (\emph{there exists})}
 
@@ -516,11 +533,28 @@ single part of the disjunction in~\eqref{eq:exists-meaning} by using
 an arbitrary variable $x_0$ that we know nothing about to represent
 each atom in the universe. Similarly to disjunction elimination, if we
 can then conclude $R$ (but without using $x_0$ since the scope box
-ends here) then we can conclude $R$ overall. Note that this box is
-both a subproof \emph{and} a variable scope for $x_0$.
+ends here) then we can conclude $R$ overall. Importantly, this box is
+both a subproof \emph{and} a variable scope for $x_0$;  it introduces
+a variable in scope, but also has assumptions.
+
+\begin{example}
+Prove $\exists x . \rel{P}(x) \wedge \rel{Q}(x)
+\vdash \exists x . \rel{P}(x)$ is valid.
+
+\begin{logicproof}{2}
+\exists x . \rel{P}(x) \wedge \rel{Q}(x)  & premise \\
+\begin{subproof}
+\hspace{-0.5em}\textcolor{blue}{x_0}
+\;\; \rel{P}(x_0) \wedge \rel{Q}(x_0) & assumption \\
+\quad\, \rel{P}(x_0) & $\wedge_{e1}$ 2 \\
+\quad\, \exists y  . \rel{P}(y) & $\exists_i$ 3
+\end{subproof}
+\exists y . \rel{P}(y) & $\exists_e$ 1, 2-4 $\qquad \Box$
+\end{logicproof}
+\end{example}
 
 \begin{restatable}{exc}{existsOr}
-Prove $\exists x . (P \vee Q) \vdash \exists x . P \vee \exists x . Q$ 
+Prove $\exists x . P \vee Q \vdash \exists x . P \vee \exists x . Q$ 
 is valid.
 \end{restatable}
 
@@ -581,12 +615,17 @@ look at a few here.
   Prove $\neg \forall x . P \vdash \exists x . \neg P$ is valid.
 \end{restatable}
 %
-The above example and exercise together give us the following equality:
+\noindent
+The above example and exercise together give us the following equality
+on first-order formula:
 %
 \begin{align}
 \label{eq:quantifier-dual}
  \neg \forall x . P & \equiv \exists x . \neg P
 \end{align}
+This is known as a \emph{duality} property. There are two duality
+properties, and the second can be derived from the above using 
+double negation elimination:
 %
 \begin{restatable}{exc}{dualityTwo}
   Prove $\neg \exists x . P \equiv \forall x . \neg P$ is valid using
@@ -596,13 +635,12 @@ The above example and exercise together give us the following equality:
 \end{restatable}
 %
 \begin{example}
-  We can now go back to the example from the introduction that
+  We can now go back to the example from the introduction: that
   \emph{not all birds can fly}. We formulated this sentence as both
   $\neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x))$ and
   $\exists x . \rel{B}(x) \wedge \neg \rel{F}(x)$.
-
-  We can show these two statements are equivalent by using the above
-  results:
+  We can show these two statements are equivalent by algebraic
+  reasoning using the above results:
 %
 \begin{align*}
 \begin{array}{rll}
@@ -615,7 +653,7 @@ The above example and exercise together give us the following equality:
                 \rel{F}(x)
 & \{\textit{De Morgan's}\} \\[0.4em]
   \equiv \;\; & \exists x . \,\rel{B}(x) \wedge \neg \rel{F}(x) &
-\{\textit{Double negation elim}\} \qquad\qquad \Box
+\{\textit{Double negation elim.}\} \qquad\qquad \Box
 \end{array}
 \end{align*}
 \end{example}
@@ -626,7 +664,7 @@ The above example and exercise together give us the following equality:
 \section{Collected rules for first-order logic}
 
 \noindent
-The natural deduction rules for first-order logic including
+The natural deduction rules for first-order logic include
 all those of propositional logic plus the following: \\
 
 \begin{center}
