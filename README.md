@@ -11,5 +11,6 @@ If you spot any errors, please fork and submit a pull request, or add an 'Issue'
 Thanks to the following people for contributing fixes:
 * Simon Cooksey
 * Vilem-Benjamin Liepelt
+* Peter Lloyd
 * Ben Orchard
 * Joanna Sharrad
