@@ -4,7 +4,10 @@
 	(previously: Prove P -> not P is not valid)
 	The preceding remark also contained a mistake.
 	I have fixed the preceding remark, added a different Exercise 1.7,
-	and explained the previous exercise in a remark after the new Exercise 1.7.
+	and explained the previous exercise in a remark after the new
+	Exercise 1.7.
+
+	- Minor typo fixed at the end of the appendix in rule bot_e
 
 # Afternoon of Septemer 28, 2017
 
