@@ -32,7 +32,7 @@
 \author{Dominic Orchard \\
   {\small{School of Computing, University of Kent}}}
 
-\date{Last updated on Afternoon of \today}
+\date{Last updated on \today}
 
 \begin{document}
 \maketitle
@@ -762,14 +762,23 @@ natural deduction reasoning contains no admissible rules.
 \end{remark}
 
 \begin{remark}
-  If we want to prove a formula $P$ is not valid then we can
-  instead prove $\neg P$, which is equivalent to proving it is unsatisfiable.
+  If we want to prove a formula $P$ is unsatisfiable then we can
+  instead prove that $\neg P$ is valid (always true), hence proving
+  that $P$ is unsatisfiable (always false).
 \end{remark}
 
 \begin{restatable}{exc}{disproveEx}
-  (tricky) Disprove $P \rightarrow \neg P$ (prove it is
-  not valid).
- \end{restatable}
+Prove that $P \wedge \neg (P \vee Q)$ is unsatisfiable.
+\end{restatable}
+
+\begin{remark}
+  Some formulae are not valid, \eg{}, $P \rightarrow \neg P$, which
+  can be seen from drawing its true table. However, this formula is
+  \emph{satisfiable}, if $P$ is false then $P \rightarrow \neg P$ is
+  true. Natural deduction does not help us to prove
+  satisfiability. Part B will look at algorithmic approaches to
+  deciding satisfiability.
+\end{remark}
 
 \subsubsection{Double negation}
 
