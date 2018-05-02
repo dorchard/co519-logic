@@ -1,3 +1,11 @@
+# May 2, 2018
+
+	- Previously Exercise 1.7 could not be done using natural deduction
+	(previously: Prove P -> not P is not valid)
+	The preceding remark also contained a mistake.
+	I have fixed the preceding remark, added a different Exercise 1.7,
+	and explained the previous exercise in a remark after the new Exercise 1.7.
+
 # Afternoon of Septemer 28, 2017
 
 	- Fixed incorrect labels in Example 2
