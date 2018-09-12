@@ -1,53 +1,8 @@
-\documentclass{article}
-
-\usepackage{amsmath}
-\usepackage{amsthm}
-\usepackage{amssymb}
-\usepackage[table,x11names]{xcolor}
-\usepackage{logicproof}
-\usepackage{url}
-\usepackage{fancyhdr}
-\usepackage{enumitem}
-\usepackage{longtable}
-
-% For restatables
-\usepackage{thmtools}
-\usepackage{thm-restate}
-\usepackage[hidelinks]{hyperref}
-\usepackage{cleveref}
-
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}
-\newtheorem{lemma}{Lemma}
-\newtheorem{example}{Example}
-\newtheorem*{remark}{Remark}
-\declaretheorem[name=Exercise,numberwithin=section]{exc}
-
-% Writing
-\newcommand{\ie}{\emph{i.e.}}
-\newcommand{\eg}{\emph{e.g.}}
-
 % \newcommand{\subst}[3]{#3[#1/#2]}
 \newcommand{\subst}[3]{\textit{replace}(#2, #1, #3)}
 
 \newcommand{\highlight}[1]{%
   \colorbox{yellow!50}{$\displaystyle#1$}}
-
-\title{\vspace{-3em}CO519 - Theory of Computing - Logic \\
-  {\large{Part C : Satisfiability for propositional logic}}}
-\author{Dominic Orchard \\
-  {\small{School of Computing, University of Kent}}}
-
-\date{Last updated on \today}
-
-\begin{document}
-\maketitle
-
-\noindent
-If you spot any errors or have suggested edits, the notes are written
-in LaTeX and are available on GitHub at
-\url{http://github.com/dorchard/co519-logic}. Please fork and submit a
-pull request with any suggested changes.
 
 \section{Satisfiable formula}
 
@@ -197,10 +152,10 @@ or false). %We can think of the input to DPLL as being a list of
 %empty then we are done and the formula is satisfied.
 
 The first step is a simplification step using properties
-of propositional logic and the structure of CNF 
+of propositional logic and the structure of CNF
 formula. The next two steps provide simplification and can give us
 some satisfying assignments.  The last step splits the problem into
-two by picking a variable and repeating the DPLL procedure with that 
+two by picking a variable and repeating the DPLL procedure with that
 variable assigned to be true in one branch (written above as $\{v = \top\}$)
 and repeating DPLL with that variable assigned to false ($\{v = \bot\}$).
 
@@ -218,7 +173,7 @@ Such a formula can be simplified by completely removing the
 highlighted clause. This is because a disjunction of a formula with
 its negation is a tautology (always true): $P \vee \neg P = \top$.
 Furthermore, since disjunction of anything with truth is equivalent to truth:
-$P \vee \top = \top$ and conjunction $P \wedge \top = \top$, we can 
+$P \vee \top = \top$ and conjunction $P \wedge \top = \top$, we can
 completely filter out clauses that have a tautology, \ie{}
 %
 \begin{equation*}
@@ -322,7 +277,7 @@ In DPLL, we need only apply simplifications that involve disjunction
 or conjunction with $\top$ or $\vee$. It is straightforward to build
 this into an implementation so that these steps are implicit and
 automatic: essentially the ``replacement'' can remove entire clauses when
-we know we are making a literal true, or remove literals when they 
+we know we are making a literal true, or remove literals when they
 are false.
 
 Performing just one step of unit propagation has greatly simplified
@@ -337,7 +292,7 @@ $\{x = \top, y = \bot\}$ just by applying unit propagation twice.
 \begin{restatable}{exc}{unitFoo}
 Convince yourself that $\{x = \top, y = \bot\}$ is a satisfying
 assignment for $(\neg x \vee \neg y) \wedge (x)
-\wedge (y \vee x)$ by substituting the variables 
+\wedge (y \vee x)$ by substituting the variables
 for their assignment and simplifying.
 \end{restatable}
 
@@ -387,7 +342,7 @@ Pure literal elimination therefore has the two dual rules:
   \\[0.25em]
 \textit{or} & P \wedge (\ldots \vee \highlight{x} \vee \ldots) \wedge Q
   & \longrightarrow & \subst{\bot}{x}{P} \wedge \subst{\bot}{x}{Q}
-& \quad \{x = \bot\}                     
+& \quad \{x = \bot\}
 \end{array}
 \end{align*}
 %
@@ -395,7 +350,7 @@ Pure literal elimination therefore has the two dual rules:
 The following formula has pure literal $x$:
 %
 \begin{equation*}
-(\highlight{x} \vee y \vee \neg z) \wedge (\neg y \vee x) 
+(\highlight{x} \vee y \vee \neg z) \wedge (\neg y \vee x)
 \wedge (y \vee z)
 \end{equation*}
 %
@@ -433,9 +388,9 @@ Apply pure literal elimination to the formula:
 
 The previous steps have applied the rules of logic, and the shape
 of CNF formula, to make simplifications and assignments. Once we've
-done all that we can with those steps, the last step falls back to 
+done all that we can with those steps, the last step falls back to
 a ``brute force'' approach. We pick a variable, and ``split it'', that is,
-we assign it to be true and apply DPLL on the result and separately 
+we assign it to be true and apply DPLL on the result and separately
 assign it to false and apply DPLL on the result. This results
 in us running two DPLL separate procedures separately from this
 point forwards.
@@ -446,7 +401,7 @@ DPLL algorithm under two new assignments:
 \begin{align*}
              & \textsf{DPLL}(\subst{\top}{x}{P} \qquad\qquad\qquad \{x =
                \top\}  \\
-\textit{and} \qquad &  \textsf{DPLL}(\subst{\bot}{x}{P} \qquad\qquad\qquad \{x = \bot\} 
+\textit{and} \qquad &  \textsf{DPLL}(\subst{\bot}{x}{P} \qquad\qquad\qquad \{x = \bot\}
 \end{align*}
 %
 These recursive calls will be separate, producing
@@ -462,7 +417,7 @@ The following formula has no tautologies, units, or pure literals
 %
 The splitting step chooses any variable in the formula, let's say
 $z$, and splits the DPLL process.
-Let's follow the branch with the assignment $\{z = \top\}$, 
+Let's follow the branch with the assignment $\{z = \top\}$,
 which is then propagated to the rest of the formula by replacement:
 %%
 \begin{align*}
@@ -509,7 +464,7 @@ The following gives an example putting the steps together.
   %
   $$(\neg x \rightarrow y) \wedge x$$
   %
-  Is it satisfiable? Before we apply DPLL we first have to 
+  Is it satisfiable? Before we apply DPLL we first have to
 convert it to CNF:
   %
    \begin{align*}
@@ -552,7 +507,7 @@ in CNF):
 \end{restatable}
 
 \begin{example}
-The following is the proposition $\neg (\textit{model} 
+The following is the proposition $\neg (\textit{model}
 \rightarrow \textit{specification})$ for the traffic light
 example shown in Part B (see lectures), in CNF:
 %
@@ -564,7 +519,7 @@ example shown in Part B (see lectures), in CNF:
 \end{align*}
 %
 We'll apply DPLL to it here. Due to the large size of the formula,
-I'll use a more free-form style rather than the tabulated form 
+I'll use a more free-form style rather than the tabulated form
 used above.
 
 \textit{Step 1: Tautology elimination} - There are two immediate
@@ -645,7 +600,7 @@ $\begin{array}{ll}
 & {(\neg g')} \,\wedge\, (r') \,\wedge\, \\
 & (\neg r' \vee g') \,\wedge\, (\neg g' \vee r')
  \end{array}$ \\[2em]
-  \textit{1. Unit propagation:} on the unit $\neg r'$ & 
+  \textit{1. Unit propagation:} on the unit $\neg r'$ &
   \textit{1. Unit propagation:} on the unit $\neg g'$ \\
 $\begin{array}{ll}
 & \highlight{(\neg r')} \,\wedge\, (\neg g) \,\wedge\, \\
@@ -685,7 +640,3 @@ This section collects the exercises given in these notes.
 \pureLiteral*
 \split*
 \full*
-
-
-
-\end{document}

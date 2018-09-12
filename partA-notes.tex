@@ -1,60 +1,3 @@
-\documentclass{article}
-
-\usepackage{amsmath}
-\usepackage{amsthm}
-\usepackage{amssymb}
-\usepackage[table,x11names]{xcolor}
-\usepackage{logicproof}
-\usepackage{url}
-\usepackage{fancyhdr}
-\usepackage{enumitem}
-
-% For restatables
-\usepackage{thmtools}
-\usepackage{thm-restate}
-\usepackage[hidelinks]{hyperref}
-\usepackage{cleveref}
-
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}
-\newtheorem{lemma}{Lemma}
-\newtheorem{example}{Example}
-\newtheorem*{remark}{Remark}
-\declaretheorem[name=Exercise,numberwithin=section]{exc}
-
-% Writing
-\newcommand{\ie}{\emph{i.e.}}
-\newcommand{\eg}{\emph{e.g.}}
-
-\title{\vspace{-3em}CO519 - Theory of Computing - Logic \\
-  {\large{Part A : Propositional logic and its natural deduction
-      proofs}}}
-\author{Dominic Orchard \\
-  {\small{School of Computing, University of Kent}}}
-
-\date{Last updated on \today}
-
-\begin{document}
-\maketitle
-
-These are the accompanying notes for CO519 (the logic part). They provide
-a counterpart to the lectures, but do not replace them; the lectures
-will provide content, detail, and discussion not given in these notes.
-
-These notes also provide a counterpart to the course textbook,
-\emph{Logic in Computer Science} (by Huth and Ryan) which I
-recommend. We will only cover material from the first two chapters due
-to the short length of this part of the course. I recommend reading
-these chapters, but the assessable material for this course is
-covered in lectures and these notes (excluding the appendix); the
-textbook contains extra detail which is not assessed, but
-worth learning anyway.
-
-If you spot any errors or have suggested edits, the notes are written
-in LaTeX and are available on GitHub at
-\url{http://github.com/dorchard/co519-logic}. Please fork and submit a
-pull request with any suggested changes.
-
 \section{Natural deduction for propositional logic}
 
 Truth tables are a handy way to give meaning to logical operators and
@@ -65,20 +8,21 @@ formulas. For example, the truth table for
 $P \vee (Q \wedge R) \rightarrow (P \vee Q) \wedge (P \vee R)$ has
 $2^3 = 8$ rows as there are three contingent formulas: $P$, $Q$, and
 $R$ whose truth or falsehood determines the truth or falsehood of the
-overall formula. Calculating even this modest truth table takes some
-significant calculation to enumerate all possibilities.
+overall formula. Enumerating all possibilities takes time even for
+this modest truth table, and is error prone (humans are
+bad at repetitive detailed tasks).
 
 Instead, logicians have constructed formal languages (calculi) for
 building complex chains of reasoning (proofs) in a more
 compact form. In this course, we use the \emph{natural deduction} calculus
 due to 20$^{th}$ century logicians such as Gerhard Gentzen
-(who formulated natural deduction in 1934) and Dag Pravitz who
-promoted this style in the 1960s (and converted
+(who formulated natural deduction in 1934) and Dag Pravitz (who
+promoted this style in the 1960s and converted
 various other results of Gentzen into the natural deduction style).
 
 Natural deduction provides a system of \emph{inference rules} which
 explain how to construct and deconstruct formulas to build
-a logical argument. These rules represent the derivation of one formula
+a logical argument. These rules represent the derivation of a formula
 (the \emph{conclusion}) from several other formulas that are assumed or known to be true
 (the \emph{premises}) via the notation:
 %
@@ -88,11 +32,11 @@ a logical argument. These rules represent the derivation of one formula
     \; {(\textit{label})}
 \end{equation*}
 %
-Each logical operator (like conjunction $\wedge$ and
-disjunction $\vee$), will have one or more rules for \emph{introducing}
-that operator (deriving a conclusion using that operator) and one or
-more rules for \emph{eliminating} that operator (deriving a conclusion from a formula
-using that operator). These rules can be stacked together to form a
+Each logical operator (like conjunction $\wedge$ (``and'') and
+disjunction $\vee$ (``or'')), will have one or more rules for \emph{introducing}
+that operator (deriving a conclusion formula which uses that operator) and one or
+more rules for \emph{eliminating} that operator (deriving a conclusion
+from a premise formula that uses that operator). These rules can be stacked together to form a
 logical argument: \emph{a proof}, which looks like the following:
 
 \begin{equation*}
@@ -112,7 +56,7 @@ following:
 %
 But this isn't always the most helpful format to derive the
 proofs. Instead, we'll use a special ``box''-like notation called
-Fitch-style which you can find in the recommend reading textbook
+Fitch-style which you can find in the recommend textbook
 \emph{Logic in Computer Science} by Huth and Ryan.
 We will still apply the rules of natural deduction, but the Fitch-style
 gives us a nice way to layout the proof as we are deriving it.
@@ -120,7 +64,7 @@ gives us a nice way to layout the proof as we are deriving it.
 We will step through the natural deduction rules for the core logical
 operators: $\wedge$ (conjunction/and), $\vee$ (disjunction/or),
 $\rightarrow$ (implication/if-then), $\neg$ (negation), as well as
-truth $\top$ and falsehood/falsity, which is often written in
+truth $\top$ and falsehood/falsity which is often written in
 propositional logic as $\bot$ (pronounced
 ``bottom'').\footnote{\emph{Bottom} $\bot$ is often used in maths and
   computer science to represent undefined values or behaviour. In
@@ -137,18 +81,21 @@ We will consider three properties that a logical formula may have:
 
 \begin{itemize}[leftmargin=1.5em]
   \item \emph{valid}: a formula which is always true (also
-  called a \emph{tautology}). In this part of the course, we will
-  mostly prove the validity of formulas. For example, $P \wedge Q
+  called a \emph{tautology}). We will
+  mostly prove the validity of formulas in \emph{Part A}. For example, $P \wedge Q
   \rightarrow Q \wedge P$ is true no matter the
-  truth/falsehood of $P$ and $Q$. This will be the main property we
-  consider in \emph{Part A} (these notes).
+  truth/falsehood of $P$ and $Q$.
 %
   \item \emph{satisfiable}: a formula which is true for
   \emph{some} assignments of truth/falsehood to the atoms/variables it contains, \eg{},
   $a \wedge b$ is satisfiable, and the \emph{satisfying assignment} is that
-  $a \mapsto \mathsf{T}$ and $b \mapsto \mathsf{T}$. A valid formula
-  is trivially satisfiable (true for all assignments).
-%
+  $a \mapsto \top$ and $b \mapsto \top$ (both must be true). A valid formula
+  is trivially satisfiable (true for any and all assignments)
+
+  Satisfiability, and an algorithm for finding a satisfying assignment,
+  will be covered in \emph{Part C}.
+  %
+
   \item \emph{unsatisfiable}: a formula which is always false (all
   rows in the truth table are false) regardless of assignments to the
   variables/atom, \eg{} $P \wedge \neg (P \vee Q)$. We can
@@ -173,12 +120,11 @@ premises to the left are sometimes call the \emph{context} of assumed
 formulas. This is a compact representation of a formula $Q$ along with
 any assumptions used to deduce it.
 
-We say this sequent is \emph{valid} if there is a proof that can be
-constructed by deriving the conclusion from the premises. For example,
+We say a sequent is \emph{valid} if there is a proof that derives the conclusion from the premises. For example,
 $P \wedge Q \vdash Q \wedge P$ is valid, meaning from $P \wedge Q$
-there is a proof of $Q \wedge P$. If we wish to explain that
-a sequent is invalid we can write $P \not\vdash Q$ meaning, it
-is not valid that $P$ entails $Q$.
+there is a proof of $Q \wedge P$. %If we wish to explain that
+%a sequent is invalid we can write $P \not\vdash Q$ meaning, it
+%is not valid that $P$ entails $Q$.
 
 When there are no premises, we often drop the $\vdash$, \ie{},
 writing something like ``\emph{$(P \wedge Q) \rightarrow P$ is valid}''
@@ -209,14 +155,14 @@ following natural deduction rule for \emph{introducing} conjunction:
 \end{align*}
 %
 The label is subscripted with `i' for introduction.
-That is, given two premises; $P$ is true and $Q$ is true, then
+That is, given two premises that $P$ is true and $Q$ is true, then
 $P \wedge Q$ is true. There is just one introduction rule,
 corresponding to the fact that there is only one ``true'' row
-for $P \wedge Q$ in the truth table (highlighted in yellow above).
+for $P \wedge Q$ in the truth table (highlighted above).
 
-Note that the $P$ and $Q$ are place-holders here for \emph{any
-  propositional formula} so we could instantiate the rule, \eg{},
-to something like this if we needed it:
+The letters $P$ and $Q$ are place-holders here for \emph{any
+  propositional formula} so we could instantiate the rule
+to something like the following if we needed it:
 %
 \begin{equation*}
 \dfrac{(P \vee R \rightarrow Q) \quad S}
@@ -244,7 +190,8 @@ into one rule, but natural deduction instead has single
 conclusions. There are different proof systems which allow
 multiple conclusions (like the \emph{sequent calculus}) but we won't cover that here).
 
-Let's write a proof with just these rules by stacking them together.
+Let's write a proof with just these rules by stacking them together
+into a \emph{proof tree}.
 
 \begin{example}
 \label{exm:assoc-conj}
@@ -282,18 +229,19 @@ The following exercise is to prove the converse of the above property.
 %
 This proof, and the one above, together imply that conjunction
 $\wedge$ is \emph{associative}, \ie{},
-$P \wedge (Q \wedge R) = (P \wedge Q) \wedge R$.
+$P \wedge (Q \wedge R) = (P \wedge Q) \wedge R$. We come back
+to such equations on formula in Section~\ref{sec:algebraic}.
 
 \paragraph{Fitch-style proof}
 So far we have constructed proofs by stacking natural
 deduction inference rules on top of each other. This leads us towards a
 \emph{bottom-up} proof strategy starting with the goal and working up
-towards the premises. In this course we are going to mostly use a
+towards the premises. In this course we are going to mostly use a more
 \emph{top-down} approach called ``Fitch-style''. This style begins
 with assumptions, numbers each line of a proof, and uses indentation
 and boxes to represent sub-proofs and the scope of their assumptions.
 
-The above proof is rewritten in the following way in Fitch notation:
+The previous proof tree is rewritten in the following way in Fitch notation:
 %
   \begin{logicproof}{2}
     P \wedge (Q \wedge R) & premise \\
@@ -311,7 +259,7 @@ The above proof is rewritten in the following way in Fitch notation:
   applied conjunction elimination $\wedge_{e1}$ to line $1$ to get the
   formula $P$. Or for example, on line 6, conjunction introduction is
   applied to lines 2 and 4 to get $P \wedge Q$.  We finish on line
-  7 with our goal, which is marked with $\Box$ which a way of
+  7 with our goal, which is marked with $\Box$ which is a way of
   saying the proof is finished and we've reached our goal
   (the symbol means $Q.E.D$ which is an abbreviation of
   \emph{quod erat demonstrandum}, Latin for ``what was to be
@@ -338,9 +286,10 @@ from the premises) or bottom-up approach (starting
 from the goal/conclusion) can be easier. In practice, if you are
 stuck it can help to start \emph{at both ends} and work towards the
 middle. You can do this by putting the goal near a bottom of a piece
-of paper, giving enough space to meet in the middle.
+of paper, giving enough space to meet in the middle. You can sort out
+the numbering afterwards.
 
-It doesn't matter if things get messy-- the primary goal is to reach a
+It doesn't matter if things get messy--- the primary goal is to reach a
 proof. You can rewrite it afterwards to be more clear; you should
 do so in your class work and assessments.
 \end{remark}
@@ -368,7 +317,7 @@ Recall that $P \rightarrow Q = \neg P \vee Q$. Show this is true
 by comparing the truth tables for each side of this equation.
 \end{restatable}
 
-As with conjunction, we'll consider the two style of
+As with conjunction, we'll consider the two styles of
 rule: elimination and introduction.
 The elimination rule for implication in natural deduction is:
 \begin{align*}
@@ -412,7 +361,7 @@ are of the form:
 \begin{remark} (\textbf{important})
 %
   When we start a subproof box, the first formula is always an
-  assumption. When the box is closed, the assumption does not go away
+  assumption, which we are free to choose. When the box is closed, the assumption does not go away
   but becomes the premise of the implication when applying the
   $\rightarrow_i$ rule.
 
@@ -423,7 +372,7 @@ are of the form:
   but $P$ is not one of $Q$'s assumptions.  Then
   instead we will have proved $P \rightarrow Q$ rather than $Q$.  This
   is something to keep in mind when writing complex
-  proofs. The proof system of natural deduction allows us to keep
+  proofs by hand in an informal way. The proof system of natural deduction allows us to keep
   track of our assumptions and their eventual inclusion in the final
   result.
 
@@ -434,13 +383,12 @@ are of the form:
 \end{remark}
 %
 There is an alternate presentation of natural deduction called
-\emph{sequent-style natural deduction}, which is described in
-Appendix~\ref{app:sequent}, where the inference rules are expressed in
+\emph{sequent-style natural deduction} (described in the
+appendix for this part) where the inference rules are expressed in
 terms of sequents $P_1, \ldots, P_n \vdash Q$. This won't be assessed
 on the course, but is worth looking at if you want to read more widely
 on logic. Another proof calculus (also due to Gentzen) is the
-\emph{sequent calculus} which won't be described here, but there is
-plenty of information online.
+\emph{sequent calculus} which you can read about elsewhere.
 
  \begin{example}
    The following simple formula about conjunction and implication is
@@ -467,7 +415,9 @@ that given $P \wedge (Q \wedge R)$ then $(P \wedge Q) \wedge
 R$. We can turn this into an implication
 $P \wedge (Q \wedge R) \rightarrow (P \wedge Q) \wedge R$
 simply by using implication introduction on the original
-proof.
+proof. Indeed, we have a general meta-theorem of propositional
+logic, that if $P \vdash Q$ then $\vdash P \rightarrow Q$, and
+vice versa.
 \end{remark}
 
 \begin{example}
@@ -505,7 +455,7 @@ Here is its proof:
 %
 Here we have an example of multiple nesting of subproofs.
 (Tip: I proved this by working top-down and bottom-up at the same
-time, which was made easier by typing the proof).
+time).
 \end{example}
 
 Occasionally it is useful to ``copy'' a
@@ -527,6 +477,7 @@ Prove $P \rightarrow (Q \rightarrow P)$ is valid.
 \end{restatable}
 
 \subsubsection{Bi-implication  (``if and only if`'')}
+\label{sec:bi-implication}
 
 Propositional logic often includes the bi-implication operator
 $\leftrightarrow$ also read as ``\emph{if and only if}'' and sometimes
@@ -535,15 +486,18 @@ equivalent to the conjunction of two implications, pointing in
 opposite directions:
 %
 \begin{align*}
-P \leftrightarrow Q \; = \; (P \rightarrow Q) \wedge (Q \rightarrow P)
+P \leftrightarrow Q \; \stackrel{\text{def}}{=} \; (P \rightarrow Q) \wedge (Q \rightarrow P)
 \end{align*}
 %
+This means that $P$ and $Q$ have exactly the same truth table, or we
+say they are \emph{equivalent} (see Section~\ref{sec:algebraic} later).
+
 Therefore to construct or deconstruct a logical
 bi-implication one can consider it as ``implemented'' by
 conjunction and implication, reducing the number of
 introduction/elimination rules that need to be
-remembered. Nonetheless, thinking about what these would be
-is a nice exercise.
+remembered. Nonetheless, thinking about what these
+introduction/elimination rules would be is a nice exercise.
 
 \begin{restatable}{exc}{biimplRules} (optional)
 Try to derive your own elimination and introduction rules for
@@ -554,8 +508,8 @@ bi-implication. There is usually one introduction and two eliminations.
 
 \subsection{Disjunction (``or'')}
 
-Recall the truth table for disjunction (which has the three rows
-in which $P \vee Q$ is true):
+Recall the truth table for disjunction, which has three rows
+where $P \vee Q$ is true:
 %
 \begin{center}
 \begin{tabular}{cc|c}
@@ -592,7 +546,8 @@ Prove $(P \wedge Q) \rightarrow (P \vee Q)$ is valid.
   P \wedge Q \rightarrow P \vee Q & $\rightarrow_i$ 1-3 $\quad \Box$
   \end{logicproof}
   %
-  This could have been written equivalently as a natural deduction tree:
+  This could have been written equivalently as a natural deduction
+  proof tree:
   %
   \begin{align*}
    \dfrac{
@@ -604,14 +559,13 @@ Prove $(P \wedge Q) \rightarrow (P \vee Q)$ is valid.
   \end{align*}
   %
   This will be the last tree-based proof we see; from now on we'll
-  just keep using the Fitch style.
+   keep using Fitch style.
 \end{example}
 %
-What about disjunction elimination? Given the knowledge that $P \vee Q$ is true
-then what can be conclude? Either $P$ is true, or $Q$ is true, or both
+What about disjunction elimination? Given the knowledge that $P \vee
+Q$ is true, what can we conclude? Either $P$ is true, or $Q$ is true, or both
 are true. Therefore, we don't know exactly what true formulas we can derive
-from the truth of $P \vee Q$, we just know a selection of
-possibilities.
+from $P \vee Q$, we just know some possibilities.
 
 
 The natural deduction way of eliminating disjunction is to have two
@@ -654,6 +608,16 @@ R) \rightarrow P$ is valid.
   disjunction and conclude with the same formula ($P$), which forms the
   conclusion of the subproof on line 6.
 \end{example}
+
+An important point to remember is that \textbf{you cannot just
+  eliminate a disjunction $P \vee Q$ into one side, e.g. to $P$}. This
+would be \emph{unsound} as we can see from the truth table and it is
+not what disjunction elimination provides us. If $P \vee Q$ is true it
+might be because $Q$ is true, and not because of $P$, so we cannot
+just conclude $P$. Consider the true statement $(\textit{This module has
+  module code CO519}) \vee (\textit{It sunny every day in
+England})$--- we cannot from this conclude that it is true that
+\textit{It is sunny every day in England}.
 
 \begin{restatable}{exc}{orassoc}
   Prove $P \vee Q \rightarrow Q \vee P$ is valid.
@@ -907,7 +871,140 @@ Constructive logics are useful because they correspond to type systems
 in functional programming: a result known as the \emph{Curry-Howard
   correspondence}. Unfortunately, we will not have time to study that here.
 
-\newpage
+
+\section{Algebraic properties of logic}
+\label{sec:algebraic}
+
+In Section~\ref{sec:bi-implication} we saw \emph{bi-implication} $\leftrightarrow$,
+a derived logical operator where:
+%
+\begin{equation*}
+P \leftrightarrow Q \; \stackrel{\text{def}}{=} \; (P \rightarrow Q) \wedge (Q \rightarrow P)
+\end{equation*}
+%
+If there is a bi-implication between two formula then it means their
+truth tables are exactly the same and we can see the two formulas as
+equivalent. From the natural deduction rules (or from the truth
+tables) a number of general equivalences can be derived which give
+us algebraic laws about propositional formula
+(this was first described by Boole in 1847). We'll use the operator
+$=$ to denote equivalent formula, where $P = Q$ can be
+read as ``$P$ is equivalent to $Q$'' (or that there is a
+bi-implication). We can thus prove equivalences by proving the
+bi-implication of the two formula.
+
+The following lists a number of equivalences between general
+propositional formula which amounts to algebraic properties of
+conjunction and disjunction: \\
+
+\setlength{\tabcolsep}{0.5em}
+\begin{tabular}{r|ll}
+\textbf{property} & conjunction & disjunction \\ \hline
+  \emph{idempotence} & $P \wedge P = P$ & $P \vee P = P$ \\
+  \emph{commutativity} & $P \wedge Q = Q \wedge P$ & $P \vee Q = Q
+                                                     \vee P$ \\
+  \emph{associativity} & $(P \wedge Q) \wedge R = P \wedge (Q \wedge
+                         R)$ & $(P \vee Q) \vee R = P \vee (Q \vee R)$
+  \\
+  \emph{unitality} & $P \wedge \top = P$ & $P \vee \bot = P$ \\
+  \emph{annihilation} & $P \wedge \bot = \bot$ & $P \vee \top = \top$
+\end{tabular} \\[0.75em]
+%
+We will often refer to these as ``axioms'' though really we can derive
+them via natural deduction, or as ``algebraic laws''.
+
+(Aside: you might like to think about other notions in mathematics that
+have similar axioms or a subset of these axioms, e.g. addition is
+commutative, associative, has $0$ as its unit, but is not idempotent
+and does not have an annihilator, unless we extend integers with
+$\infty$).
+
+\begin{restatable}{exc}{unitality}
+Prove the algebraic property of unitality for conjunction, i.e.,
+that $P \wedge \top = P$.
+\end{restatable}
+
+\noindent
+``Distributivity'' and ``absorption'' laws give us a relationship
+between $\wedge$ and $\vee$:
+%
+\begin{align*}
+\textit{distributivity} \qquad & (P \vee Q) \wedge R \, = \, (P \wedge R) \vee (Q \wedge R) \\
+ & (P \wedge Q) \vee R \, = \, (P \vee R) \wedge (Q
+                                               \vee R) \\
+  \textit{absorption} \qquad & (P \wedge Q) \vee P \, = \, P \\
+   & (P \vee Q) \wedge P \, = \, P
+\end{align*}
+%
+De Morgan's two laws give us a useful interaction between negation and
+conjunction and disjunction respectively:
+%
+\begin{align*}
+\textit{De Morgan's} \qquad & \neg (P \wedge Q) \, = \, \neg P \vee \neg Q \\
+& \neg (P \vee Q) \, = \, \neg P \wedge \neg Q
+\end{align*}
+%
+``Complementation'' laws give us interaction between a formula and its
+negation:
+%
+\begin{align*}
+  \textit{complementation} \qquad  & P \wedge \neg P \, = \, \bot \\
+  & P \vee \neg P \, = \, \top
+\end{align*}
+%
+Note that the second complementation law here only hold in classical
+(non-constructive) logic (which we study here primarily) where we
+allow the law of excluded middle, derived from double-negation
+elimination. Relatedly, the following law, known as ``involution''
+only holds when we have double negation elimination:
+%
+\begin{align*}
+\textit{involution} \qquad & \neg\neg P \, = \, P
+\end{align*}
+%
+This notion of equivalence, given by the operator $=$, is a
+\emph{congruence} with respect to all the operators of logic.
+This means that if we have an equivalence between two formula
+we can get an equivalence between larger formulas by
+``plugging'' the first equivalence into a template for a formula.
+For example, we get the following congruence property for conjunction:
+%
+\begin{equation*}
+P = Q \;\; \Rightarrow \;\; P \wedge R = Q \wedge R
+\end{equation*}
+%
+We can think of this as plugging the equivalence $P = Q$ into a
+formula template $- \wedge R$. A similar congruence property holds for
+the template $R \wedge -$ and for all the other operators, e.g.,
+disjunction (with templates $R \vee -$ and $- \vee R$), and
+implication, and negation.
+
+The congruence property of $=$ is useful because it means we can use
+equivalences to ``rewrite'' parts of a propositional formula.
+We can then given \emph{equational proofs} that
+some formula $P$ is equivalent to another formula $Q$
+by applying  algebraic laws one at a time, possibly
+to subparts of a formula.
+
+\begin{example}
+  Prove that $P \vee (Q \wedge \neg P) = Q \vee P$.
+
+  We can proceed in the following steps where the subformula
+  to which I have applied an equality is underlined and the rule
+  which I am applying is written on the right:
+  %
+  \begin{align*}
+  & \underline{P \vee (Q \wedge \neg P)} & \{\textit{distributity}\} \\
+= \; & (P \vee Q) \wedge \underline{(P \vee \neg P)}  & \{\textit{complementation}\}  \\
+= \; & \underline{(P \vee Q) \wedge \top} &  \{\textit{unitality of conjunction}\} \\
+= \; & \underline{P \vee Q} & \{\textit{commutativity of disjunction}\} \\
+= \; & Q \vee P & \qquad \qed
+\end{align*}
+\end{example}
+
+\begin{restatable}{exc}{equational}
+Prove that $P \wedge \neg(P \wedge Q) = P \wedge \neg Q$.
+\end{restatable}
 
 \section{Collected rules of natural deduction}
 
@@ -915,7 +1012,7 @@ in functional programming: a result known as the \emph{Curry-Howard
 
 \setlength{\tabcolsep}{1.54em}
 \renewcommand{\arraystretch}{1}
-\begin{tabular}{r||c|c}
+\begin{longtable}{r||c|c}
  & \textit{Introduction} & \textit{Elimination} \\[0.5em] \hline \hline
   $\wedge$
 & \rule{0cm}{0.75cm} $\dfrac{P \qquad Q}
@@ -924,7 +1021,7 @@ in functional programming: a result known as the \emph{Curry-Howard
         {P} \; {\wedge_{e1}}
   \qquad
       \dfrac{P \wedge Q}
-  {Q} \; {\wedge_{e2}}$ \\[1.25em] \hline
+  {Q} \; {\wedge_{e2}}$ \\[-0.5em] & & \\ \hline
   %%%%%%%%%%%
   $\vee$
 & $\begin{array}{c}\dfrac{P}
@@ -938,26 +1035,29 @@ in functional programming: a result known as the \emph{Curry-Howard
 \quad
 \fbox{$\begin{array}{c} Q \\ \vdots \\ R\end{array}$}}{R}
 \;
-{\vee_e}$ \\[1em] \hline
+{\vee_e}$ \\[-0.5em] & & \\ \hline
   %%%%%%%%%%%
   $\rightarrow$
  & \rule{0cm}{2.15cm} $\setlength{\arraycolsep}{0em}\dfrac{\fbox{$\begin{array}{c} P \\ \vdots \\ Q\end{array}$}}
       {P \rightarrow Q} {\rightarrow_i}$
  & $\begin{array}{c}\dfrac{P \rightarrow Q \qquad P}{Q}
       {\rightarrow_e} \\[3em]\end{array}$
-  \\[1em] \hline
+  \\[-0.5em] & & \\ \hline
   $\neg$
  & \rule{0cm}{2.15cm}
    $\setlength{\arraycolsep}{0em}\dfrac{\fbox{$\begin{array}{c} P \\ \vdots \\ \bot\end{array}$}}
   {\neg P} \; {\neg_i}$
- & $\begin{array}{c}\dfrac{P \qquad \neg P}{\bot} {\neg_e} \\[3em] \end{array}$ \\[0.5em] \hline
+ & $\begin{array}{c}\dfrac{P \qquad \neg P}{\bot} {\neg_e}
+      \\[3em] \end{array}$ \\[-0.5em] & & \\ \hline
   $\top$
-& \rule{0cm}{0.75cm}$\dfrac{\qquad}{\top} \; {\top_i}$ \\[1.25em] \hline
+& \rule{0cm}{0.75cm}$\dfrac{\qquad}{\top} \; {\top_i}$ \\[-0.5em] & &
+  \\ \hline
   $\bot$
- & & \rule{0cm}{0.75cm}$\dfrac{\bot}{P} \; {\bot_e}$ \\[1.25em] \hline
+ & & \rule{0cm}{0.75cm}$\dfrac{\bot}{P} \; {\bot_e}$ \\[-0.5em] & & \\
+  \hline
    $\neg\neg$
  & \rule{0cm}{0.75cm}{\textcolor{gray}{(derivable: $\dfrac{P}{\neg \neg P} \;\; {\neg\neg_i}$)}}  & \rule{0cm}{0.75cm}$\dfrac{\neg \neg P}{P} \;\; {\neg\neg_e}$
-\end{tabular}
+\end{longtable}
 
 \vspace{3em}
 
@@ -970,8 +1070,6 @@ We derived other useful inference rules from these rules, like modus
 tollens, proof-by-contradiction, and law-of-excluded-middle. They
 are useful to know but the table above gives the essential rules
 for propositional proofs.
-
-\newpage
 
 \section{Exercises}
 
@@ -987,10 +1085,10 @@ for propositional proofs.
   \orassoc*
   \disproveEx*
   \lemp*
+  \unitality*
+  \equational*
 
-\appendix
-
-\section{Sequent-style natural deduction}
+\section*{Appendix: Sequent-style natural deduction}
 \label{app:sequent}
 
 Recall from Section~\ref{sec:entailment} that
@@ -1002,7 +1100,7 @@ P_1, \ldots, P_n \vdash P
 \end{equation*}
 %
 The turnstile symbol $\vdash$ is read as \emph{entails} and the premises to the left are
-called the \emph{context} of assumed formulas. The right-hand side is
+called the \emph{context} of assumed formulas (or \emph{assumptions}). The right-hand side is
 the \emph{conclusion}.  For example, the following
 judgment captures the idea of conjunction introduction:
 %
@@ -1115,6 +1213,3 @@ in this style:
   \qquad
   \dfrac{}{\Gamma \vdash \top} {\top_i}
 \end{align*}
-%
-
-\end{document}

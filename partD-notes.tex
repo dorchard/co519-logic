@@ -1,28 +1,4 @@
-\documentclass{article}
-
-\usepackage{amsmath}
-\usepackage{amsthm}
-\usepackage{amssymb}
-\usepackage[table,x11names]{xcolor}
-\usepackage{logicproof}
-\usepackage{url}
-\usepackage{fancyhdr}
-\usepackage{enumitem}
-
-% For restatables
-\usepackage{thmtools}
-\usepackage{thm-restate}
-\usepackage[hidelinks]{hyperref}
-\usepackage{cleveref}
-
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}
-\newtheorem{lemma}{Lemma}
-\newtheorem{example}{Example}
-\newtheorem*{remark}{Remark}
-\declaretheorem[name=Exercise,numberwithin=section]{exc}
-
-\newcommand{\highlight}[1]{%
+\renewcommand{\highlight}[1]{%
   \colorbox{yellow!50}{$\displaystyle#1$}}
 \newcommand{\highlightG}[1]{%
   \colorbox{green!30}{$\displaystyle#1$}}
@@ -31,26 +7,6 @@
 
 \newcommand{\rel}[1]{\mathsf{#1}}
 
-% Writing
-\newcommand{\ie}{\emph{i.e.}}
-\newcommand{\eg}{\emph{e.g.}}
-
-\title{\vspace{-3em}CO519 - Theory of Computing - Logic \\
-  {\large{Part D : First-order logic and its natural deduction
-      proofs}}}
-\author{Dominic Orchard \\
-  {\small{School of Computing, University of Kent}}}
-
-\date{Last updated on \today}
-
-\begin{document}
-\maketitle
-
-\noindent
-If you spot any errors or have suggested edits, the notes are written
-in LaTeX and are available on GitHub at
-\url{http://github.com/dorchard/co519-logic}. Please fork and submit a
-pull request with any suggested changes.
 
 \section{Natural deduction for first-order logic}
 
@@ -341,9 +297,9 @@ Following equation~\eqref{eq:forall-meaning} again, universal
 quantification is equivalent to a large conjunction, but every formula
 being conjuncted is of the form $P[t/x]$. We could therefore define an
 introduction for universal quantification if we had $P[t/x]$ for
-all objects $t$ in the universe being used, 
+all objects $t$ in the universe being used,
 but this is usually not possible (the universe
-could be infinite, \eg{}, integers). 
+could be infinite, \eg{}, integers).
 Instead, it suffices to know that $P[x_0/x]$ is true
 for an arbitrary variable $x_0$ about which we know nothing else and
 which is no longer used once we bind it with the universal
@@ -429,7 +385,7 @@ objects $z$ we have $\rel{Q}(z)$, expressed as $\forall z
 \end{restatable}
 %
 \begin{remark}
-Recall that quantification binds more loosely than 
+Recall that quantification binds more loosely than
 any of the other logical operators, so $\forall x . \rel{P}(x)
 \wedge \rel{Q}(x)$ is equivalent to $\forall x . (\rel{P}(x) \wedge
 \rel{Q}(x))$ rather than $(\forall x . \rel{P} (x)) \rightarrow
@@ -554,7 +510,7 @@ Prove $\exists x . \rel{P}(x) \wedge \rel{Q}(x)
 \end{example}
 
 \begin{restatable}{exc}{existsOr}
-Prove $\exists x . P \vee Q \vdash \exists x . P \vee \exists x . Q$ 
+Prove $\exists x . P \vee Q \vdash \exists x . P \vee \exists x . Q$
 is valid.
 \end{restatable}
 
@@ -624,7 +580,7 @@ on first-order formula:
  \neg \forall x . P & \equiv \exists x . \neg P
 \end{align}
 This is known as a \emph{duality} property. There are two duality
-properties, and the second can be derived from the above using 
+properties, and the second can be derived from the above using
 double negation elimination:
 %
 \begin{restatable}{exc}{dualityTwo}
@@ -701,5 +657,3 @@ is \emph{capture avoiding}, \eg{}, \emph{$x_0$ is free for $x$ in $P$} and
 \existsOr*
 \duality*
 \dualityTwo*
-
-\end{document}
