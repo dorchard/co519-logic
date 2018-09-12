@@ -3,9 +3,7 @@
 \newcommand{\atomg}{\textsf{g}}
 \newcommand{\atomgp}{\textsf{g'}}
 
-\section{Modelling in logic}
-
-In this section we are going to briefly cover using propositional
+In this part we are going to briefly cover using propositional
 formula to model systems. This is a common approach in hardware design
 where a complete or partial model of a circuit or processor is defined in logic,
 against which specifications of particular properties are checked.
@@ -15,6 +13,7 @@ consider systems modelled as simple state machines, with states and
 transitions between the states describing how a system can
 change/evolve. We will then convert this model into a propositional
 formula.
+
 
 To verify a system based on its model we then need a specification of
 either good behaviour that we want to make sure follows from our model
@@ -37,6 +36,7 @@ we could state this as judgment $\emph{model} \vdash \emph{spec}$,
 Our running example will be a very simple traffic light comprising
 a red light and a green light, with two possible states:
 %
+\setlength{\tabcolsep}{0.4em}
 \begin{center}
   \begin{tabular}{m{1.1cm} m{1.5cm} m{1.1cm}}
     State 1 & & State 2 \\
@@ -49,7 +49,8 @@ a red light and a green light, with two possible states:
 %
 Either the red light is on (left) or the green light is on (right),
 but never both at the same time, and there is always at least one
-light on. We will use two atoms $\atomr{}$ and $\atomg$ to represent the state of
+light on. We will use two atoms (propositional
+variables that can be true or false) $\atomr{}$ and $\atomg$ to represent the state of
 each light separately, where:
 %
 \begin{itemize}
@@ -68,31 +69,30 @@ The two valid states of the system can then be modelled as two propositions:
   \neg\atomr{} \wedge \atomg{}
 \end{align*}
 %
-Note that for $n$-propositional atoms there are $2^n$ possible states
-that can be modelled. Thus in our case, there are four possible states
-that we can model, two of which we want to treat as valid (the above
-two).
+For $n$-propositional atoms there are $2^n$ possible states that can
+be modelled. Thus in our model, there are four possible states, two of
+which we want to treat as valid (the above two).
 
 \begin{exc}
-Define two propositions, one for each of the two invalid states in the
-traffic light system.
+Define a propositions for each of the two invalid states in the
+traffic light.
 \end{exc}
 
-\paragraph{State transitions}
-
-So far we have modelled the states as propositions, but we want to
-also model the behaviour of the system in terms of the possible
-\emph{transitions} between states. We can represent this
+\noindent
+\textbf{State transitions} \hspace{0.5em} So far we have modelled the states as propositions, but we also want to
+model the behaviour of the system in terms of the possible
+transitions between states. We can represent this
 with a simple diagram:
 %
+\setlength{\tabcolsep}{0.4em}
 \begin{center}
   \begin{tabular}{m{1.1cm} m{1.5cm} m{1.1cm}}
-       State 1 & & State 2 \\
+       State 1 & & State 2 \\[-0.5em]
 {\scalebox{0.2}{\includegraphics{images/red-on.pdf}}}
   &
     \xymatrix{
-    \ar[rr]^{\textit{go}} & & \\
-     & & \ar[ll]^{\textit{stop}}
+    \ar[rr]^{\textit{\normalsize{go}}} & & \\
+     & & \ar[ll]^{\textit{\normalsize{stop}}}
     }
   &
 {\scalebox{0.2}{\includegraphics{images/green-on.pdf}}}
@@ -146,17 +146,28 @@ back to this point in Section~\ref{subsec:whenisamodelgood}.
 
 \paragraph{A general approach}
 
-The general approach to a modelling a system in this way is to:
+The general approach to modelling a system in this way is to:
 %
 \begin{itemize}
   \item Decide what to represent about the state space of the system
   and introduce propositional atoms for these components.
-  \item Model state changes using ``next step'' atoms (usually written with
+  \item Model future states using ``next step'' atoms (usually written with
   an apostrophe, and called the ``primed'' atoms, \eg{}, \atomrp{} is
   read as ``r prime'').
  \item Write a propositional formula \emph{model} using these
-  variables which takes the conjunction of state transitions as implications.
+  variables which takes the conjunction of state transitions expressed
+  as implications.
 \end{itemize}
+
+\begin{exc}
+Write down a model for a more realistic traffic light, \ie{}, that can
+be described by the following states and transitions:
+%
+
+\begin{center}
+\scalebox{0.28}{\includegraphics{images/full-light.pdf}}
+\end{center}
+\end{exc}
 
 \section{Defining specifications as propositions}
 \label{sec:spec}
@@ -170,7 +181,7 @@ for our system:
 \end{quote}
 %
 We can abstract the notion of a valid state with the following
-meta-level operation (you can think of this as a function from the
+meta-level operation (you can think of this as a syntax function mapping from the
 two propositions to a proposition):
 %
 \begin{equation*}
@@ -217,14 +228,6 @@ specifically \textbf{Example 5} in the notes). We will later see that
 this does indeed hold, and thus the system (as described by the model)
 satisfies our specification.
 
-\begin{exc}
-Write down a model for a more realistic traffic light, \ie{}, that can
-be described by the following states and transitions:
-%
-\begin{center}
-\scalebox{0.25}{\includegraphics{images/full-light.pdf}}
-\end{center}
-\end{exc}
 
 \section{When is a model a good model?}
 \label{subsec:whenisamodelgood}
@@ -237,12 +240,12 @@ be described by the following states and transitions:
 Indeed, a model is necessarily ``wrong'' in the sense that a model
 abstracts some of the details of a real system; we are not
 capturing every aspect of the system, such as: how are the transitions
-triggered? or, what happens if power is cut to traffic light? Some
+triggered? or, what happens if a car crashes into the traffic light? Some
 models, though eliding details, are useful in the sense that we
 can detect when the system does not behave according to our
-specification or we can verify that it does behave according to our
-specification. We just need enough detail in the model to capture the
-things we want to prove.
+specification or we can verify that it always behaves according to our
+specification. Just enough detail is needed in the model to capture what
+we want to prove.
 
 Our running example has the model:
 \begin{equation*}
@@ -266,8 +269,8 @@ Then we could define an alternate model as:
 \mathit{model2} = \mathit{model} \wedge \neg \textsf{invalid-state}(\atomr, \atomg)
 \end{equation*}
 %
-Thus, the new model is the old model and that the current state is not
-one of the invalid states.
+Thus, the new model adds to the old model that the current state is not
+invalid.
 
 In the case of the proving our specification from
 Section~\ref{sec:spec} (that valid states transition to valid states)
@@ -287,9 +290,8 @@ $$
 \neg \mathit{specification2}
 $$
 Note we are using a negative property
-here: we show that the new model implies that the bad behaviour is not possible.
-
-For the old model, a similar proposition capturing the same idea is valid:
+here: we show that the new model (\textit{model2}) implies that the bad behaviour is not possible.
+For the old model (\textit{model}), a similar proposition capturing the same idea is valid:
 $$
 \mathit{model} \rightarrow \neg \mathit{specification2}
 $$

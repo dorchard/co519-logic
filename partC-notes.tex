@@ -2,7 +2,7 @@
 \newcommand{\subst}[3]{\textit{replace}(#2, #1, #3)}
 
 \newcommand{\highlight}[1]{%
-  \colorbox{yellow!50}{$\displaystyle#1$}}
+ \underline{\colorbox{yellow!50}{$\displaystyle#1$}}}
 
 \section{Satisfiable formula}
 
@@ -23,8 +23,8 @@ how we assign truth or falsehood to the variables.
 
 The general problem of finding a satisfying assignment for a formula
 is known in computer science as the \emph{Boolean satisfiability
-  problem} or simply \emph{SAT} for short. There are various
-algorithmic approaches to solving the \emph{SAT} problem, \ie{}, for
+  problem} or simply SAT for short. There are various
+algorithmic approaches to solving the SAT problem, \ie{}, for
 calculating a satisfying assignment for a propositional formula.  SAT
 is used in many areas of formal verification, such as AI, planning,
 circuit design, and theorem provers, and is applied to problems with
@@ -56,7 +56,8 @@ to show unsatisfiability of
 $\neg (\textit{model} \rightarrow \textit{specification})$. If however
 we find a satisfying assignment, then we have a counterexample to the
 original property, that is, a set of variable assignments which makes
-equation~\eqref{eq:model-property} false.
+equation~\eqref{eq:model-property} false and thus shows us
+a configuration which leads to a bug in our system.
 
 \section{The DPLL algorithm}
 
@@ -75,8 +76,8 @@ some progress since.
 \subsection{CNF}
 
 The input to the DPLL algorithm is a formula in \emph{conjunctive
-  normal form} (or CNF for short).  A formula in Conjunction Normal
-Form (CNF) is a conjunction of disjunctions of literals. A literal is
+  normal form} (CNF for short).  A formula in Conjunction Normal
+Form is a conjunction of disjunctions of literals. A literal is
 either a variable or the negation of a variable. Thus, CNF formula are
 of the form:
 %
@@ -90,7 +91,7 @@ We refer to a disjunction of literals as a \emph{clause}.
 For example, the following highlights the middle clause:
 %
 \begin{equation}
-(x \vee \neg w) \wedge \highlight{(y \vee z)} \wedge (\neg z \vee \neg x)
+(x \vee \neg w) \wedge {\highlight{(y \vee z)}} \wedge (\neg z \vee \neg x)
 \end{equation}
 %
 A CNF formula consists of a set of clauses all of which have to be
@@ -99,7 +100,7 @@ just one of literals has to be true since they are combined via
 disjunction.
 
 Any formula can be converted into CNF by applying algebraic properties
-of logic to rewrite a formula. Informally, this can be done by
+of logic (see Part A, Section~\ref{sec:algebraic}) to rewrite a formula. Informally, this can be done by
 doing the following:
 %
 \begin{itemize}[leftmargin=1em]
@@ -129,7 +130,7 @@ in CNF which is ready for DPLL.
 \subsection{DPLL, step-by-step}
 
 DPLL can be summarised in pseudo code as follows, which
-has four main steps which I remember using the acronym: \textbf{TUPS}:
+has four main steps which I remember using the acronym \textbf{TUPS}:
 %
 \begin{align*}
 \textsf{DPLL}(\top) = &\textit{satisfiable} \\
@@ -171,9 +172,11 @@ P \wedge (\highlight{\ldots x \vee \ldots \vee \neg x}) \wedge Q
 %
 Such a formula can be simplified by completely removing the
 highlighted clause. This is because a disjunction of a formula with
-its negation is a tautology (always true): $P \vee \neg P = \top$.
+its negation is a tautology (always true) by \emph{complementation}:
+ $P \vee \neg P = \top$.
 Furthermore, since disjunction of anything with truth is equivalent to truth:
-$P \vee \top = \top$ and conjunction $P \wedge \top = \top$, we can
+$P \vee \top = \top$ and for conjunction $P \wedge \top = P$
+(\emph{unitality} properties) we can
 completely filter out clauses that have a tautology, \ie{}
 %
 \begin{equation*}
@@ -201,7 +204,7 @@ P \wedge (\highlight{x}) \wedge Q
 P \wedge (\highlight{\neg x}) \wedge Q
 \end{equation*}
 %
-where the ``unit'' clauses are highlighted in yellow.
+where the ``unit'' clauses are highlighted.
 
 If we see a formula in the left form, then we know that $x$ must be
 true if we want the overall formula to be true, since we are taking
@@ -227,23 +230,24 @@ with its assignment:
 \end{array}
 \end{align*}
 %
-The assignment that is output by this step
-is written on the right-hand side. Note that we have also removed
-the unit clause since it has been made true and is therefore
-redundant now.
+The assignment that is output by this step is written on the
+right-hand side. We have also removed the unit clause since it has
+been made true and is therefore redundant now. Thus, unit propagation
+gives us both a simplification and an assignment when we have unit
+clauses in our formula.
 
 Here we are using a function on the syntax of formulas called
 \emph{replace} where $\subst{\top}{x}{P}$ means replace/substitute any
 occurrence of $x$ in $P$ with $\top$, and similarly $\subst{\bot}{x}{P}$
-replaces any occurrence of $x$ in $P$ with $\bot$.  (This idea of
-substituting one proposition for another will crop up again in part D
-when we look at first-order logic proofs).
-
-Thus, unit propagation gives us both a simplification and an assignment
-when we have ``unit'' clauses in our formula.
+replaces any occurrence of $x$ in $P$ with $\bot$.
+For example, $\subst{\top}{x}{\neg x \vee \neg y}$ would be
+the formula $\neg \top \vee \neg y$.
+This idea of
+substituting one proposition for another will crop up again in Part D
+when we look at first-order logic proofs.
 
 \begin{example}
-The following formula has a unit clause highlighted in yellow:
+The following formula has a unit clause highlighted in yellow and underlined:
 %
 \begin{equation*}
 (\neg x \vee \neg y) \wedge \highlight{x} \wedge (y \vee x)
@@ -267,14 +271,14 @@ which simplifies via the following steps
 %
 \begin{align*}
  & (\neg \top \vee \neg y) \wedge (y \vee \top) \\
-= \; & (\neg \top \vee \neg y) \wedge T \\
+= \; & (\neg \top \vee \neg y) \wedge \top \\
 = \; & (\neg \top \vee \neg y) \\
 = \; & (\bot \vee \neg y) \\
 = \; & \neg y
 \end{align*}
 %
 In DPLL, we need only apply simplifications that involve disjunction
-or conjunction with $\top$ or $\vee$. It is straightforward to build
+or conjunction with $\top$ or $\bot$. It is straightforward to build
 this into an implementation so that these steps are implicit and
 automatic: essentially the ``replacement'' can remove entire clauses when
 we know we are making a literal true, or remove literals when they
@@ -285,7 +289,7 @@ our original formula from $(\neg x \vee \neg y) \wedge (x)
 \wedge (y \vee x)$ to $\neg y$, along with giving the assignment
 $\{x = \top\}$.  Since $\neg y$ is itself a unit, we apply unit
 propagation again, yielding the assignment $\{y = \bot\}$ and
-the formula $\top$. Thus, we have reached a satisfying assignment
+the formula $\top$. Thus we have reached a satisfying assignment
 $\{x = \top, y = \bot\}$ just by applying unit propagation twice.
 \end{example}
 
@@ -322,7 +326,7 @@ that its negation never appears anywhere. This means we can assign $x$
 to be true. We could assign $x$ to be false, but it might be the wrong
 decision later, for example if the other literals in the clause turn
 out to false as well. It turns out that the most useful approach is to
-assign $x$ to true, by following the principle of progressing towards
+assign $x$ to true by following the principle of progressing towards
 a true formula as quickly as possible.
 
 A pure literal might also be negative, for example:
@@ -336,11 +340,11 @@ Pure literal elimination therefore has the two dual rules:
 %
 \begin{align*}
 \begin{array}{rlcll}
-  & P \wedge (\ldots \vee \highlight{\neg x} \vee \ldots) \wedge Q
+  & P \wedge (\ldots \vee \highlight{x} \vee \ldots) \wedge Q
   & \longrightarrow & \subst{\top}{x}{P} \wedge \subst{\top}{x}{Q}
 & \quad \{x = \top\}
   \\[0.25em]
-\textit{or} & P \wedge (\ldots \vee \highlight{x} \vee \ldots) \wedge Q
+\textit{or} & P \wedge (\ldots \vee \highlight{\neg x} \vee \ldots) \wedge Q
   & \longrightarrow & \subst{\bot}{x}{P} \wedge \subst{\bot}{x}{Q}
 & \quad \{x = \bot\}
 \end{array}
@@ -392,20 +396,18 @@ done all that we can with those steps, the last step falls back to
 a ``brute force'' approach. We pick a variable, and ``split it'', that is,
 we assign it to be true and apply DPLL on the result and separately
 assign it to false and apply DPLL on the result. This results
-in us running two DPLL separate procedures separately from this
-point forwards.
-
-That is, given a formula $P$, splitting recursively calls the
+in us running two DPLL separate procedures from this
+point forwards. That is, given a formula $P$, splitting recursively calls the
 DPLL algorithm under two new assignments:
 %
 \begin{align*}
-             & \textsf{DPLL}(\subst{\top}{x}{P} \qquad\qquad\qquad \{x =
+             & \textsf{DPLL}(\subst{\top}{x}{P}) \qquad\qquad\qquad \{x =
                \top\}  \\
-\textit{and} \qquad &  \textsf{DPLL}(\subst{\bot}{x}{P} \qquad\qquad\qquad \{x = \bot\}
+\textit{and} \qquad &  \textsf{DPLL}(\subst{\bot}{x}{P}) \qquad\qquad\qquad \{x = \bot\}
 \end{align*}
 %
 These recursive calls will be separate, producing
-possibly different assignments from this point on.
+possibly different assignments in each.
 
 \begin{example}
 The following formula has no tautologies, units, or pure literals
@@ -442,7 +444,7 @@ produces:
 %
 \end{align*}
 We then return to step 1 for both branches, and continue with two
-separate instance of the DPLL procedure on the above two formula.
+separate instances of the DPLL procedure on the above two formulas.
 %
 \end{example}
 
@@ -453,31 +455,29 @@ Apply the splitting step to the following formula on variable $y$:
 (x \vee y \vee \neg z) \wedge (x \vee \neg y \vee z) \wedge (y \vee z)
 \end{equation*}
 %
-Write down the two resulting formula after replacement and trivial
-simplifications have been performed.
+Write down the two resulting formula after replacement and doing trivial
+simplifications.
 \end{restatable}
 
-The following gives an example putting the steps together.
+The following gives an example putting all the steps together.
 
 \begin{example}
-  Consider the following formula:
-  %
-  $$(\neg x \rightarrow y) \wedge x$$
-  %
+  Consider the following formula: $(\neg x \rightarrow y) \wedge x$.
   Is it satisfiable? Before we apply DPLL we first have to
 convert it to CNF:
   %
    \begin{align*}
       \begin{array}{lll}
-        & (\neg x \rightarrow y) \wedge x & \\
-      = & (\neg \neg x \vee y) \wedge x & \textit{\{$\rightarrow$ as
+        & (\neg x \rightarrow y) \wedge x & \textit{\{$\rightarrow$ as
                                           $\vee$\}} \\
-      = & (x \vee y) \wedge x & \textit{\{Double negation elimination}\}
+      = & (\neg \neg x \vee y) \wedge x & \textit{\{Double negation
+                                          elimination}\} \\
+      = & (x \vee y) \wedge x &
       \end{array}
     \end{align*}
     %
-  Now we have the formula in CNF, we can apply DPLL. I'll write out
-  the steps in tabular form: \\[1em]
+  Now we have the formula in CNF, we can apply DPLL. I'll write
+  the steps in a table: \\[1em]
 %
   \vspace{2em}
   \begin{tabular}{l|l|l|l}
@@ -485,37 +485,25 @@ convert it to CNF:
       & start & $(x \vee y) \wedge x$ &  \\
     1 & Tautology elim & $(x \vee y) \wedge x$ &  \\
     2 & Unit propagation $x$ & $\top$ & $\{x = \top\}$
-  \end{tabular} \\
+  \end{tabular} \\[-1em]
   %
-  Thus the original equation is satisfiable with assignment $x = \top$
-  (and $y$ can be anything). Note that we reached this conclusion very quickly,
+  Thus the original formula is satisfiable with assignment $x = \top$
+  (and $y$ can be anything). We reached this conclusion quickly,
   just by applying tautology elimination and unit propagation.
-
 This tabulated form is handy for small examples; you might like
-to use it for the class exercises.
+to use it for class exercises.
 \end{example}
-
-\begin{restatable}{exc}{full}
-Apply the full DPLL procedure to the following formula (already
-in CNF):
-%
-\begin{equation*}
-(x \vee y \vee z)
-\wedge (\neg x \vee y)
-\wedge (\neg x \vee \neg y \vee \neg z)
-\end{equation*}
-\end{restatable}
 
 \begin{example}
 The following is the proposition $\neg (\textit{model}
 \rightarrow \textit{specification})$ for the traffic light
-example shown in Part B (see lectures), in CNF:
+example shown in Part B, but in CNF:
 %
 \begin{align*}
 & (\neg r \vee g') \wedge (\neg r \vee \neg r') \wedge (\neg g \vee \neg
-  g') \wedge (\neg g \vee r') \wedge \\
-& (r \vee g) \wedge (\neg r \vee \neg g) \wedge \highlight{(\neg r' \vee r')} \\
-& (\neg r' \vee g') \wedge (\neg g' \vee r') \wedge \highlight{(\neg g' \vee g)}
+  g') \wedge (\neg g \vee r') \\[-0.3em]
+\wedge \; & (r \vee g) \wedge (\neg r \vee \neg g) \wedge \highlight{(\neg r' \vee r')} \\[-0.4em]
+\wedge  \; & (\neg r' \vee g') \wedge (\neg g' \vee r') \wedge \highlight{(\neg g' \vee g)}
 \end{align*}
 %
 We'll apply DPLL to it here. Due to the large size of the formula,
@@ -523,14 +511,14 @@ I'll use a more free-form style rather than the tabulated form
 used above.
 
 \textit{Step 1: Tautology elimination} - There are two immediate
-tautologies in the above formula which are highlighted in yellow.
+tautologies in the above formula which are highlighted.
 These are eliminated to give:
 %
 \begin{align*}
 & (\neg r \vee g') \wedge (\neg r \vee \neg r') \wedge (\neg g \vee \neg
-  g') \wedge (\neg g \vee r') \wedge \\
-& (r \vee g) \wedge (\neg r \vee \neg g) \wedge \\
-& (\neg r' \vee g') \wedge (\neg g' \vee r')
+  g') \wedge (\neg g \vee r') \\
+ \wedge \; & (r \vee g) \wedge (\neg r \vee \neg g) \\
+\wedge \; & (\neg r' \vee g') \wedge (\neg g' \vee r')
 \end{align*}
 %
 There are no units or pure literals so we move to step 4.
@@ -563,29 +551,25 @@ which simplifies to & which simplifies to \\[1em]
 $\begin{array}{ll}
 & {g'} \wedge (\neg r') \wedge (\neg g \vee \neg
   g') \wedge \\
-& (\neg g \vee r') \wedge \\
-& {(\neg g)} \wedge \\
+& (\neg g \vee r') \wedge {(\neg g)} \wedge \\
 & (\neg r' \vee g') \wedge (\neg g' \vee r')
  \end{array}$ &
 %%%
 $\begin{array}{ll}
 & (\neg g \vee \neg g') \wedge (\neg g \vee r') \wedge \\
-& {(g)} \wedge \\
-& (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$  \\[2em] \hline \\
+& {(g)} \wedge (\neg r' \vee g') \wedge (\neg g' \vee r')
+ \end{array}$  \\ \hline \\[-1em]
   \textit{1. Unit propagation} on the unit $g'$ &
   \textit{1. Unit propagation} on the unit $g$ \\
 $\begin{array}{ll}
 & \highlight{g'} \wedge (\neg r') \wedge (\neg g \vee \neg
   g') \wedge \\
-& (\neg g \vee r') \wedge \\
-& {(\neg g)} \wedge \\
+& (\neg g \vee r') \wedge {(\neg g)} \wedge \\
 & (\neg r' \vee g') \wedge (\neg g' \vee r')
  \end{array}$ &
 $\begin{array}{ll}
 & (\neg g \vee \neg g') \wedge (\neg g \vee r') \wedge \\
-& \highlight{(g)} \wedge \\
-& (\neg r' \vee g') \wedge (\neg g' \vee r')
+& \highlight{(g)} \wedge (\neg r' \vee g') \wedge (\neg g' \vee r')
  \end{array}$ \\
 yields assignment $\{g' = \top\}$ giving
 & yields assignment $\{g = \top\}$ giving \\[1em]
@@ -622,18 +606,32 @@ $\begin{array}{ll}
 $\begin{array}{ll}
 & (r') \wedge (\neg r')
  \end{array}$  \\
- & \\
+ & \\[-0.6em]
  & \textit{1. Unit propagation:} on the unit $r'$ \\
 simplifies to & yields assignment $\{r' = \top\}$ giving \\
 $\bot$ & $\bot$
 \end{longtable}
-Both branches have ended with $\bot$ hence the original
-formula is unsatisfiable.
+
+\noindent
+Both branches have ended with $\bot$ hence $\neg(\textit{model}
+\rightarrow \textit{specification})$ is unsatisfiable and
+therefore $\textit{model} \rightarrow \textit{specification}$
+is valid! Hurray!
 \end{example}
 
-\section{Exercises}
+\begin{restatable}{exc}{full}
+Apply the full DPLL procedure to the following formula (already
+in CNF):
+%
+\begin{equation*}
+(x \vee y \vee z)
+\wedge (\neg x \vee y)
+\wedge (\neg x \vee \neg y \vee \neg z)
+\end{equation*}
+\end{restatable}
 
-This section collects the exercises given in these notes.
+\section{Exercises from this section}
+
 %
 \unitFoo*
 \unitFooTwo*
