@@ -680,9 +680,9 @@ Negation introduction and elimination are given by:
 \dfrac{P \qquad \neg P}{\bot} {\neg_e}
 \end{align*}
 %
-Introduction says that given a proof that assumes $P$ but ends in
-falsehood $\bot$ then we know $\neg P$, this is similar to the notion of
-\emph{proof by contradiction}, which is derived from this (see below).
+Introduction says that given a subproof that assumes $P$ but ends in
+falsehood $\bot$ then we know $\neg P$. This is similar to the notion of
+\emph{proof by contradiction}, which is derived from negation introduction (see below).
 
 Elimination states that given a proof of $P$ and a simultaneous proof of
 $\neg P$ then we conclude falsehood $\bot$, \ie{}, we have a
@@ -737,17 +737,17 @@ Prove that $P \wedge \neg (P \vee Q)$ is unsatisfiable.
 
 \begin{remark}
   Some formulae are not valid, \eg{}, $P \rightarrow \neg P$, which
-  can be seen from drawing its true table. However, this formula is
+  can be seen from drawing its truth table. However, this formula is
   \emph{satisfiable}, if $P$ is false then $P \rightarrow \neg P$ is
   true. Natural deduction does not help us to prove
-  satisfiability. Part B will look at algorithmic approaches to
+  satisfiability. Part C will look at algorithmic approaches to
   deciding satisfiability.
 \end{remark}
 
 \subsubsection{Double negation}
 
-A special rule holds called \emph{double-negation elimination} which
-allows us to remove double negations on a proposition:
+A special rule called \emph{double-negation elimination}
+removes double negations on a proposition:
 %
 \begin{align*}
 \dfrac{\neg \neg P}{P} \;\; {\neg\neg_e}
@@ -764,7 +764,8 @@ following the derived inference rule:
       {P} \; {\textsc{PBC}}
 \end{equation*}
 %
-That is, if we assume $\neg P$ and conclude $\bot$, then we have $P$.
+That is, if we assume $\neg P$ and conclude $\bot$ (i.e. we get a
+contradiction), then we have $P$.
 To show how to derive this, let the subproof in the above rule be
 called $\Delta$, then we construct the following proof:
 %
@@ -777,8 +778,8 @@ called $\Delta$, then we construct the following proof:
 \neg \neg P & $\neg_i$ 1-3 \\
 P           & $\neg\neg_e$ 4
 \end{logicproof}
-Of course, $\Delta$ might be much longer than 3 lines, but we use
-the numbering in the above proof for clarity.
+Of course, $\Delta$ might be longer than 3 lines, but we use
+the numbering above proof for clarity.
 \end{example}
 
 \subsection{Truth and falsity}
@@ -789,6 +790,9 @@ If we have $\bot$ (false), then we can derive any formula:
 \dfrac{\bot}{P} \; {\bot_e}
 \end{align*}
 %
+The embodies the principle that if we have logical inconsistency
+then anything goes.
+
 There is no $\bot$ introduction as such, though $\neg_{e}$
 provides a kind of $\bot$ introduction (from conflicting formula).
 Dually, we can always introduce truth from no premises, but there
@@ -809,7 +813,7 @@ that for any formula $P$ we have the following valid rule:
 \dfrac{\qquad\qquad}{P \vee \neg P} \textsc{lem}
 \end{equation*}
 %
-\ie{}, whatever $P$ is, then either $P$ is true or $\neg P$ is true. Here
+\ie{}, for any formula $P$, either $P$ is true or $\neg P$ is true. Here
 is its derivation:
 %
 \begin{logicproof}{2}
@@ -840,49 +844,54 @@ In this course, we study a particular kind of propositional logic
 called \emph{classical} or \emph{non-constructive}
 logic. Another variant is known as \emph{intuitionistic} or
 \emph{constructive} logic which has a slightly different
-set of inference rules: $\neg\neg_e$ is not included. By removing
+set of proof rules: $\neg\neg_e$ is not included. By removing
 double-negation elimination we can no longer derive
 proof-by-contradiction or LEM.
 
 The central principle of constructive logic is to reason about
-\emph{proof} rather than \emph{truth} (as in classical logic). In
+\emph{provability} rather than \emph{truth}, which is what
+we reason about in classical logic. In
 constructive logic, a
 formula $P$ represents the proof of formula $P$: a mathematical object
-witnessing the truth of $P$ which we can separately analyse. The
+witnessing the truth of $P$. The
 inference rules of natural deduction are now about preserving proof
 rather than truth, \eg{}, conjunction elimination says given a proof
 of $P \wedge Q$ then we can prove $P$.
 
 In constructive logic, $\neg\neg_e$ is rejected since it would mean we
 can get a proof of $P$ from a proof of the negation of the negation of
-$P$, but this proof is not a proof of $P$. This is particularly
-troublesome when using $\neg\neg_e$ to prove LEM. If LEM was allowed
-in constructive logic, then for any formula $P$ we can construct
-either a proof of $P$ or a proof of $\neg P$. But what is that proof
-and where has it come from? Out of thin air! (LEM has no
-premises). The essence of constructive logic is to disallow such
-things so that we always know we have a concrete proof for our
-formulas, constructed from proofs of its subformulas or premises. Section 1.2.5
-of the Huth and Ryan course textbook gives some more detail and shows
-an example mathematical proof about rational numbers in classical logic
-which cannot be proved constructively.
+$P$, but the proof of $\neg\neg P$ is not really a proof of $P$. The
+presence of $\neg\neg_e$ is particularly troublesome for provability
+when used in the derivation of LEM. If LEM was allowed in constructive
+logic, then it would be saying that for any formula $P$ we have
+constructed either a proof of $P$ or a proof of $\neg P$. But what is
+that proof and where has it come from? It would be out of thin air!
+(since LEM has no premises). The essence of constructive logic is to disallow such
+things so that we always know we have a concrete proof (sometimes
+called a \emph{witness}) for our
+formulas, constructed from proofs of its subformulas or
+premises. Section 1.2.5 of the Huth and Ryan textbook gives more
+detail and shows an example mathematical proof about rational numbers
+in classical logic which cannot be proved constructively.
 
-Constructive logics are useful because they correspond to type systems
-in functional programming: a result known as the \emph{Curry-Howard
-  correspondence}. Unfortunately, we will not have time to study that here.
-
+A useful thing about constructive logics is that they correspond to
+type systems in functional programming: a result known as the
+\emph{Curry-Howard correspondence}. This is a rich source
+of ideas in programming languages. Unfortunately, we will not have
+time to study that here but it will appear at the end of CO545:
+\emph{Functional and Concurrent Programming}.
 
 \section{Algebraic properties of logic}
 \label{sec:algebraic}
 
-In Section~\ref{sec:bi-implication} we saw \emph{bi-implication} $\leftrightarrow$,
-a derived logical operator where:
+In Section~\ref{sec:bi-implication}, we saw \emph{bi-implication}
+$\leftrightarrow$, a derived logical operator where:
 %
 \begin{equation*}
 P \leftrightarrow Q \; \stackrel{\text{def}}{=} \; (P \rightarrow Q) \wedge (Q \rightarrow P)
 \end{equation*}
 %
-If there is a bi-implication between two formula then it means their
+If there is a bi-implication between two formulas then it means their
 truth tables are exactly the same and we can see the two formulas as
 equivalent. From the natural deduction rules (or from the truth
 tables) a number of general equivalences can be derived which give
@@ -897,7 +906,7 @@ The following lists a number of equivalences between general
 propositional formula which amounts to algebraic properties of
 conjunction and disjunction: \\
 
-\setlength{\tabcolsep}{0.5em}
+\setlength{\tabcolsep}{0.75em}
 \begin{tabular}{r|ll}
 \textbf{property} & conjunction & disjunction \\ \hline
   \emph{idempotence} & $P \wedge P = P$ & $P \vee P = P$ \\
@@ -910,14 +919,13 @@ conjunction and disjunction: \\
   \emph{annihilation} & $P \wedge \bot = \bot$ & $P \vee \top = \top$
 \end{tabular} \\[0.75em]
 %
-We will often refer to these as ``axioms'' though really we can derive
-them via natural deduction, or as ``algebraic laws''.
+We will often refer to these as ``algebraic laws'' or ``axioms''
+though we can derive them (prove them) via natural deduction.
 
-(Aside: you might like to think about other notions in mathematics that
-have similar axioms or a subset of these axioms, e.g. addition is
-commutative, associative, has $0$ as its unit, but is not idempotent
-and does not have an annihilator, unless we extend integers with
-$\infty$).
+(Aside: you might like to think about other notions in mathematics
+that have axioms of a similar form (or a subset of these axioms),
+e.g. integer addition is commutative, associative, has $0$ as its unit, but is
+not idempotent and does not have an annihilator).
 
 \begin{restatable}{exc}{unitality}
 Prove the algebraic property of unitality for conjunction, i.e.,
@@ -937,7 +945,7 @@ between $\wedge$ and $\vee$:
 \end{align*}
 %
 De Morgan's two laws give us a useful interaction between negation and
-conjunction and disjunction respectively:
+conjunction and disjunction:
 %
 \begin{align*}
 \textit{De Morgan's} \qquad & \neg (P \wedge Q) \, = \, \neg P \vee \neg Q \\
@@ -953,18 +961,19 @@ negation:
 \end{align*}
 %
 Note that the second complementation law here only hold in classical
-(non-constructive) logic (which we study here primarily) where we
+(non-constructive) logic (which is what we primarily study here) where we
 allow the law of excluded middle, derived from double-negation
 elimination. Relatedly, the following law, known as ``involution''
-only holds when we have double negation elimination:
+only holds when we have double negation elimination in our logic:
 %
 \begin{align*}
 \textit{involution} \qquad & \neg\neg P \, = \, P
 \end{align*}
 %
-This notion of equivalence, given by the operator $=$, is a
-\emph{congruence} with respect to all the operators of logic.
-This means that if we have an equivalence between two formula
+This notion of equivalence, given by the operator $=$, is symmetric,
+transitive, reflexive, and a
+\emph{congruence} with respect to all the operators of
+logic. This means that if we have an equivalence between two formula
 we can get an equivalence between larger formulas by
 ``plugging'' the first equivalence into a template for a formula.
 For example, we get the following congruence property for conjunction:
@@ -984,7 +993,7 @@ equivalences to ``rewrite'' parts of a propositional formula.
 We can then given \emph{equational proofs} that
 some formula $P$ is equivalent to another formula $Q$
 by applying  algebraic laws one at a time, possibly
-to subparts of a formula.
+to subparts of formulas.
 
 \begin{example}
   Prove that $P \vee (Q \wedge \neg P) = Q \vee P$.
@@ -1006,71 +1015,6 @@ to subparts of a formula.
 Prove that $P \wedge \neg(P \wedge Q) = P \wedge \neg Q$.
 \end{restatable}
 
-\section{Collected rules of natural deduction}
-
-\vspace{2em}
-
-\setlength{\tabcolsep}{1.54em}
-\renewcommand{\arraystretch}{1}
-\begin{longtable}{r||c|c}
- & \textit{Introduction} & \textit{Elimination} \\[0.5em] \hline \hline
-  $\wedge$
-& \rule{0cm}{0.75cm} $\dfrac{P \qquad Q}
-         {P \wedge Q} \; {\wedge_i}$
-& $\dfrac{P \wedge Q}
-        {P} \; {\wedge_{e1}}
-  \qquad
-      \dfrac{P \wedge Q}
-  {Q} \; {\wedge_{e2}}$ \\[-0.5em] & & \\ \hline
-  %%%%%%%%%%%
-  $\vee$
-& $\begin{array}{c}\dfrac{P}
-  {P \vee Q} \; {\vee_{i1}}
-  \qquad
-    \dfrac{Q}
-  {P \vee Q} \; {\vee_{i2}}\\[3.25em]\end{array}$
-& \rule{0cm}{2.15cm} $\setlength{\arraycolsep}{0em}
-\dfrac{\begin{array}{c} \\ \\[0.7em] P \vee Q\end{array} \quad
-\fbox{$\begin{array}{c} P \\ \vdots \\ R\end{array}$}
-\quad
-\fbox{$\begin{array}{c} Q \\ \vdots \\ R\end{array}$}}{R}
-\;
-{\vee_e}$ \\[-0.5em] & & \\ \hline
-  %%%%%%%%%%%
-  $\rightarrow$
- & \rule{0cm}{2.15cm} $\setlength{\arraycolsep}{0em}\dfrac{\fbox{$\begin{array}{c} P \\ \vdots \\ Q\end{array}$}}
-      {P \rightarrow Q} {\rightarrow_i}$
- & $\begin{array}{c}\dfrac{P \rightarrow Q \qquad P}{Q}
-      {\rightarrow_e} \\[3em]\end{array}$
-  \\[-0.5em] & & \\ \hline
-  $\neg$
- & \rule{0cm}{2.15cm}
-   $\setlength{\arraycolsep}{0em}\dfrac{\fbox{$\begin{array}{c} P \\ \vdots \\ \bot\end{array}$}}
-  {\neg P} \; {\neg_i}$
- & $\begin{array}{c}\dfrac{P \qquad \neg P}{\bot} {\neg_e}
-      \\[3em] \end{array}$ \\[-0.5em] & & \\ \hline
-  $\top$
-& \rule{0cm}{0.75cm}$\dfrac{\qquad}{\top} \; {\top_i}$ \\[-0.5em] & &
-  \\ \hline
-  $\bot$
- & & \rule{0cm}{0.75cm}$\dfrac{\bot}{P} \; {\bot_e}$ \\[-0.5em] & & \\
-  \hline
-   $\neg\neg$
- & \rule{0cm}{0.75cm}{\textcolor{gray}{(derivable: $\dfrac{P}{\neg \neg P} \;\; {\neg\neg_i}$)}}  & \rule{0cm}{0.75cm}$\dfrac{\neg \neg P}{P} \;\; {\neg\neg_e}$
-\end{longtable}
-
-\vspace{3em}
-
-\noindent
-These are all the rules we have and need for propositional proofs. You
-should aim to know all of the above rules by the end of the
-course/exam.
-
-We derived other useful inference rules from these rules, like modus
-tollens, proof-by-contradiction, and law-of-excluded-middle. They
-are useful to know but the table above gives the essential rules
-for propositional proofs.
-
 \section{Exercises}
 
   This section collects together the exercises given so far. They may
@@ -1088,26 +1032,84 @@ for propositional proofs.
   \unitality*
   \equational*
 
+\section{Collected rules of natural deduction}
+
+\vspace{-1em}
+\setlength{\tabcolsep}{1.54em}
+\renewcommand{\arraystretch}{1}
+\begin{longtable}{r||c|c}
+ & \textit{Introduction} & \textit{Elimination} \\[0.5em] \hline \hline
+  $\wedge$
+& \rule{0cm}{0.75cm} $\dfrac{P \qquad Q}
+         {P \wedge Q} \; {\wedge_i}$
+& $\dfrac{P \wedge Q}
+        {P} \; {\wedge_{e1}}
+  \qquad
+      \dfrac{P \wedge Q}
+  {Q} \; {\wedge_{e2}}$ \\[-0.4em] & & \\ \hline
+  %%%%%%%%%%%
+  $\vee$
+& $\begin{array}{c}\dfrac{P}
+  {P \vee Q} \; {\vee_{i1}}
+  \qquad
+    \dfrac{Q}
+  {P \vee Q} \; {\vee_{i2}}\\[3.25em]\end{array}$
+& \rule{0cm}{2.15cm} $\setlength{\arraycolsep}{0em}
+\dfrac{\begin{array}{c} \\ \\[0.7em] P \vee Q\end{array} \quad
+\fbox{$\begin{array}{c} P \\ \vdots \\ R\end{array}$}
+\quad
+\fbox{$\begin{array}{c} Q \\ \vdots \\ R\end{array}$}}{R}
+\;
+{\vee_e}$ \\[-0.4em] & & \\ \hline
+  %%%%%%%%%%%
+  $\rightarrow$
+ & \rule{0cm}{2.15cm} $\setlength{\arraycolsep}{0em}\dfrac{\fbox{$\begin{array}{c} P \\ \vdots \\ Q\end{array}$}}
+      {P \rightarrow Q} {\rightarrow_i}$
+ & $\begin{array}{c}\dfrac{P \rightarrow Q \qquad P}{Q}
+      {\rightarrow_e} \\[3em]\end{array}$
+  \\[-0.4em] & & \\ \hline
+  $\neg$
+ & \rule{0cm}{2.15cm}
+   $\setlength{\arraycolsep}{0em}\dfrac{\fbox{$\begin{array}{c} P \\ \vdots \\ \bot\end{array}$}}
+  {\neg P} \; {\neg_i}$
+ & $\begin{array}{c}\dfrac{P \qquad \neg P}{\bot} {\neg_e}
+      \\[3em] \end{array}$ \\[-0.4em] & & \\ \hline
+  $\top$
+& \rule{0cm}{0.75cm}$\dfrac{\qquad}{\top} \; {\top_i}$ \\[-0.4em] & &
+  \\ \hline
+  $\bot$
+ & & \rule{0cm}{0.75cm}$\dfrac{\bot}{P} \; {\bot_e}$ \\[-0.4em] & & \\
+  \hline
+   $\neg\neg$
+ & \rule{0cm}{0.75cm}{\textcolor{gray}{(derivable: $\dfrac{P}{\neg \neg P} \;\; {\neg\neg_i}$)}}  & \rule{0cm}{0.75cm}$\dfrac{\neg \neg P}{P} \;\; {\neg\neg_e}$
+\end{longtable}
+
+\vspace{0em}
+
+\noindent
+These are all the rules we have and need for propositional proofs. You
+should aim to know all of the above rules by the end of the
+course/exam.
+
+We derived other useful inference rules from these rules, like modus
+tollens, proof-by-contradiction, and law-of-excluded-middle. They
+are useful to know but the table above gives the essential rules
+for propositional proofs.
+
+
+
 \section*{Appendix: Sequent-style natural deduction}
 \label{app:sequent}
 
 Recall from Section~\ref{sec:entailment} that
 a sequent is a compact representation of a formula $P$ along with
 any assumptions used to deduce it, written in the form:
-%
-\begin{equation*}
-P_1, \ldots, P_n \vdash P
-\end{equation*}
-%
+$P_1, \ldots, P_n \vdash P$.
 The turnstile symbol $\vdash$ is read as \emph{entails} and the premises to the left are
 called the \emph{context} of assumed formulas (or \emph{assumptions}). The right-hand side is
-the \emph{conclusion}.  For example, the following
-judgment captures the idea of conjunction introduction:
-%
-\begin{equation*}
-P, Q \vdash P \wedge Q
-\end{equation*}
-%
+the \emph{conclusion}.  For example, the
+judgment $P, Q \vdash P \wedge Q$ captures the idea of conjunction introduction.
+
 An alternate formulation of natural deduction gives the usual
 introduction and elimination rules in sequent form, making explicit
 the assumption context of the formula. This sequent-style of natural
@@ -1131,8 +1133,8 @@ gamma)\footnote{Gamma $\Gamma$ is the third letter of the Greek
   some getting used to.} then we can conclude $P$.  This is similar to
 the idea of copying in Fitch-style proofs.
 
-The order of assumptions on the left of $\vdash$ is not important (we
-can freely move assumptions around).  The sequent style captures that
+The order of assumptions on the left of $\vdash$ is not important.
+The sequent style captures that
 there may be other assumptions $\Gamma$ in scope.  A meta rule says
 that we can add arbitrary redundant assumptions into our context
 (called \emph{weakening}):
@@ -1144,17 +1146,16 @@ that we can add arbitrary redundant assumptions into our context
   %
 This is useful when we have two subproofs that we want to
 make have the same set of assumptions (see below). The rest
-of the rules are the introduction and elimination rules
-for operators.
+of the rules are introduction and elimination rules.
 
 \paragraph{Conjunction}
-%
+
 \begin{align*}
-\dfrac{\Gamma \vdash P \quad \Gamma \vdash Q}{\Gamma \vdash P \wedge
+\dfrac{\Gamma \vdash P \quad\; \Gamma \vdash Q}{\Gamma \vdash P \wedge
   Q} {\wedge_i}
-\quad
+\quad\;
 \dfrac{\Gamma \vdash P \wedge Q}{\Gamma \vdash P} {\wedge_{e1}}
-\quad
+\quad\;
 \dfrac{\Gamma \vdash P \wedge Q}{\Gamma \vdash Q} {\wedge_{e2}}
 \end{align*}
 %
@@ -1168,18 +1169,18 @@ two premises, weakening (above) can be applied so that they match.
 \begin{align*}
 \dfrac{\Gamma \vdash P}
       {\Gamma \vdash P \vee Q}  {\vee_{i1}}
-\quad
+\quad\;
 \dfrac{\Gamma \vdash Q}
       {\Gamma \vdash P \vee Q} {\vee_{i2}}
-\quad
+\quad\;
 \dfrac{\Gamma \vdash P \vee Q
-  \quad \Gamma, P \vdash R
-  \quad \Gamma, Q \vdash R}
+  \quad\; \Gamma, P \vdash R
+  \quad\; \Gamma, Q \vdash R}
       {\Gamma \vdash R} {\vee_{e}}
 \end{align*}
 %
-The disjunction elimination rule is much less unruly than the previous
-formulation, but has the same meaning. Note, we are now extending the
+Disjunction elimination is less unruly than the previous
+formulation, but has the same meaning. Note, we extend the
 context of assumptions with $P$ and $Q$ in the last two premises.
 
 \paragraph{Implication}
@@ -1187,7 +1188,7 @@ context of assumptions with $P$ and $Q$ in the last two premises.
 \begin{align*}
 \dfrac{\Gamma \vdash A \rightarrow B \quad \Gamma \vdash A}
       {\Gamma \vdash B} {\rightarrow_e}
-\quad
+\quad\;
 \dfrac{\Gamma, A \vdash B}{\Gamma \vdash A \rightarrow B}
  {\rightarrow_i}
 \end{align*}
@@ -1207,7 +1208,7 @@ in this style:
 \begin{align*}
   \dfrac{\Gamma, P \vdash \bot}{\Gamma \vdash \neg P} {\neg_i}
   \qquad
-  \dfrac{\Gamma \vdash P \; \Gamma \vdash \neg P}{\Gamma \vdash \bot} {\neg_e}
+  \dfrac{\Gamma \vdash P \quad \Gamma \vdash \neg P}{\Gamma \vdash \bot} {\neg_e}
   \qquad
   \dfrac{\Gamma \vdash \bot}{\Gamma \vdash P} {\bot_e}
   \qquad
