@@ -1,0 +1,39 @@
+# September 13, 2018
+
+	- All notes unified into a single document.
+	- Various fixes to typos and grammar.
+	- Description of pure-literal elimination had a mistake.
+	- Added section on algebraic properties of logic.
+
+# May 2, 2018
+
+	- Part A. Previously Exercise 1.7 could not be done using natural deduction
+	(previously: Prove P -> not P is not valid)
+	The preceding remark also contained a mistake.
+	I have fixed the preceding remark, added a different Exercise 1.7,
+	and explained the previous exercise in a remark after the new
+	Exercise 1.7.
+
+	- Part A. Minor typo fixed at the end of the appendix in rule bot_e
+
+# October 12, 2017
+
+	- Part C. page 3, 2nd line, (P ∨Q)∨R  should be (P ∧Q)∨R
+
+# October 9, 2017
+
+	- Part C. Mistake on the first page: "b to false" corrected to "b to true".
+
+# Afternoon of Septemer 28, 2017
+
+	- Part A. Fixed incorrect labels in Example 2
+	(thanks to someone in lecture for pointing this out)
+	- Part A. Added a short note on line numbers in labels just before exercise 1.2.
+
+# September 28, 2017
+
+	- Part A. Couple of grammatical errors fixed
+
+# September 27, 2017
+
+	- First version!
