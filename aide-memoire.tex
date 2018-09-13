@@ -1,0 +1,53 @@
+\documentclass[a4paper]{article}
+
+\usepackage[table,x11names]{xcolor}
+\usepackage{afterpage}
+\usepackage{colortbl}
+\usepackage{forloop}
+\usepackage{geometry}
+
+\begin{document}
+
+\afterpage{
+  \newgeometry{bottom=0cm,top=1.5cm,left=1.5cm,right=1.5cm}
+\thispagestyle{empty}
+
+\section*{Aide-m\'{e}moire}
+
+\noindent
+Write down any terms, symbols, concepts, techniques, etc. that
+you don't yet understand or would like to grasp better.
+You can cross these out (and move them to the right-hand column) as you make progress:
+it might be 5 minutes after you first write the
+item down here, or it might be 5 minutes before the exam.
+This will help you to keep a record of the things you
+need to work on.
+
+% Set column and row heights
+\setlength{\tabcolsep}{0.9em}
+\renewcommand{\arraystretch}{1.85}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+  \textbf{Things I don't understand yet} &
+  \textbf{Things I need to get better at} &
+  \textbf{Things I'm getting the hang of} \\ \hline
+
+  % Create the lines
+  \newcounter{loop}
+  \forloop{loop}{1}{\value{loop}<29}{& & \\ \arrayrulecolor{gray}\hline}
+  & &
+\end{tabular}
+\end{center}
+
+\clearpage
+\restoregeometry
+}
+
+\end{document}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
