@@ -10,29 +10,37 @@ import Sat
 -}
 
 -- Examples
+
+-- x & ~x
 contradict = [[Positive "x"], [Negative "x"]]
 
+-- x v ~x
 taut = [[Positive "x", Negative "x"]]
 
+-- (x v ~y) & (y v z) & (~z v ~x)
 example =
     [[Positive "x", Negative "y"],
      [Positive "y", Positive "z"],
      [Negative "z", Negative "x"]]
 
+-- (x v ~y) & (~x & y)
 example0 =
     [[Positive "x", Negative "y"],
      [Negative "x", Positive "y"]]
 
+-- (a v b) & (~a v b)
 example1 =
     [[Positive "a", Positive "b"]
     ,[Negative "a", Positive "b"]]
 
+-- (a v b v c) & (~a v b v c) & (~a v ~b v c) & (~a v ~b v ~c)
 example2 =
     [[Positive "a", Positive "b", Positive "c"]
     ,[Negative "a", Positive "b", Positive "c"]
     ,[Negative "a", Negative "b", Positive "c"]
     ,[Negative "a", Negative "b", Negative "c"]]
 
+-- (a v b v c) & (~a v b v c) & (~a v ~b v c)
 example3 =
     [[Positive "a", Positive "b", Positive "c"]
     ,[Negative "a", Positive "b", Positive "c"]
