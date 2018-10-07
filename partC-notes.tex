@@ -527,8 +527,8 @@ There are no units or pure literals so we move to step 4.
 %
 \begin{longtable}{c|c}
 %%%%
-$\{r = \top\}$  & $\{r = \bot\}$ \\[0.5em]
-yielding: & yielding: \\[0.5em]
+$\{r = \top\}$  & $\{r = \bot\}$ \\[0.0em]
+yielding: & yielding: \\[0.0em]
 $\begin{array}{ll}
 & (\neg \top \vee g') \wedge (\neg \top \vee \neg r')
   \wedge \\
@@ -545,9 +545,9 @@ $\begin{array}{ll}
   g') \wedge (\neg g \vee r') \wedge \\
 & (\bot \vee g) \wedge (\neg \bot \vee \neg g) \wedge \\
 & (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$ \\[3em]
+ \end{array}$ \\[0em]
 %%%%%%%%
-which simplifies to & which simplifies to \\[1em]
+which simplifies to & which simplifies to \\[0em]
 $\begin{array}{ll}
 & {g'} \wedge (\neg r') \wedge (\neg g \vee \neg
   g') \wedge \\
@@ -560,7 +560,7 @@ $\begin{array}{ll}
 & {(g)} \wedge (\neg r' \vee g') \wedge (\neg g' \vee r')
  \end{array}$  \\ \hline \\[-1em]
   \textit{1. Unit propagation} on the unit $g'$ &
-  \textit{1. Unit propagation} on the unit $g$ \\
+  \textit{1. Unit propagation} on the unit $g$ \\[0em]
 $\begin{array}{ll}
 & \highlight{g'} \wedge (\neg r') \wedge (\neg g \vee \neg
   g') \wedge \\
@@ -572,7 +572,7 @@ $\begin{array}{ll}
 & \highlight{(g)} \wedge (\neg r' \vee g') \wedge (\neg g' \vee r')
  \end{array}$ \\
 yields assignment $\{g' = \top\}$ giving
-& yields assignment $\{g = \top\}$ giving \\[1em]
+& yields assignment $\{g = \top\}$ giving \\[0em]
   %%%%%%%
 $\begin{array}{ll}
 & {(\neg r')} \,\wedge\, (\neg g) \,\wedge\, \\
@@ -583,7 +583,7 @@ $\begin{array}{ll}
 $\begin{array}{ll}
 & {(\neg g')} \,\wedge\, (r') \,\wedge\, \\
 & (\neg r' \vee g') \,\wedge\, (\neg g' \vee r')
- \end{array}$ \\[2em]
+ \end{array}$ \\[0em]
   \textit{1. Unit propagation:} on the unit $\neg r'$ &
   \textit{1. Unit propagation:} on the unit $\neg g'$ \\
 $\begin{array}{ll}
@@ -595,9 +595,9 @@ $\begin{array}{ll}
 $\begin{array}{ll}
 & \highlight{(\neg g')} \,\wedge\, (r') \,\wedge\, \\
 & (\neg r' \vee g') \,\wedge\, (\neg g' \vee r')
- \end{array}$ \\[2em]
+ \end{array}$ \\[1em]
 yields assignment $\{r' = \bot \}$ giving &
-yields assignment $\{g' = \bot\}$ giving \\[1em]
+yields assignment $\{g' = \bot\}$ giving \\[0em]
   %%%%%%%
 $\begin{array}{ll}
 & (\neg g) \wedge (\neg g) \wedge (\neg g) \wedge \bot
