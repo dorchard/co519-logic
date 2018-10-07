@@ -1037,51 +1037,78 @@ Prove that $P \wedge \neg(P \wedge Q) = P \wedge \neg Q$.
 \vspace{-1em}
 \setlength{\tabcolsep}{1.54em}
 \renewcommand{\arraystretch}{1}
+
 \begin{longtable}{r||c|c}
- & \textit{Introduction} & \textit{Elimination} \\[0.5em] \hline \hline
+& \textit{Introduction} & \textit{Elimination} \\[0.5em] \hline \hline
+
   $\wedge$
-& \rule{0cm}{0.75cm} $\dfrac{P \qquad Q}
-         {P \wedge Q} \; {\wedge_i}$
-& $\dfrac{P \wedge Q}
-        {P} \; {\wedge_{e1}}
-  \qquad
-      \dfrac{P \wedge Q}
-  {Q} \; {\wedge_{e2}}$ \\[-0.4em] & & \\ \hline
+    & \rule{0cm}{0.75cm}
+      $\dfrac{P \qquad Q} {P \wedge Q} \; {\wedge_i}$
+    &
+      $\dfrac{P \wedge Q} {P} \; {\wedge_{e1}}
+      \qquad
+      \dfrac{P \wedge Q} {Q} \; {\wedge_{e2}}$ \\[-0.4em]
+    & & \\ \hline
+
   %%%%%%%%%%%
+
   $\vee$
-& $\begin{array}{c}\dfrac{P}
-  {P \vee Q} \; {\vee_{i1}}
-  \qquad
-    \dfrac{Q}
-  {P \vee Q} \; {\vee_{i2}}\\[3.25em]\end{array}$
-& \rule{0cm}{2.15cm} $\setlength{\arraycolsep}{0em}
-\dfrac{\begin{array}{c} \\ \\[0.7em] P \vee Q\end{array} \quad
-\fbox{$\begin{array}{c} P \\ \vdots \\ R\end{array}$}
-\quad
-\fbox{$\begin{array}{c} Q \\ \vdots \\ R\end{array}$}}{R}
-\;
-{\vee_e}$ \\[-0.4em] & & \\ \hline
+    &
+      $\begin{array}{c}\dfrac{P} {P \vee Q} \; {\vee_{i1}}
+      \qquad
+      \dfrac{Q} {P \vee Q} \; {\vee_{i2}}\\[3.25em]\end{array}$
+    & \rule{0cm}{2.14cm}
+      $\setlength{\arraycolsep}{0em} \dfrac{\begin{array}{c} \\ \\[0.7em] P \vee Q\end{array}
+      \quad
+      \fbox{$\begin{array}{c} P \\ \vdots \\ R\end{array}$}
+      \quad
+      \fbox{$\begin{array}{c} Q \\ \vdots \\ R\end{array}$}}{R} \; {\vee_e}$ \\[-1.4em]
+    & & \\ \hline
+
   %%%%%%%%%%%
+
   $\rightarrow$
- & \rule{0cm}{2.15cm} $\setlength{\arraycolsep}{0em}\dfrac{\fbox{$\begin{array}{c} P \\ \vdots \\ Q\end{array}$}}
+    &
+      \rule{0cm}{2.15cm} $\setlength{\arraycolsep}{0em}
+      \dfrac{\fbox{$\begin{array}{c} P \\ \vdots \\ Q\end{array}$}}
       {P \rightarrow Q} {\rightarrow_i}$
- & $\begin{array}{c}\dfrac{P \rightarrow Q \qquad P}{Q}
-      {\rightarrow_e} \\[3em]\end{array}$
-  \\[-0.4em] & & \\ \hline
+    &
+      $\begin{array}{c}\dfrac{P \rightarrow Q \qquad P}{Q}
+      {\rightarrow_e} \\[3em]\end{array}$ \\[-1.4em]
+    & & \\ \hline
+
+  %%%%%%%%%%%
+
   $\neg$
- & \rule{0cm}{2.15cm}
-   $\setlength{\arraycolsep}{0em}\dfrac{\fbox{$\begin{array}{c} P \\ \vdots \\ \bot\end{array}$}}
-  {\neg P} \; {\neg_i}$
- & $\begin{array}{c}\dfrac{P \qquad \neg P}{\bot} {\neg_e}
-      \\[3em] \end{array}$ \\[-0.4em] & & \\ \hline
+    & \rule{0cm}{2.15cm}
+      $\setlength{\arraycolsep}{0em}\dfrac{\fbox{$\begin{array}{c} P
+      \\ \vdots \\ \bot\end{array}$}} {\neg P} \; {\neg_i}$
+    &
+      $\begin{array}{c}\dfrac{P \qquad \neg P}{\bot} {\neg_e}
+      \\[3em] \end{array}$ \\[-1.4em]
+    & & \\ \hline
+
+  %%%%%%%%%%%
+
   $\top$
-& \rule{0cm}{0.75cm}$\dfrac{\qquad}{\top} \; {\top_i}$ \\[-0.4em] & &
-  \\ \hline
+    & \rule{0cm}{0.5cm}
+      $\dfrac{\qquad}{\top} \; {\top_i}$ \\[-0.4em]
+    & & \\ \hline
+
+  %%%%%%%%%%%
+
   $\bot$
- & & \rule{0cm}{0.75cm}$\dfrac{\bot}{P} \; {\bot_e}$ \\[-0.4em] & & \\
-  \hline
+    & & \rule{0cm}{0.75cm}
+      $\dfrac{\bot}{P} \; {\bot_e}$ \\[-0.4em]
+    & & \\ \hline
+
+  %%%%%%%%%%%
+
    $\neg\neg$
- & \rule{0cm}{0.75cm}{\textcolor{gray}{(derivable: $\dfrac{P}{\neg \neg P} \;\; {\neg\neg_i}$)}}  & \rule{0cm}{0.75cm}$\dfrac{\neg \neg P}{P} \;\; {\neg\neg_e}$
+    & \rule{0cm}{0.75cm}
+      {\textcolor{gray}{(derivable: $\dfrac{P}{\neg \neg P} \;\; {\neg\neg_i}$)}}
+    & \rule{0cm}{0.75cm}
+      $\dfrac{\neg \neg P}{P} \;\; {\neg\neg_e}$
 \end{longtable}
 
 \vspace{0em}
