@@ -283,12 +283,7 @@ gets inadvertently bound.
 
   \begin{logicproof}{2}
     \forall x . (\rel{P}(x) \rightarrow Q) & premise \\
-    \begin{subproof}
-      \rel{P}(t) & assumption \\
-      \rel{P}(t) \rightarrow Q & $\forall_e$ 1 \\
-      Q & $\rightarrow_e$ 3, 2
-    \end{subproof}
-    \rel{P}(t) \rightarrow Q & $\rightarrow_i\,$ 2-4 $\qquad \Box$
+    \rel{P}(t) \rightarrow Q & $\forall_e$ 1 $\qquad \Box$
   \end{logicproof}
 \end{example}
 
