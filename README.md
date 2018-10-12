@@ -14,5 +14,6 @@ Thanks to the following people for contributing fixes:
 * Peter Lloyd
 * Ben Orchard
 * Joanna Sharrad
+* U-ways
 
 Thanks to Scott Owens for the traffic light pictures from a previous incarnation of CO519.
