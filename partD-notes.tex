@@ -72,9 +72,9 @@ $$
 \neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x))
 $$
 We will do this later once we have explained more about the
-meta-theory of the logic.
+meta theory of the logic.
 
-\section{Key concepts (meta-theory) of first-order-logic}
+\section{Key concepts (meta theory) of first-order-logic}
 
 \subsection{Names and binding}
 
@@ -198,7 +198,7 @@ in terms of the propositional logic connectives.
 
 Universal quantification essentially generalises conjunction.  That
 is, if the objects in the universe over which we are quantifying are
-$a_0, a_1, \ldots a_n \in \mathcal{U}$ then universal quantification
+$a_0, a_1, \ldots, a_n \in \mathcal{U}$ then universal quantification
 of $x$ over a formula $P$ is equivalent to taking the repeated
 conjunction of $P$, substituting each object for $x$, \ie{}
 %
@@ -217,7 +217,7 @@ Note that there may be an infinite number of such objects.
 Whilst universal quantification generalises conjunction,
 existential quantification generalises disjunction.
 If existential quantification binds a variable ranging
-over objects $a_0, a_1 ... a_n$ then
+over objects $a_0, a_1, \ldots, a_n \in \mathcal{U}$ then:
 %
 \begin{equation}
 \exists x . P = P[a_0/x] \vee P[a_1/x] \vee
@@ -321,8 +321,8 @@ the following equalities:
   \exists x . \exists y . P \equiv \exists y . \exists x . P
 \end{align}
 %
-Note however, that these equalities are only when the quantifications
-are the same; $\forall x . \exists y . P$ is not the same as
+Note however that these equalities are only for quantifications that
+are of the same kind; $\forall x . \exists y . P$ is not equivalent to
 $\exists y . \forall x . P$.
 The rest of the equations capture interaction between quantification
 and the other propositional connectives:
