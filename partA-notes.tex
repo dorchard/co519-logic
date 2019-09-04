@@ -230,16 +230,17 @@ The following exercise is to prove the converse of the above property.
 This proof, and the one above, together imply that conjunction
 $\wedge$ is \emph{associative}, \ie{},
 $P \wedge (Q \wedge R) = (P \wedge Q) \wedge R$. We come back
-to such equations on formula in Section~\ref{sec:algebraic}.
+to such equations on formulas in Section~\ref{sec:algebraic}.
 
 \paragraph{Fitch-style proof}
 So far we have constructed proofs by stacking natural
 deduction inference rules on top of each other. This leads us towards a
 \emph{bottom-up} proof strategy starting with the goal and working up
-towards the premises. In this course we are going to mostly use a more
-\emph{top-down} approach called ``Fitch-style''. This style begins
+towards the premises. In this course, we use a different
+approach called ``Fitch-style''. This style begins
 with assumptions, numbers each line of a proof, and uses indentation
 and boxes to represent sub-proofs and the scope of their assumptions.
+%You can work both bottom-up and top-down in this approach.
 
 The previous proof tree is rewritten in the following way in Fitch notation:
 %
@@ -253,12 +254,14 @@ The previous proof tree is rewritten in the following way in Fitch notation:
     (P \wedge Q) \wedge R & $\wedge_i$ 6, 5 $\quad \Box$
   \end{logicproof}
 %
-  The proof follows in a number of linear steps. On the left we number
-  each line of the argument. On the right, we explain which rule was
-  applied to which formula, \eg{}, on the second line we have
-  applied conjunction elimination $\wedge_{e1}$ to line $1$ to get the
+  The proof follows in a number of linear steps. On the left, we number
+  each line of the proof. On the right, we explain which rule was
+  applied to which formulas as premises, \eg{}, on the second line we have
+  applied conjunction elimination $\wedge_{e1}$ taking line $1$ as the
+  premise, concluding with the
   formula $P$. Or for example, on line 6, conjunction introduction is
-  applied to lines 2 and 4 to get $P \wedge Q$.  We finish on line
+  applied to lines 2 and 4 (i.e., they are taken as the premises of
+  the rule) to get $P \wedge Q$.  We finish on line
   7 with our goal, which is marked with $\Box$ which is a way of
   saying the proof is finished and we've reached our goal
   (the symbol means $Q.E.D$ which is an abbreviation of
@@ -289,7 +292,7 @@ middle. You can do this by putting the goal near a bottom of a piece
 of paper, giving enough space to meet in the middle. You can sort out
 the numbering afterwards.
 
-It doesn't matter if things get messy--- the primary goal is to reach a
+It doesn't matter if things get messy---the primary goal is to reach a
 proof. You can rewrite it afterwards to be more clear; you should
 do so in your class work and assessments.
 \end{remark}
@@ -1098,7 +1101,7 @@ for propositional proofs.
 
 
 
-\section*{Appendix: Sequent-style natural deduction}
+\section*{Appendix: Sequent-style natural deduction {\small{(not examined)}}}
 \label{app:sequent}
 
 Recall from Section~\ref{sec:entailment} that

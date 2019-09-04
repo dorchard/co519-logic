@@ -9,15 +9,17 @@
 
 
 First-order logic (also called \emph{predicate logic}) extends
-propositional logic with quantification: existential quantification
+propositional logic with \emph{quantification}: existential quantification
 $\exists$ (``\emph{there exists}'') and universal quantification
-$\forall$ (``\emph{for all}'').  First-order logic also allows
-relations, predicates (unary relations, also called \emph{classifiers}) and
-functions to be used, which are
-domain-specific for whatever purpose the logic is being used and may
-be defined externally. An underlying \emph{universe} (set of elements) is fixed
-over which quantified variables range and on which predicates,
-relations, and functions operate.
+$\forall$ (``\emph{for all}''). A quantification $\forall x$
+binds a variable $x$ which range over the elements of some underlying
+\emph{universe} which is external to the logic, e.g., quantifying
+over all people or objects.  First-order logic also
+allows the use of relations, predicates (unary relations, also called
+\emph{classifiers}) and functions, operating
+over elements of the universe, which can
+be defined externally and are
+domain-specific for whatever purpose the logic is being used.
 
 Consider the following sentence:
 %
@@ -27,11 +29,11 @@ Consider the following sentence:
 %
 We can capture this in first-order logic using quantification and
 unary predicates. Let our universe be ``animals''
-over which we abstractly define two predicates:
+over which we informally define two predicates:
 %
 \begin{align*}
-  \rel{B}(x) &\stackrel{\text{def}}{=} \textit{$x$ is a bird} \\
-  \rel{F}(x) & \stackrel{\text{def}}{=} \textit{$x$ can fly}
+  \rel{B}(x)\ & \stackrel{\text{def}}{=}\ \textit{$x$ is a bird} \\
+  \rel{F}(x)\ & \stackrel{\text{def}}{=}\ \textit{$x$ can fly}
 \end{align*}
 %
 As with propositional logic, we are studying the process and framework
@@ -57,9 +59,8 @@ that there are some birds which cannot fly:
 \end{equation}
 %
 If we have a universe and semantics for $\rel{B}$ and $\rel{F}$ that includes, for
-example, penguins then both \eqref{eq:nonflying1} and
+example, penguins, then both \eqref{eq:nonflying1} and
 \eqref{eq:nonflying2} will be true.
-
 We can prove that \eqref{eq:nonflying1} and
 \eqref{eq:nonflying2} are equivalent in first-order logic via two
 proofs, one for:
@@ -71,10 +72,9 @@ $$
 \neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x))
 $$
 We will do this later once we have explained more about the
-meta-theory of the logic, as well as the introduction and elimination
-rules for quantification.
+meta-theory of the logic.
 
-\section{Natural deduction for first-order logic}
+\section{Key concepts (meta-theory) of first-order-logic}
 
 \subsection{Names and binding}
 
@@ -185,14 +185,16 @@ affects the free $x$:
 \end{equation*}
 %
 In general, it is best practice to give each bound variable a different name
-to all other free and bound names in a formula in order to avoid confusion.
+to all other free and bound names in a formula in order to avoid
+confusion.
 
-\subsection{Natural deduction rules}
+\subsection{The meaning of quantification}
+\label{subsec:quantifier-meaning}
 
-As with propositional logic, there are elimination and introduction
-rules for the additional logical operators of first-order logic.
+We can define the meaning of universal and existential quantification
+in terms of the propositional logic connectives.
 
-\subsubsection{Universal quantification $\forall$ (\emph{for all})}
+\paragraph{Universal quantification}
 
 Universal quantification essentially generalises conjunction.  That
 is, if the objects in the universe over which we are quantifying are
@@ -210,8 +212,182 @@ Thus, $\forall x . P$ means that we want $P$ to be true for
 all the objects in the universe being used.
 Note that there may be an infinite number of such objects.
 
-The notion of universal quantification as generalised conjunction
-helps us to understand the elimination and introduction rules for universal
+\paragraph{Existential quantification}
+
+Whilst universal quantification generalises conjunction,
+existential quantification generalises disjunction.
+If existential quantification binds a variable ranging
+over objects $a_0, a_1 ... a_n$ then
+%
+\begin{equation}
+\exists x . P = P[a_0/x] \vee P[a_1/x] \vee
+\ldots \vee P[a_{n}/x]
+\label{eq:exists-meaning}
+\end{equation}
+%
+Thus, existential quantification is equivalent to the repeated
+disjunction of the formula $P$ with each object in the universe
+replacing $x$.
+
+
+
+\subsection{Defining models/universes}
+
+First-order logic can be instantiated for particular concrete tasks by
+defining a universe $\mathcal{U}$ (a set of elements) and any
+relations, functions, and predicates over this universe.
+
+For example, we could define
+$\mathcal{U} = \{\mathsf{cat}, \mathsf{dog}, \mathsf{ant},
+\mathsf{chair}\}$ meaning that when we write quantified formulas like
+$\forall x . P$ (for some formula $P$) then $x$ refers to any of the things in
+$\mathcal{U}$ (i.e., $x \in \mathcal{U}$). We could then concretely
+define some functions and predicates. For example, let's define a function
+$\mathsf{legs}$ which maps from $\mathcal{U}$ to $\mathbb{N}$ (i.e.,
+$\mathsf{legs} : \mathcal{U} \rightarrow \mathbb{N}$) as:
+%
+\begin{align*}
+  \mathsf{legs}(\mathsf{cat}) = 4 \qquad \mathsf{legs}(\mathsf{dog}) = 4 \qquad
+  \mathsf{legs}(\mathsf{ant}) = 6 \qquad \mathsf{legs}(\mathsf{chair}) = 4
+\end{align*}
+%
+We can define predicates by listing all their true instances. For
+example, $\mathsf{mammal}$ classifies some members
+of $\mathcal{U}$, defined via a proposition that lists all the true
+instances as a conjunction:
+%
+\begin{align*}
+  \mathsf{mammal}(\mathsf{cat})\ \wedge\
+  \mathsf{mammal}(\mathsf{dog})
+\end{align*}
+%
+Let's consider some true formulas in this instantiation of first-order
+logic:
+%
+\begin{align*}
+  \begin{array}{ll}
+  \vdash \forall x . \mathsf{mammal}(x) \rightarrow (\mathsf{legs}(x) = 4) &
+\quad (\textit{every mammal has four legs}) \\
+  \vdash \exists x . \mathsf{legs}(x) < 4 &
+\quad (\textit{there is something with less than four legs})
+  \end{array}
+\end{align*}
+%
+We have also employed two relations over $\mathbb{N}$ here:\footnote{Strictly speaking, we are
+  therefore using first-order logic where the universe contains
+  our set $\{\mathsf{cat}, \mathsf{dog}, \mathsf{ant},
+  \mathsf{chair}\}$ and $\mathbb{N}$, i.e.,
+  $\mathcal{U} = \{\mathsf{cat}, \mathsf{dog}, \mathsf{ant},
+\mathsf{chair}\} \cup \mathbb{N}$, and our function $\mathsf{legs}$ is
+partial, defined only for a part of the universe.}
+equality $=$ and less-than $<$.
+
+A false proposition in this instantiation is:
+%
+\begin{align*}
+  \not\vdash \forall u . (\mathsf{legs}(u) = 4) \rightarrow \mathsf{mammal}(u)
+& \quad (\textit{everything with four legs is a mammal})
+\end{align*}
+%
+This is false because $u$ could be $\mathsf{chair}$ (making the
+premise of the implication true) but
+$\mathsf{mammal}(\mathsf{chair})$ is false.
+
+\section{Equational reasoning}
+\label{sec:fo-eqn-reasoning}
+
+As in propositional logic, there are equations (logical
+equivalences) between particular first-order formulas. These can be used to
+rearrange and simplify formulas. This sections shows
+these equations, some of which are proved
+in the next section via natural deduction.
+
+Two key equations show that universal and existential
+quantification are \emph{dual}:
+%
+\begin{align}
+  \label{eq:quantifier-dual-first}
+  \forall x . \neg P \equiv \neg \exists x . P
+  \qquad
+   \neg \forall x . P \equiv \exists x . \neg P
+\end{align}
+%
+The order of repeated quantifications is irrelevant as shown by
+the following equalities:
+%
+\begin{align}
+  \forall x . \forall y. P \equiv \forall y . \forall x . P
+  \qquad
+  \exists x . \exists y . P \equiv \exists y . \exists x . P
+\end{align}
+%
+Note however, that these equalities are only when the quantifications
+are the same; $\forall x . \exists y . P$ is not the same as
+$\exists y . \forall x . P$.
+The rest of the equations capture interaction between quantification
+and the other propositional connectives:
+%
+\begin{align}
+  (\exists x . P) \vee (\exists x . Q) \equiv \exists x . (P \vee Q) \\
+  (\forall x . P) \wedge (\forall x . Q) \equiv \forall x . (P \wedge
+                                                                       Q) \\
+  P \wedge (\exists x . Q) \equiv \exists x . (P \wedge Q) & \;\; \textit{when $x$ is  not free in $P$} \\
+  P \vee (\forall x . Q) \equiv \forall x . (P \vee Q) & \;\;
+ \textit{when $x$ is  not free in $P$}
+\end{align}
+\vspace{-2em}
+\begin{example}
+  We can now go back to the example from the introduction: that
+  \emph{not all birds can fly}. We formulated this sentence as both
+  $\neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x))$ and
+  $\exists x . \rel{B}(x) \wedge \neg \rel{F}(x)$.
+  We can show these two statements are equivalent by algebraic
+  reasoning:
+%
+\begin{align*}
+\begin{array}{rll}
+    & \neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x)) & \{\textit{by \eqref{eq:quantifier-dual-first}}\} \\[0.4em]
+  \equiv \;\; &  \exists x . \, \neg (\rel{B}(x) \rightarrow
+                \rel{F}(x)) & \{\textit{$P \rightarrow Q \equiv \neg P
+                              \vee Q$}\} \\[0.4em]
+  \equiv \;\; & \exists x . \,\neg (\neg \rel{B}(x) \vee \rel{F}(x))
+& \{\textit{De Morgan's}\} \\[0.4em]
+  \equiv \;\; & \exists x . \,\neg \neg \rel{B}(x) \wedge \neg
+                \rel{F}(x)
+& \{\textit{Double negation elim.}\} \\[0.4em]
+  \equiv \;\; & \exists x . \,\rel{B}(x) \wedge \neg \rel{F}(x) & \Box
+\end{array}
+\end{align*}
+  Note that the actual universe and the definition of $\rel{B}$ and
+  $\rel{F}$ is irrelevant to this proof; we did not rely on their
+  definition but just the general properties of first-order logic.
+\end{example}
+
+\vspace{-1em}
+
+\begin{restatable}{exc}{eqnProofF}
+  Prove via equational reasoning that:
+  %
+  \vspace{-0.25em}
+\begin{equation*}
+  \forall x . \mathsf{mammal}(x) \rightarrow (\mathsf{legs}(x) = 4) \;
+  \equiv \; \neg \exists x . \mathsf{mammal}(x) \wedge
+  \mathsf{legs}(x)
+  \neq 4
+\end{equation*}
+\end{restatable}
+\vspace{-1em}
+
+\section{Natural deduction for first-order logic}
+
+First-order logic quantifiers have natural deduction elimination and introduction rules.
+
+\subsection{Universal quantification $\forall$ (\emph{for all})}
+
+The notion that universals generalise conjunction
+($\forall x . P = P[a_0/x] \wedge P[a_1/x] \wedge
+\ldots \wedge P[a_{n}/x]$, \S\ref{subsec:quantifier-meaning})
+helps to understand the elimination and introduction rules of universal
 quantification.
 
 \paragraph{Elimination} As a reminder, here
@@ -225,10 +401,11 @@ are the conjunction elimination rules:
   {Q} \; {\wedge_{e2}}
 \end{equation*}
 %
-Using equation~\eqref{eq:forall-meaning}, we could apply the two
-eliminations repeatedly to get any formula in the long conjunction of
-formulas. Eliminating to get the $i^{th}$ part of the conjunction
-would give us the inference:
+We could apply these two
+rules repeatedly to get any formula out of the conjunction
+$P[a_0/x] \wedge P[a_1/x] \wedge
+\ldots \wedge P[a_{n}/x]$, giving us the following inference for
+the $i^{th}$ part of the conjunction:
 %
 \begin{equation*}
   \dfrac{P[a_0/x] \wedge P[a_1/x] \wedge \ldots \wedge P[a_{n}/x]}
@@ -249,15 +426,14 @@ we define universal quantification elimination, with the rule:
 \end{equation*}
 %
 The intuition is that we eliminate $\forall$ by replacing the bound
-variable $x$ with any element of $\mathcal{U}$ or a
- free variable $t$ which represents
-\emph{any} of things ranged over by the $\forall$ quantified variable.
+variable $x$ with $t$ which is any element of $\mathcal{U}$ or a
+ free variable which represents
+\emph{any} of things ranged over by the $\forall$-quantified variable.
 The side condition requires that if $t$ is a variable it is a free variable
  when it is substituted for $x$ in $P$-- that is the meaning of the
- phrase \emph{where $t$ is free for $x$ in $P$}. We'll see an example of
-why this is needed.
+ phrase \emph{where $t$ is free for $x$ in $P$}.
 
-Consider the following property of integers, for
+ Why is this needed? Consider the following property of integers: for
 every integer there exists a bigger integer:
 %
 \begin{equation*}
@@ -273,8 +449,8 @@ $\exists y . (y < y)$ which is no longer true: it says that there
 exists a number which is greater than itself. The problem is that by
 performing the substitution $(\exists y. (x < y))[y/x]$ we have
 ``captured'' the binding of $y$ with the $y$ we are substituting in,
-which then changes the meaning of the formula. This is why we have the
-side condition which prevents us substituting a variable which
+which then changes the meaning of the formula. The
+side condition prevents us substituting a variable which
 gets inadvertently bound.
 
 \begin{example}
@@ -286,15 +462,15 @@ gets inadvertently bound.
     \rel{P}(t) \rightarrow Q & $\forall_e$ 1 $\qquad \Box$
   \end{logicproof}
 \end{example}
-
+\vspace{-1.25em}
 \paragraph{Introduction} Recall conjunction introduction:
 %
 \begin{equation*}
  \dfrac{P \qquad Q}{P \wedge Q} \; \wedge_i
 \end{equation*}
 %
-Following equation~\eqref{eq:forall-meaning} again, universal
-quantification is equivalent to a large conjunction, but every formula
+Again, in the identity $\forall x . P = P[a_0/x] \wedge P[a_1/x] \wedge
+\ldots \wedge P[a_{n}/x]$, every formula
 being conjuncted is of the form $P[t/x]$. We could therefore define an
 introduction for universal quantification if we had $P[t/x]$ for
 all objects $t$ in the universe being used,
@@ -311,7 +487,7 @@ introduction of universal quantifiers is:
 %
 \begin{equation*}
 \setlength{\arraycolsep}{0.2em}
-\dfrac{\fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & \\ & \vdots \\ & P[x_0/x] \end{array}$}}
+\dfrac{\fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & \\[-1em] & \vdots \\ & P[x_0/x] \end{array}$}}
 {\forall x . P}
 \; {\forall_i}
 \qquad
@@ -329,7 +505,7 @@ the scope and conclude $\forall x . P$. Thus, the proof inside the
 scope is of $P$ but where $x$ is replaced by $x_0$. Note that there is
 the same side condition as in $\forall_e$.
 
-Here's an example to make this idea more clear:
+%Here's an example to make this idea more clear:
 %
 \begin{example}
 Prove $\forall x . (\rel{P}(x) \rightarrow \rel{Q}(x)), \forall y
@@ -362,8 +538,7 @@ with a scope box on lines 3-5: \emph{but remember this is not
 a subproof}, it merely serves to delimit the scope of
 the fresh variable $x_0$ which starts on line 3 when
 the $\forall$ on line 1 is eliminated.
-
-When we eliminate $\forall y . \rel{P}(y)$ on line 4 we use the same
+Eliminating $\forall y . \rel{P}(y)$ on line 4 uses the same
 $x_0$. Since the quantification is universal we can pick the same
 object $x_0$ to eliminate line 4 that was given to us by the
 elimination on line 3. Line 5 uses modus ponens to get $\rel{Q}(x_0)$
@@ -391,23 +566,13 @@ any of the other logical operators, so $\forall x . \rel{P}(x)
 \rel{Q}(x)$.
 \end{remark}
 
-\subsubsection{Existential quantification (\emph{there exists})}
+\subsection{Existential quantification $\exists$ (\emph{there exists})}
 
-Whilst universal quantification generalises conjunction,
-existential quantification generalises disjunction.
-If existential quantification binds a variable ranging
-over objects $a_0, a_1 ... a_n$ then
-%
-\begin{equation}
-\exists x . P = P[a_0/x] \vee P[a_1/x] \vee
-\ldots \vee P[a_{n}/x]
-\label{eq:exists-meaning}
-\end{equation}
-%
-Thus, existential quantification is equivalent to the repeated
-disjunction of the formula $P$ with each object in the universe
-replacing $x$. We can use this perspective to help understand the
-existential quantification rules.
+Since existentials generalise disjunction:
+$\exists x . P = P[a_0/x] \vee P[a_1/x] \vee
+\ldots \vee P[a_{n}/x]$ (\S\ref{subsec:quantifier-meaning}),
+we can use this to understand the
+existential quantification natural deduction rules.
 
 \paragraph{Introduction} Recall the introduction rules for disjunction:
 %
@@ -420,9 +585,8 @@ existential quantification rules.
 \end{align*}
 %
 Given a true formula $P$ then the disjunction of $P$ with any other
-formula $Q$ is true. Following the idea of
-equation~\eqref{eq:exists-meaning}, existential quantification is a
-disjunction of formulas all of the same form $P[a_i/x]$.  Thus,
+formula $Q$ is true. Since existential quantification is essentially
+disjunction of formulas all of the same form $P[a_i/x]$, then
 disjunction introduction generalises to the existential
 introduction rule:
 %
@@ -454,15 +618,15 @@ rather directly prove the following:
     \exists x . \rel{P}(x) & $\exists_i$ 2 $\qquad \Box$
    \end{logicproof}
  \end{example}
- %
- \paragraph{Introduction} Recall disjunction introduction is:
+ \vspace{-2em}
+ \paragraph{Elimination} Recall disjunction elimination:
  %
 \begin{align*}
 \setlength{\arraycolsep}{0em}
-\dfrac{\begin{array}{c} \\ \\[0.7em] P \vee Q\end{array} \quad
-\fbox{$\begin{array}{c} P \\ \vdots \\ R\end{array}$}
+\dfrac{\begin{array}{c} \\ \\[0.4em] P \vee Q\end{array} \quad
+\fbox{$\begin{array}{c} P \\[-0.4em] \vdots \\[-0.25em] R\end{array}$}
 \quad
-\fbox{$\begin{array}{c} Q \\ \vdots \\ R\end{array}$}}{R}
+\fbox{$\begin{array}{c} Q \\[-0.4em] \vdots \\[-0.25em] R\end{array}$}}{R}
 \;
 {\vee_e}
 \end{align*}
@@ -479,12 +643,12 @@ This gives us the existential elimination rule:
 \setlength{\arraycolsep}{0.2em}
 \dfrac{\begin{array}{l} \\[2em] \exists x . P\end{array} \quad
 \fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & P[x_0/x]
-         \\ &  \vdots \\ & R \end{array}$}}{R} \;\; {\exists_e}
+         \\[-0.2em] &  \vdots \\ & R \end{array}$}}{R} \;\; {\exists_e}
    \qquad\; \textit{$x_0$ is free for $x$ in $P$}
 \end{equation*}
 %
 The intuition is that the subproof represents a case for every
-part of the disjunction in~\eqref{eq:exists-meaning} by using
+part of the long disjunction by using
 an arbitrary variable $x_0$ that we know nothing about to represent
 each atom in the universe. Similarly to disjunction elimination, if we
 can then conclude $R$ (but without using $x_0$ since the scope box
@@ -508,24 +672,10 @@ Prove $\exists x . \rel{P}(x) \wedge \rel{Q}(x)
 \end{logicproof}
 \end{example}
 
-\begin{restatable}{exc}{existsOr}
-Prove $\exists x . P \vee Q \vdash \exists x . P \vee \exists x . Q$
-is valid.
-\end{restatable}
-
-
 %\begin{restatable}{exc}{allExists}
 %  Prove $\forall x . (\rel{P}(x) \rightarrow \rel{Q}(x)), \exists x
 %  . \rel{P}(x) \vdash \exists x . \rel{Q}(x)$
 %\end{restatable}
-
-\subsubsection{Proofs involving both existential and universal
-  quantification}
-
-Interesting formula and sequents are valid that
-involve the interaction of existential and universal quantifiers. We
-look at a few here.
-
 
 \begin{example}
   Prove $\exists x . \rel{P}(x),
@@ -546,6 +696,18 @@ look at a few here.
 \exists x . \rel{Q}(x) & $\exists_e$ 1, 3-6 $\qquad \Box$
 \end{logicproof}
 \end{example}
+\vspace{-1em}
+\begin{restatable}{exc}{existsOr}
+Prove $\exists x . P \vee Q \vdash \exists x . P \vee \exists x . Q$
+is valid.
+\end{restatable}
+
+\paragraph{Proving equational rules}
+
+We can use our natural deduction rules to prove
+ the equational rules of first-order logic (from
+ Section~\ref{sec:fo-eqn-reasoning}).
+ We highlight just two here.
 
 \begin{example}
   Prove $\exists x . \neg P \vdash \neg \forall x . P$ is valid.
@@ -589,30 +751,6 @@ double negation elimination:
   idempotence $P = \neg\neg P$.
 \end{restatable}
 %
-\begin{example}
-  We can now go back to the example from the introduction: that
-  \emph{not all birds can fly}. We formulated this sentence as both
-  $\neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x))$ and
-  $\exists x . \rel{B}(x) \wedge \neg \rel{F}(x)$.
-  We can show these two statements are equivalent by algebraic
-  reasoning using the above results:
-%
-\begin{align*}
-\begin{array}{rll}
-    & \neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x)) & \{\textit{by \eqref{eq:quantifier-dual}}\} \\[0.4em]
-  \equiv \;\; &  \exists x . \, \neg (\rel{B}(x) \rightarrow
-                \rel{F}(x)) & \{\textit{$P \rightarrow Q \equiv \neg P
-                              \vee Q$}\} \\[0.4em]
-  \equiv \;\; & \exists x . \,\neg (\neg \rel{B}(x) \vee \rel{F}(x))
-& \{\textit{De Morgan's}\} \\[0.4em]
-  \equiv \;\; & \exists x . \,\neg \neg \rel{B}(x) \wedge \neg
-                \rel{F}(x)
-& \{\textit{Double negation elim.}\} \\[0.4em]
-  \equiv \;\; & \exists x . \,\rel{B}(x) \wedge \neg \rel{F}(x) & \Box
-\end{array}
-\end{align*}
-\end{example}
-
 
 
 
@@ -652,6 +790,7 @@ is \emph{capture avoiding}, \eg{}, \emph{$x_0$ is free for $x$ in $P$} and
 
 \section{Exercises}
 
+\eqnProofF*
 \forallAndElim*
 \existsOr*
 \duality*
