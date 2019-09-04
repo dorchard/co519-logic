@@ -5,7 +5,7 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
-\usepackage[table,x11names]{xcolor}
+\usepackage[table,x11names,dvipsnames]{xcolor}
 \usepackage{logicproof}
 \usepackage{url}
 \usepackage{enumitem}
@@ -33,6 +33,37 @@
 \newtheorem*{remark}{Remark}
 \declaretheorem[name=Exercise,numberwithin=section]{exc}
 
+\newif\ifprinting
+\printingfalse
+
+\ifprinting
+
+ % Make highlights black and white
+ \definecolor{lightgray}{rgb}{0.9,0.9,0.9}
+ \let\oldrowcolor\rowcolor
+ \renewcommand{\rowcolor}[1]{\oldrowcolor{lightgray}}
+
+ \newcommand{\highlight}[1]{%
+  \underline{\colorbox{lightgray}{$\displaystyle#1$}}}
+
+ \definecolor{freshVariableColor}{rgb}{0.3,0.3,0.3}
+ \newcommand{\freshVariableColorName}{gray}
+
+ \newcommand{\version}{print}
+
+\else
+
+\newcommand{\highlight}[1]{%
+ \underline{\colorbox{yellow!50}{$\displaystyle#1$}}}
+
+ \definecolor{freshVariableColor}{rgb}{0,0,0.9}
+ \newcommand{\freshVariableColorName}{blue}
+
+ \newcommand{\version}{full-\textcolor{red}{c}\textcolor{orange}{o}\textcolor{ForestGreen}{l}\textcolor{blue}{o}\textcolor{purple}{u}\textcolor{red}{r}}
+
+
+\fi
+
 % Writing
 \newcommand{\ie}{{i.e.}}
 \newcommand{\eg}{{e.g.}}
@@ -44,7 +75,7 @@
 \author{Dominic Orchard \\
   {\small{School of Computing, University of Kent}}}
 
-\date{Last updated on \today}
+\date{Last updated on \today\ {\small{(\version{} version)}}}
 
 \begin{document}
 \maketitle

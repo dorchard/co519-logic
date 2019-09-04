@@ -487,7 +487,7 @@ introduction of universal quantifiers is:
 %
 \begin{equation*}
 \setlength{\arraycolsep}{0.2em}
-\dfrac{\fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & \\[-1em] & \vdots \\ & P[x_0/x] \end{array}$}}
+\dfrac{\fbox{$\begin{array}{lc} \textcolor{freshVariableColor}{x_0} \;\; & \\[-1em] & \vdots \\ & P[x_0/x] \end{array}$}}
 {\forall x . P}
 \; {\forall_i}
 \qquad
@@ -495,7 +495,7 @@ introduction of universal quantifiers is:
 \end{equation*}
 %
 This says that there is a \emph{scope} (not a subproof) that has a
-variable $x_0$ (marked in blue in the top corner) which appears in a
+variable $x_0$ (marked in \freshVariableColorName{} in the top corner) which appears in a
 proof concluding with $P[x_0/x]$. We can distinguish subproofs from
 scope boxes by the fact that scope boxes declare their variable in the
 top-left and they do not start with any assumptions.
@@ -522,7 +522,7 @@ The following is a proof:
   \forall x . (\rel{P}(x) \rightarrow \rel{Q}(x)) & premise \\
   \forall y . \rel{P}(y)                          & premise \\
   \begin{subproof}
-    \hspace{-1em}\textcolor{blue}{x_0}
+    \hspace{-1em}\textcolor{freshVariableColor}{x_0}
     \;\; \rel{P}(x_0) \rightarrow \rel{Q}(x_0) & $\forall e$ 1 \\
     \;\; \rel{P}(x_0)                          & $\forall e$ 2 \\
     \;\; \rel{Q}(x_0)                          & $\rightarrow_e$ 3, 4
@@ -642,7 +642,7 @@ This gives us the existential elimination rule:
 \begin{equation*}
 \setlength{\arraycolsep}{0.2em}
 \dfrac{\begin{array}{l} \\[2em] \exists x . P\end{array} \quad
-\fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & P[x_0/x]
+\fbox{$\begin{array}{lc} \textcolor{freshVariableColor}{x_0} \;\; & P[x_0/x]
          \\[-0.2em] &  \vdots \\ & R \end{array}$}}{R} \;\; {\exists_e}
    \qquad\; \textit{$x_0$ is free for $x$ in $P$}
 \end{equation*}
@@ -663,7 +663,7 @@ Prove $\exists x . \rel{P}(x) \wedge \rel{Q}(x)
 \begin{logicproof}{2}
 \exists x . \rel{P}(x) \wedge \rel{Q}(x)  & premise \\
 \begin{subproof}
-\hspace{-0.5em}\textcolor{blue}{x_0}
+\hspace{-0.5em}\textcolor{freshVariableColor}{x_0}
 \;\; \rel{P}(x_0) \wedge \rel{Q}(x_0) & assumption \\
 \quad\, \rel{P}(x_0) & $\wedge_{e1}$ 2 \\
 \quad\, \exists y  . \rel{P}(y) & $\exists_i$ 3
@@ -686,7 +686,7 @@ Prove $\exists x . \rel{P}(x) \wedge \rel{Q}(x)
     \exists x . \rel{P}(x) & premise \\
     \forall x . \rel{P}(x) \rightarrow \rel{Q}(x) & premise \\
     \begin{subproof}
-      \hspace{-0.5em}\textcolor{blue}{x_0} \;\; \rel{P}(x_0) &
+      \hspace{-0.5em}\textcolor{freshVariableColor}{x_0} \;\; \rel{P}(x_0) &
       assumption \\
       \quad \rel{P}(x_0) \rightarrow \rel{Q}(x_0) &
       $\forall_e$ 2 \\
@@ -717,7 +717,7 @@ We can use our natural deduction rules to prove
     \begin{subproof}
       \forall x . P & assumption \\
       \begin{subproof}
-        \hspace{-0.5em}{\textcolor{blue}{x_0}}
+        \hspace{-0.5em}{\textcolor{freshVariableColor}{x_0}}
         \;\; \neg P[x_0/x] & assumption \\
         \quad P[x_0/x] & $\forall_e$ 2 \\
         \quad \bot & $\neg_e$ 4, 3
@@ -767,7 +767,7 @@ all those of propositional logic plus:
  & \textit{Introduction} & \textit{Elimination} \\[0.5em] \hline \hline
   $\forall$
 & \rule{0cm}{2.25cm} $\setlength{\arraycolsep}{0.2em}
-\dfrac{\fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & \\ & \vdots \\ & P[x_0/x] \end{array}$}}
+\dfrac{\fbox{$\begin{array}{lc} \textcolor{freshVariableColor}{x_0} \;\; & \\ & \vdots \\ & P[x_0/x] \end{array}$}}
 {\forall x . P}
 \; {\forall_i}$
 & $\begin{array}{l}\dfrac{\forall x . P}
@@ -780,7 +780,7 @@ $\begin{array}{l}\dfrac{P[t/x]}{\exists x . P} \;\exists_i\\[2.5em]\end{array}$
 \rule{0cm}{2.25cm}
 $\setlength{\arraycolsep}{0.2em}
 \dfrac{\begin{array}{l} \\[2em] \exists x . P\end{array} \quad
-\fbox{$\begin{array}{lc} \textcolor{blue}{x_0} \;\; & P[x_0/x]
+\fbox{$\begin{array}{lc} \textcolor{freshVariableColor}{x_0} \;\; & P[x_0/x]
  \\ &  \vdots \\ & R \end{array}$}}{R}\;\exists_e$
 \end{tabular}
 \end{center}
