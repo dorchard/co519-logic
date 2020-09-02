@@ -34,7 +34,9 @@
 \declaretheorem[name=Exercise,numberwithin=section]{exc}
 
 \newif\ifprinting
+\newif\ifextended
 \printingfalse
+\extendedtrue
 
 \ifprinting
 
@@ -114,11 +116,11 @@ as you get to grips with the material.
 
 \part{Satisfiability for propositional logic}
 \setcounter{section}{0}
-\input{partC-notes.tex}
+\input{partB-notes.tex}
 
-\part{First-order logic and its natural deduction proofs}
+\part{First-order logic}
 \setcounter{section}{0}
-\input{partD-notes.tex}
+\input{partC-notes.tex}
 
 \newpage
 \afterpage{
@@ -154,13 +156,19 @@ need to work on and to understand what you need to know to make progress.
 \end{center}
 
 \clearpage
-\restoregeometry
 }
+\restoregeometry
 
-{\Huge{\textsc{Online version: \\ extra material}}}
+\ifextended
+
+\begin{center}
+{\Huge{\textsc{\textbf{Online version.} \\[2em] Extra material}}}
+\end{center}
 
 \newpage
 \input{online-appendix.tex}
 
+\else
+\fi
 
 \end{document}

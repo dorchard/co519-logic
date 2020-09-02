@@ -1,637 +1,378 @@
-% \newcommand{\subst}[3]{#3[#1/#2]}
-\newcommand{\subst}[3]{\textit{replace}(#2, #1, #3)}
+\renewcommand{\highlight}[1]{%
+  \colorbox{yellow!50}{$\displaystyle#1$}}
+\newcommand{\highlightG}[1]{%
+  \colorbox{green!30}{$\displaystyle#1$}}
+\newcommand{\highlightR}[1]{%
+  \colorbox{red!20}{$\displaystyle#1$}}
 
-\section{Satisfiable formula}
+\newcommand{\rel}[1]{\mathsf{#1}}
 
-This section covers \emph{satisfiability} of propositional
-formula. Recall from Part A that a formula is \emph{satisfiable} if it
-is true for a particular ``assignment'' of either true or false to
-variables in the formula. For example, $a \wedge b$ is satisfiable
-since we can make it true by setting $a$ to be true and $b$ to be
-true. We say this is the \emph{satisfying assignment}, and will write
-this as:
+First-order logic (also called \emph{predicate logic}) extends
+propositional logic with \emph{quantification}: existential quantification
+$\exists$ (``\emph{there exists}'') and universal quantification
+$\forall$ (``\emph{for all}''). A quantification $\forall x$
+binds a variable $x$ which range over the elements of some underlying
+\emph{universe} which is external to the logic, e.g., quantifying
+over all people or objects.  First-order logic also
+allows the use of relations, predicates (unary relations, also called
+\emph{classifiers}) and functions, operating
+over elements of the universe, which can
+be defined externally and are
+domain-specific for whatever purpose the logic is being used.
+
+Consider the following sentence:
 %
 \begin{equation*}
-\{a = \top, \; b = \top\}
+  \textit{Not all birds can fly}
 \end{equation*}
 %
-A valid formula is trivially satisfiable since it is true no matter
-how we assign truth or falsehood to the variables.
-
-The general problem of finding a satisfying assignment for a formula
-is known in computer science as the \emph{Boolean satisfiability
-  problem} or simply SAT for short. There are various
-algorithmic approaches to solving the SAT problem, \ie{}, for
-calculating a satisfying assignment for a propositional formula.  SAT
-is used in many areas of formal verification, such as AI, planning,
-circuit design, and theorem provers, and is applied to problems with
-thousands of variables.
-
-One approach is to exhaustively list all possible assignments of
-true/false to variables in a formula by constructing its truth
-tables. Thus for a formula with $n$ variables we need to calculate
-$2^n$ rows. This is completely infeasible for problems with hundreds
-or even thousands of variables. Instead, we'll look at the \emph{DPLL
-  algorithm} which utilises properties of propositional
-logic to be more efficient for many problems.
-
-We can use SAT solving algorithms to prove validity of a formula $P$
-by applying SAT to $\neg P$. If the algorithm shows us that $\neg P$
-is unsatisfiable, that implies $\neg P$ is false for any assignment of
-its variables and thus $P$ is true for any assignment of its
-variables, \ie{}, \emph{valid}. This is very useful for modelling
-problems where we have a complex model of some system in logic, and a
-complex specification, and we want to prove the validity of:
-%%
-\begin{equation}
-\textit{model} \rightarrow \textit{specification}
-\label{eq:model-property}
-\end{equation}
-(see Part B of the course on modelling in logic). Instead of proving
-this valid using natural deduction, we can instead use an algorithm
-to show unsatisfiability of
-$\neg (\textit{model} \rightarrow \textit{specification})$. If however
-we find a satisfying assignment, then we have a counterexample to the
-original property, that is, a set of variable assignments which makes
-equation~\eqref{eq:model-property} false and thus shows us
-a configuration which leads to a bug in our system.
-
-\section{The DPLL algorithm}
-
-DPLL stands for \emph{Davis-Putnam-Logemann-Loveland} (who proposed
-this algorithm)\footnote{Actually the history is more complicated as
-  in the history of most science: in 1960 Davis and Putnam did some
-  work on automatically showing validity of formulae following a
-  different technique, and David, Logemann, and Loveland built on some
-  of the ideas to create their SAT in algorithm 1962.}. We'll go over
-the technique since its a nice algorithm and makes some clever use of
-the properties of propositional logic to simplify the exploration of
-the state space. Despite the fact it is more than 50 years old, DPLL
-still forms the basis of many SAT solvers, though there has been
-some progress since.
-
-\subsection{CNF}
-
-The input to the DPLL algorithm is a formula in \emph{conjunctive
-  normal form} (CNF for short).  A formula in Conjunction Normal
-Form is a conjunction of disjunctions of literals. A literal is
-either a variable or the negation of a variable. Thus, CNF formula are
-of the form:
+We can capture this in first-order logic using quantification and
+unary predicates. Let our universe be ``animals''
+over which we informally define two predicates:
 %
-\begin{equation*}
-  (\textit{x} \vee \neg \textit{y} \vee ...) \wedge
-  (\textit{z} \vee \ldots) \wedge \ldots \wedge
-  (\neg \textit{w} \vee \textit{x} \vee \textit{y})
-\end{equation*}
+\begin{align*}
+  \rel{B}(x)\ & \stackrel{\text{def}}{=}\ \textit{$x$ is a bird} \\
+  \rel{F}(x)\ & \stackrel{\text{def}}{=}\ \textit{$x$ can fly}
+\end{align*}
 %
-We refer to a disjunction of literals as a \emph{clause}.
-For example, the following highlights the middle clause:
+As with propositional logic, we are studying the process and framework
+of the logic rather than physical reality; it is up to us how we
+assign the semantics of $\rel{B}$ and $\rel{F}$ above, but the
+semantics of quantification and logical operators is fixed by the
+definition of first-order logic.
+
+We can then express the above sentence in first-order logic as:
 %
 \begin{equation}
-(x \vee \neg w) \wedge {\highlight{(y \vee z)}} \wedge (\neg z \vee \neg x)
+  \neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x))
+  \label{eq:nonflying1}
 \end{equation}
 %
-A CNF formula consists of a set of clauses all of which have to be
-true, since they are combined using conjunction. Within each clause,
-just one of literals has to be true since they are combined via
-disjunction.
-
-Any formula can be converted into CNF by applying algebraic properties
-of logic (see Part A, Section~\ref{sec:algebraic}) to rewrite a formula. Informally, this can be done by
-doing the following:
+We can read this exactly as \emph{it is not true that for all $x$, if
+  $x$ is a bird then $x$ can fly}. Another way to write this is
+that there are some birds which cannot fly:
 %
-\begin{itemize}[leftmargin=1em]
-\item Replace implication $\rightarrow$ with disjunction $\vee$
-and negation $\neg$, via: $$P \rightarrow Q = \neg P \vee Q$$
-\item Use De Morgan's law to push negation inside of
-disjunction and conjunction:
-\begin{align*}
-\neg (P \vee Q) & = \neg P \wedge \neg Q \\
-\neg (P \wedge Q) & = \neg P \vee \neg Q
-\end{align*}
-\item Push disjunction inside and pull conjunction out (using
-  distributive laws):
+\begin{equation}
+  \exists x . \rel{B}(x) \wedge \neg \rel{F}(x)
+    \label{eq:nonflying2}
+\end{equation}
 %
-\begin{align*}
-(P \wedge Q) \vee R & = (P \vee R) \wedge (Q \vee R) \\
-P \vee (Q \wedge R) & = (P \vee Q) \wedge (P \vee R)
-\end{align*}
-\item Eliminate double negation $\neg\neg P = P$
-%
-\end{itemize}
-%
-By repeatedly applying these equations as rewrites (orienting the
-equalities from left to the right), we end up with a formula
-in CNF which is ready for DPLL.
+If we have a universe and semantics for $\rel{B}$ and $\rel{F}$ that includes, for
+example, penguins, then both \eqref{eq:nonflying1} and
+\eqref{eq:nonflying2} will be true.
+We can prove that \eqref{eq:nonflying1} and
+\eqref{eq:nonflying2} are equivalent in first-order logic via two
+proofs, one for:
+$$\neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x)) \; \vdash \;
+\exists x . \rel{B}(x) \wedge \neg \rel{F}(x)$$
+and one for:
+$$
+\exists x . \rel{B}(x) \wedge \neg \rel{F}(x) \; \vdash \;
+\neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x))
+$$
+We will do this later once we have explained more about the
+meta theory of the logic.
 
-\subsection{DPLL, step-by-step}
+\section{Key concepts (meta theory) of first-order-logic}
 
-DPLL can be summarised in pseudo code as follows, which
-has four main steps which I remember using the acronym \textbf{TUPS}:
-%
-\begin{align*}
-\textsf{DPLL}(\top) = &\textit{satisfiable} \\
-\textsf{DPLL}(\bot) = & \textit{unsatisfiable} \\
-\textsf{DPLL}(P) = & \\
-    1. & \; \textit{\textbf{T}autology elimination} \\
-    2. & \; \textit{\textbf{U}nit propagation} \\
-    3. & \; \textit{\textbf{P}ure literal elimination} \\
-    4. & \; \textit{\textbf{S}plit on a variable: choose a variable $v$} \\
-       &  \quad \textsf{DPLL}(P') \{v = \top\}  \\
-       & \quad \textsf{DPLL}(P') \{v = \bot\}
-\end{align*}
-%
-Note that this is a recursive algorithm which branches
-into two executions at the last step.
-The four steps gradually reduce the size of the input CNF formula and
-create an assignment for its variables (setting variables to be true
-or false). %We can think of the input to DPLL as being a list of
-%formula which are all joined together by conjunction. If this list is
-%empty then we are done and the formula is satisfied.
+\subsection{Names and binding}
 
-The first step is a simplification step using properties
-of propositional logic and the structure of CNF
-formula. The next two steps provide simplification and can give us
-some satisfying assignments.  The last step splits the problem into
-two by picking a variable and repeating the DPLL procedure with that
-variable assigned to be true in one branch (written above as $\{v = \top\}$)
-and repeating DPLL with that variable assigned to false ($\{v = \bot\}$).
+In propositional logic, variables range over propositions, \ie{},
+their ``type'' is a proposition. For example, $x \wedge y$ has two
+propositional variables $x$ and $y$ which could be replaced with true
+or false, or with any other formula. In predicate logic, universal and
+existential quantifiers provide \emph{variable bindings} which
+introduce variables ranging over objects in some fixed universe rather than
+over propositions. For example, the formula $\forall x . P$ binds
+a variable $x$ in the \emph{scope} of $P$. That is, $x$
+is available within $P$, but not outside of it. A variable which does
+not have a binding in scope is called \emph{free}.
 
-\paragraph{Step 1. Tautology elimination}
-
-Consider a formula in CNF where one clause (highlighted in yellow
-bellow) contains both $x$ and $\neg x$, e.g., a formula of
-the form:
+For example, the formula below has free variables $x$ and $y$
+and bound variables $u$ and $v$:
 %
 \begin{equation*}
-P \wedge (\highlight{\ldots x \vee \ldots \vee \neg x}) \wedge Q
+\rel{P}(x) \, \vee  \, \forall u . \, (\, \rel{Q}(y) \, \wedge \,
+\rel{R}(u) \, \rightarrow \exists v . \, (\, \rel{P}(v) \, \wedge \, \rel{Q}(x) \,))
 \end{equation*}
 %
-Such a formula can be simplified by completely removing the
-highlighted clause. This is because a disjunction of a formula with
-its negation is a tautology (always true) by \emph{complementation}:
- $P \vee \neg P = \top$.
-Furthermore, since disjunction of anything with truth is equivalent to truth:
-$P \vee \top = \top$ and for conjunction $P \wedge \top = P$
-(\emph{unitality} properties) we can
-completely filter out clauses that have a tautology, \ie{}
+The following repeats the formula and
+highlights the binders in yellow, the bound variables
+in green, and the free variables in red:
 %
 \begin{equation*}
-P \wedge (\highlight{\ldots x \vee \ldots \vee \neg x}) \wedge Q
-\;\;\; \longrightarrow \;\;\;
-P \wedge (\top) \wedge Q
-\;\;\; \longrightarrow \;\;\;
-P \wedge Q
+\highlightR{\rel{P}(x)} \vee \highlight{\forall u} . (\highlightR{\rel{Q}(y)} \wedge \highlightG{\rel{R}(u)}
+\rightarrow \highlight{\exists v} .
+(\highlightG{\rel{P}(v)} \wedge \highlightR{\rel{Q}(x)}))
 \end{equation*}
 %
-Note that this doesn't tell us whether to assign true or false to
-$x$ yet. So far we just know that this clause didn't depend on the
-truth or falsehood of $x$ because it contained this tautology.
-
-\paragraph{Step 2: Unit propagation}
-
-In CNF terminology, a ``unit'' is a clause which contains just one
-literal (a variable or negation of a variable), \eg{},
+%
+In the following formula, there are two syntactic occurrences of a
+variable called $x$, but semantically these are different variables:
 %
 \begin{equation*}
-P \wedge (\highlight{x}) \wedge Q
-\quad
-\textit{or}
-\quad
-P \wedge (\highlight{\neg x}) \wedge Q
+\rel{Q}(x) \wedge (\forall x . \rel{P}(x))
 \end{equation*}
 %
-where the ``unit'' clauses are highlighted.
+The $x$ on the left (used with a predicate $\mathsf{Q}$) is free,
+whilst the $x$ used with the predicate $\rel{P}$ is bound by the
+universal quantifier. Thus, these are semantically two different
+variables.
 
-If we see a formula in the left form, then we know that $x$ must be
-true if we want the overall formula to be true, since we are taking
-the conjunction of $x$ with all the other formula. If we have a
-formula with the right form, then we know that $x$ must be false so
-that $\neg x$ is true to make the overall formula true. Thus
-in the left case we get the assignment $x = \top$ and in the right
-case we get $x = \bot$. We then \emph{propagate} this assignment to
-the rest of the clauses $P$ and $Q$, replacing any occurrences of $x$
-with its assignment:
+\paragraph{Alpha renaming}
+The above formula is
+semantically equivalent to the following formula obtained by
+consistently renaming bound variables:
+%
+\begin{equation*}
+\rel{Q}(x) \wedge (\forall y . \rel{P}(y))
+\end{equation*}
+%
+Renaming variables is a meta-level operation we can apply to any
+formula: we can rename a bound variable as long as we do not rename it
+to clash with any other free or bound variable names, and as long as
+we rename the variable consistently. This principle is more generally
+known as $\alpha$-renaming (alpha renaming) and equality up-to
+renaming (equality that accounts for renaming) is known as
+$\alpha$-equality. For example, writing $\alpha$-equality as
+$=_{\alpha}$ the following equality and inequality hold:
+%
+\begin{equation*}
+\exists x . \rel{P}(x) \rightarrow \rel{P}(y)
+  \;\;\; =_{\alpha} \;\;\;
+\exists z . \rel{P}(z) \rightarrow \rel{P}(y)
+ \;\;\; \neq_{\alpha} \;\;\; \exists y . \rel{P}(y) \rightarrow \rel{P}(y)
+\end{equation*}
+%
+The middle formula can be obtained from the left by renaming $x$ to a
+fresh variable $z$. However, if we rename $x$ to $y$ (on the right)
+we conflate the bound variable with the previously free variable to the
+right of the implication; we accidentally capture the
+free occurence of $y$ via the binding. The right-hand formula has
+a different meaning to the other two.
+
+\subsection{Substitution}
+
+Recall in Part C, we used the function $\textit{replace}$ in the DPLL
+algorithm where $\textit{replace}(x, Q, P)$ rewrites formula $P$ such
+that any occurrences of variable $x$ are replaced with formula
+$Q$. This is more generally called \emph{substitution}.
+
+From now on we will use a more compact syntax for substitution
+written $$P[t/x]$$ which means: \emph{replace variable $x$
+with the term $t$ in formula $P$} (akin to $\textit{replace}(x, t,
+P)$). This term could be another variable or a
+concrete element of our universe.
+
+Note that in predicate logic we have to be careful
+about free and bound variables. Thus, $P[t/x]$ means replace any
+\emph{free} occurrences of $x$ in $P$ with object $t$. (One way to remember
+this notation is to observe that the letters used in the general
+form above are in alphabetical order: $P$ then $t$ then $x$ to
+give $P[t/x]$ for replacing $x$ with $t$ in $P$).  This is a common
+notation also used in the course textbook.
+
+We must be careful to replace only the free
+occurrences of variables, that is, those variables which are not in
+the scope of a variable binding of the same name. For example, in the
+following we have a free $x$ and a bound $x$, so substitution only
+affects the free $x$:
+%
+\begin{equation*}
+(\rel{P}(x) \wedge \forall x . \rel{P}(x))[t/x]
+= \rel{P}(t) \wedge \forall x . \rel{P}(x)
+\end{equation*}
+%
+In general, it is best practice to give each bound variable a different name
+to all other free and bound names in a formula in order to avoid
+confusion.
+
+\subsection{The meaning of quantification}
+\label{subsec:quantifier-meaning}
+
+We can define the meaning of universal and existential quantification
+in terms of the propositional logic connectives.
+
+\paragraph{Universal quantification}
+
+Universal quantification essentially generalises conjunction.  That
+is, if the objects in the universe over which we are quantifying are
+$a_0, a_1, \ldots, a_n \in \mathcal{U}$ then universal quantification
+of $x$ over a formula $P$ is equivalent to taking the repeated
+conjunction of $P$, substituting each object for $x$, \ie{}
+%
+\begin{equation}
+\forall x . P = P[a_0/x] \wedge P[a_1/x] \wedge
+\ldots \wedge P[a_{n}/x]
+\label{eq:forall-meaning}
+\end{equation}
+%
+Thus, $\forall x . P$ means that we want $P$ to be true for
+all the objects in the universe being used.
+Note that there may be an infinite number of such objects.
+
+\paragraph{Existential quantification}
+
+Whilst universal quantification generalises conjunction,
+existential quantification generalises disjunction.
+If existential quantification binds a variable ranging
+over objects $a_0, a_1, \ldots, a_n \in \mathcal{U}$ then:
+%
+\begin{equation}
+\exists x . P = P[a_0/x] \vee P[a_1/x] \vee
+\ldots \vee P[a_{n}/x]
+\label{eq:exists-meaning}
+\end{equation}
+%
+Thus, existential quantification is equivalent to the repeated
+disjunction of the formula $P$ with each object in the universe
+replacing $x$.
+
+
+
+\subsection{Defining models/universes}
+
+First-order logic can be instantiated for particular concrete tasks by
+defining a universe $\mathcal{U}$ (a set of elements) and any
+relations, functions, and predicates over this universe.
+
+For example, we could define
+$\mathcal{U} = \{\mathsf{cat}, \mathsf{dog}, \mathsf{ant},
+\mathsf{chair}\}$ meaning that when we write quantified formulas like
+$\forall x . P$ (for some formula $P$) then $x$ refers to any of the things in
+$\mathcal{U}$ (i.e., $x \in \mathcal{U}$). We could then concretely
+define some functions and predicates. For example, let's define a function
+$\mathsf{legs}$ which maps from $\mathcal{U}$ to $\mathbb{N}$ (i.e.,
+$\mathsf{legs} : \mathcal{U} \rightarrow \mathbb{N}$) as:
 %
 \begin{align*}
-  \begin{array}{lrcll}
-& P \wedge (\highlight{x}) \wedge Q
-& \longrightarrow &
-\subst{\top}{x}{P} \wedge \subst{\top}{x}{Q} & \qquad
-\{x = \top\} \\
-\textit{or} \qquad & P \wedge
-(\highlight{\neg x}) \wedge Q
-& \longrightarrow &
-\subst{\bot}{x}{P} \wedge \subst{\bot}{x}{Q} & \qquad
-\{x = \bot\}
-\end{array}
+  \mathsf{legs}(\mathsf{cat}) = 4 \qquad \mathsf{legs}(\mathsf{dog}) = 4 \qquad
+  \mathsf{legs}(\mathsf{ant}) = 6 \qquad \mathsf{legs}(\mathsf{chair}) = 4
 \end{align*}
 %
-The assignment that is output by this step is written on the
-right-hand side. We have also removed the unit clause since it has
-been made true and is therefore redundant now. Thus, unit propagation
-gives us both a simplification and an assignment when we have unit
-clauses in our formula.
+We can define predicates by listing all their true instances. For
+example, $\mathsf{mammal}$ classifies some members
+of $\mathcal{U}$, defined via a proposition that lists all the true
+instances as a conjunction:
+%
+\begin{align*}
+  \mathsf{mammal}(\mathsf{cat})\ \wedge\
+  \mathsf{mammal}(\mathsf{dog})
+\end{align*}
+%
+Let's consider some true formulas in this instantiation of first-order
+logic:
+%
+\begin{align*}
+  \begin{array}{ll}
+  \vdash \forall x . \mathsf{mammal}(x) \rightarrow (\mathsf{legs}(x) = 4) &
+\quad (\textit{every mammal has four legs}) \\
+  \vdash \exists x . \mathsf{legs}(x) < 4 &
+\quad (\textit{there is something with less than four legs})
+  \end{array}
+\end{align*}
+%
+We have also employed two relations over $\mathbb{N}$ here:\footnote{Strictly speaking, we are
+  therefore using first-order logic where the universe contains
+  our set $\{\mathsf{cat}, \mathsf{dog}, \mathsf{ant},
+  \mathsf{chair}\}$ and $\mathbb{N}$, i.e.,
+  $\mathcal{U} = \{\mathsf{cat}, \mathsf{dog}, \mathsf{ant},
+\mathsf{chair}\} \cup \mathbb{N}$, and our function $\mathsf{legs}$ is
+partial, defined only for a part of the universe.}
+equality $=$ and less-than $<$.
 
-Here we are using a function on the syntax of formulas called
-\emph{replace} where $\subst{\top}{x}{P}$ means replace/substitute any
-occurrence of $x$ in $P$ with $\top$, and similarly $\subst{\bot}{x}{P}$
-replaces any occurrence of $x$ in $P$ with $\bot$.
-For example, $\subst{\top}{x}{\neg x \vee \neg y}$ would be
-the formula $\neg \top \vee \neg y$.
-This idea of
-substituting one proposition for another will crop up again in Part D
-when we look at first-order logic proofs.
+A false proposition in this instantiation is:
+%
+\begin{align*}
+  \not\vdash \forall u . (\mathsf{legs}(u) = 4) \rightarrow \mathsf{mammal}(u)
+& \quad (\textit{everything with four legs is a mammal})
+\end{align*}
+%
+This is false because $u$ could be $\mathsf{chair}$ (making the
+premise of the implication true) but
+$\mathsf{mammal}(\mathsf{chair})$ is false.
 
+\section{Equational reasoning}
+\label{sec:fo-eqn-reasoning}
+
+As in propositional logic, there are equations (logical
+equivalences) between particular first-order formulas. These can be used to
+rearrange and simplify formulas. This sections shows
+these equations, some of which are proved
+in the next section via natural deduction.
+
+Two key equations show that universal and existential
+quantification are \emph{dual}:
+%
+\begin{align}
+  \label{eq:quantifier-dual-first}
+  \forall x . \neg P \equiv \neg \exists x . P
+  \qquad
+   \neg \forall x . P \equiv \exists x . \neg P
+\end{align}
+%
+The order of repeated quantifications is irrelevant as shown by
+the following equalities:
+%
+\begin{align}
+  \forall x . \forall y. P \equiv \forall y . \forall x . P
+  \qquad
+  \exists x . \exists y . P \equiv \exists y . \exists x . P
+\end{align}
+%
+Note however that these equalities are only for quantifications that
+are of the same kind; $\forall x . \exists y . P$ is not equivalent to
+$\exists y . \forall x . P$.
+The rest of the equations capture interaction between quantification
+and the other propositional connectives:
+%
+\begin{align}
+  (\exists x . P) \vee (\exists x . Q) \equiv \exists x . (P \vee Q) \\
+  (\forall x . P) \wedge (\forall x . Q) \equiv \forall x . (P \wedge
+                                                                       Q) \\
+  P \wedge (\exists x . Q) \equiv \exists x . (P \wedge Q) & \;\; \textit{when $x$ is  not free in $P$} \\
+  P \vee (\forall x . Q) \equiv \forall x . (P \vee Q) & \;\;
+ \textit{when $x$ is  not free in $P$}
+\end{align}
+\vspace{-2em}
 \begin{example}
-The following formula has a unit clause highlighted in yellow and underlined:
-%
-\begin{equation*}
-(\neg x \vee \neg y) \wedge \highlight{x} \wedge (y \vee x)
-\end{equation*}
-%
-Since it is ``positive'' (\ie{}, not negated) then unit propagation
-emits the assignment $\{x = \top\}$ and then propagates this
-assignment by replacement:
-%%
-\begin{equation*}
-\subst{\top}{x}{(\neg x \vee \neg y)} \wedge \subst{\top}{x}{(y \vee x)}
-\end{equation*}
-%%
-Applying the replacement function then gives us:
-%
-\begin{equation*}
-(\neg \top \vee \neg y) \wedge (y \vee \top)
-\end{equation*}
-%
-which simplifies via the following steps
-%
-\begin{align*}
- & (\neg \top \vee \neg y) \wedge (y \vee \top) \\
-= \; & (\neg \top \vee \neg y) \wedge \top \\
-= \; & (\neg \top \vee \neg y) \\
-= \; & (\bot \vee \neg y) \\
-= \; & \neg y
-\end{align*}
-%
-In DPLL, we need only apply simplifications that involve disjunction
-or conjunction with $\top$ or $\bot$. It is straightforward to build
-this into an implementation so that these steps are implicit and
-automatic: essentially the ``replacement'' can remove entire clauses when
-we know we are making a literal true, or remove literals when they
-are false.
-
-Performing just one step of unit propagation has greatly simplified
-our original formula from $(\neg x \vee \neg y) \wedge (x)
-\wedge (y \vee x)$ to $\neg y$, along with giving the assignment
-$\{x = \top\}$.  Since $\neg y$ is itself a unit, we apply unit
-propagation again, yielding the assignment $\{y = \bot\}$ and
-the formula $\top$. Thus we have reached a satisfying assignment
-$\{x = \top, y = \bot\}$ just by applying unit propagation twice.
-\end{example}
-
-\begin{restatable}{exc}{unitFoo}
-Convince yourself that $\{x = \top, y = \bot\}$ is a satisfying
-assignment for $(\neg x \vee \neg y) \wedge (x)
-\wedge (y \vee x)$ by substituting the variables
-for their assignment and simplifying.
-\end{restatable}
-
-\begin{restatable}{exc}{unitFooTwo}
-Perform unit propagation on the formula $(y \vee \neg x)
-\wedge (\neg y)$.
-\end{restatable}
-
-\paragraph{Step 3: Pure literal elimination}
-
-In DPLL terminology, a pure literal is a literal whose
-negation does not appear anywhere else in the entire formula, \eg{}
-%
-\begin{align*}
-P \wedge (\ldots \vee \highlight{x} \vee \ldots) \wedge Q
-\end{align*}
-%
-where its dual $\neg x$ does not appear in $P$ nor is it in $Q$.
-For example, $x$ is a pure literal in this formula:
-%
-\begin{equation*}
-(x \vee y \vee \neg z) \wedge (\neg y \vee z \vee x)
-\end{equation*}
-%
-The literal $x$ can appear multiple times, what makes it ``pure'' is
-that its negation never appears anywhere. This means we can assign $x$
-to be true. We could assign $x$ to be false, but it might be the wrong
-decision later, for example if the other literals in the clause turn
-out to false as well. It turns out that the most useful approach is to
-assign $x$ to true by following the principle of progressing towards
-a true formula as quickly as possible.
-
-A pure literal might also be negative, for example:
-\begin{align*}
-P \wedge (\ldots \vee \highlight{\neg x} \vee \ldots) \wedge Q
-\end{align*}
-where $x$ does not appear in $P$ and $Q$. In this case, we can assign
-$x$ to be false, and propagate this assignment into $P$ and $Q$.
-
-Pure literal elimination therefore has the two dual rules:
-%
-\begin{align*}
-\begin{array}{rlcll}
-  & P \wedge (\ldots \vee \highlight{x} \vee \ldots) \wedge Q
-  & \longrightarrow & \subst{\top}{x}{P} \wedge \subst{\top}{x}{Q}
-& \quad \{x = \top\}
-  \\[0.25em]
-\textit{or} & P \wedge (\ldots \vee \highlight{\neg x} \vee \ldots) \wedge Q
-  & \longrightarrow & \subst{\bot}{x}{P} \wedge \subst{\bot}{x}{Q}
-& \quad \{x = \bot\}
-\end{array}
-\end{align*}
-%
-\begin{example}
-The following formula has pure literal $x$:
-%
-\begin{equation*}
-(\highlight{x} \vee y \vee \neg z) \wedge (\neg y \vee x)
-\wedge (y \vee z)
-\end{equation*}
-%
-Pure literal elimination then produces the assignment
-$\{x = \top\}$, eliminates the first clause (since it is now true),
-and rewrites the rest of the formula as follows:
-%
-\begin{align*}
-  & \subst{\top}{x}{(\neg y \vee x) \wedge (y \vee z)} \\
-= \; & (\neg y \vee \top) \wedge (y \vee z) \\
-= \; & (y \vee z)
-\end{align*}
-%
-We are left with a clause where both $y$ and $z$ are now pure
-literals, so pure literal elimination can be applied to either.
-
-Let's pick $y$ and assign it to $\{y = \top\}$. This gives us $\top$
-as the resulting formula.  Thus, we have found that
-$({x} \vee y \vee \neg z) \wedge (\neg y \vee x) \wedge (y
-\vee z)$
-is satisfiable with $\{x = \top, y = \top\}$, and it doesn't matter
-whether $z$ is true or false.
-\end{example}
-
-\begin{restatable}{exc}{pureLiteral}
-Apply pure literal elimination to the formula:
-%
-\begin{equation*}
-(\neg x \vee y \vee \neg z) \wedge (\neg y \vee z) \wedge (\neg x \vee z)
-\end{equation*}
-%
-\end{restatable}
-
-\paragraph{Step 4: Split a variable}
-
-The previous steps have applied the rules of logic, and the shape
-of CNF formula, to make simplifications and assignments. Once we've
-done all that we can with those steps, the last step falls back to
-a ``brute force'' approach. We pick a variable, and ``split it'', that is,
-we assign it to be true and apply DPLL on the result and separately
-assign it to false and apply DPLL on the result. This results
-in us running two DPLL separate procedures from this
-point forwards. That is, given a formula $P$, splitting recursively calls the
-DPLL algorithm under two new assignments:
-%
-\begin{align*}
-             & \textsf{DPLL}(\subst{\top}{x}{P}) \qquad\qquad\qquad \{x =
-               \top\}  \\
-\textit{and} \qquad &  \textsf{DPLL}(\subst{\bot}{x}{P}) \qquad\qquad\qquad \{x = \bot\}
-\end{align*}
-%
-These recursive calls will be separate, producing
-possibly different assignments in each.
-
-\begin{example}
-The following formula has no tautologies, units, or pure literals
-(\ie{}, none of the first three steps of DPLL apply):
-%
-\begin{equation*}
-(x \vee \neg y) \wedge (y \vee z) \wedge (\neg z \vee \neg x)
-\end{equation*}
-%
-The splitting step chooses any variable in the formula, let's say
-$z$, and splits the DPLL process.
-Let's follow the branch with the assignment $\{z = \top\}$,
-which is then propagated to the rest of the formula by replacement:
-%%
-\begin{align*}
-\begin{array}{rll}
-= & \subst{\top}{z}{(x \vee \neg y) \wedge (y \vee z) \wedge (\neg z \vee \neg x)}
-& \qquad \{z = \top\} \\
-= & (x \vee \neg y) \wedge (y \vee \top) \wedge (\bot \vee \neg x) \\
-= & (x \vee \neg y) \wedge (\neg x) \\
-\end{array}
-\end{align*}
-%%
-The other branched DPLL process has assignment $\{z = \bot\}$ which
-produces:
+  We can now go back to the example from the introduction: that
+  \emph{not all birds can fly}. We formulated this sentence as both
+  $\neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x))$ and
+  $\exists x . \rel{B}(x) \wedge \neg \rel{F}(x)$.
+  We can show these two statements are equivalent by algebraic
+  reasoning:
 %
 \begin{align*}
 \begin{array}{rll}
-= & \subst{\bot}{z}{(x \vee \neg y) \wedge (y \vee z) \wedge (\neg z \vee \neg x)}
-& \qquad \{z = \bot\} \\
-= & (x \vee \neg y) \wedge (y \vee \bot) \wedge (\top \vee \neg x) \\
-= & (x \vee \neg y) \wedge (y)
+    & \neg (\forall x . \rel{B}(x) \rightarrow \rel{F}(x)) & \{\textit{by \eqref{eq:quantifier-dual-first}}\} \\[0.4em]
+  \equiv \;\; &  \exists x . \, \neg (\rel{B}(x) \rightarrow
+                \rel{F}(x)) & \{\textit{$P \rightarrow Q \equiv \neg P
+                              \vee Q$}\} \\[0.4em]
+  \equiv \;\; & \exists x . \,\neg (\neg \rel{B}(x) \vee \rel{F}(x))
+& \{\textit{De Morgan's}\} \\[0.4em]
+  \equiv \;\; & \exists x . \,\neg \neg \rel{B}(x) \wedge \neg
+                \rel{F}(x)
+& \{\textit{Double negation elim.}\} \\[0.4em]
+  \equiv \;\; & \exists x . \,\rel{B}(x) \wedge \neg \rel{F}(x) & \Box
 \end{array}
-%
 \end{align*}
-We then return to step 1 for both branches, and continue with two
-separate instances of the DPLL procedure on the above two formulas.
-%
+  Note that the actual universe and the definition of $\rel{B}$ and
+  $\rel{F}$ is irrelevant to this proof; we did not rely on their
+  definition but just the general properties of first-order logic.
 \end{example}
 
-\begin{restatable}{exc}{split}
-Apply the splitting step to the following formula on variable $y$:
-%
-\begin{equation*}
-(x \vee y \vee \neg z) \wedge (x \vee \neg y \vee z) \wedge (y \vee z)
-\end{equation*}
-%
-Write down the two resulting formula after replacement and doing trivial
-simplifications.
-\end{restatable}
+\vspace{-1em}
 
-The following gives an example putting all the steps together.
-
-\begin{example}
-  Consider the following formula: $(\neg x \rightarrow y) \wedge x$.
-  Is it satisfiable? Before we apply DPLL we first have to
-convert it to CNF:
+\begin{restatable}{exc}{eqnProofF}
+  Prove via equational reasoning that:
   %
-   \begin{align*}
-      \begin{array}{lll}
-        & (\neg x \rightarrow y) \wedge x & \textit{\{$\rightarrow$ as
-                                          $\vee$\}} \\
-      = & (\neg \neg x \vee y) \wedge x & \textit{\{Double negation
-                                          elimination}\} \\
-      = & (x \vee y) \wedge x &
-      \end{array}
-    \end{align*}
-    %
-  Now we have the formula in CNF, we can apply DPLL. I'll write
-  the steps in a table: \\[1em]
-%
-  \vspace{2em}
-  \begin{tabular}{l|l|l|l}
-    Step & Note & Resulting CNF formula & Satisfying assignments \\ \hline
-      & start & $(x \vee y) \wedge x$ &  \\
-    1 & Tautology elim & $(x \vee y) \wedge x$ &  \\
-    2 & Unit propagation $x$ & $\top$ & $\{x = \top\}$
-  \end{tabular} \\[-1em]
-  %
-  Thus the original formula is satisfiable with assignment $x = \top$
-  (and $y$ can be anything). We reached this conclusion quickly,
-  just by applying tautology elimination and unit propagation.
-This tabulated form is handy for small examples; you might like
-to use it for class exercises.
-\end{example}
-
-\begin{example}
-The following is the proposition $\neg (\textit{model}
-\rightarrow \textit{specification})$ for the traffic light
-example shown in Part B, but in CNF:
-%
-\begin{align*}
-& (\neg r \vee g') \wedge (\neg r \vee \neg r') \wedge (\neg g \vee \neg
-  g') \wedge (\neg g \vee r') \\[-0.3em]
-\wedge \; & (r \vee g) \wedge (\neg r \vee \neg g) \wedge \highlight{(\neg r' \vee r')} \\[-0.4em]
-\wedge  \; & (\neg r' \vee g') \wedge (\neg g' \vee r') \wedge \highlight{(\neg g' \vee g)}
-\end{align*}
-%
-We'll apply DPLL to it here. Due to the large size of the formula,
-I'll use a more free-form style rather than the tabulated form
-used above.
-
-\textit{Step 1: Tautology elimination} - There are two immediate
-tautologies in the above formula which are highlighted.
-These are eliminated to give:
-%
-\begin{align*}
-& (\neg r \vee g') \wedge (\neg r \vee \neg r') \wedge (\neg g \vee \neg
-  g') \wedge (\neg g \vee r') \\
- \wedge \; & (r \vee g) \wedge (\neg r \vee \neg g) \\
-\wedge \; & (\neg r' \vee g') \wedge (\neg g' \vee r')
-\end{align*}
-%
-There are no units or pure literals so we move to step 4.
-
-\textit{Step 4: Splitting a variable} - Choose $r$:
-%
-\begin{longtable}{c|c}
-%%%%
-$\{r = \top\}$  & $\{r = \bot\}$ \\[0.5em]
-yielding: & yielding: \\[0.5em]
-$\begin{array}{ll}
-& (\neg \top \vee g') \wedge (\neg \top \vee \neg r')
-  \wedge \\
-& (\neg g \vee \neg
-  g') \wedge (\neg g \vee r') \wedge \\
-& (\top \vee g) \wedge (\neg \top \vee \neg g) \wedge \\
-& (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$ &
-%%%
-$\begin{array}{ll}
-& (\neg \bot \vee g') \wedge (\neg \bot \vee \neg r')
-  \wedge \\
-& (\neg g \vee \neg
-  g') \wedge (\neg g \vee r') \wedge \\
-& (\bot \vee g) \wedge (\neg \bot \vee \neg g) \wedge \\
-& (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$ \\[3em]
-%%%%%%%%
-which simplifies to & which simplifies to \\[1em]
-$\begin{array}{ll}
-& {g'} \wedge (\neg r') \wedge (\neg g \vee \neg
-  g') \wedge \\
-& (\neg g \vee r') \wedge {(\neg g)} \wedge \\
-& (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$ &
-%%%
-$\begin{array}{ll}
-& (\neg g \vee \neg g') \wedge (\neg g \vee r') \wedge \\
-& {(g)} \wedge (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$  \\ \hline \\[-1em]
-  \textit{1. Unit propagation} on the unit $g'$ &
-  \textit{1. Unit propagation} on the unit $g$ \\
-$\begin{array}{ll}
-& \highlight{g'} \wedge (\neg r') \wedge (\neg g \vee \neg
-  g') \wedge \\
-& (\neg g \vee r') \wedge {(\neg g)} \wedge \\
-& (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$ &
-$\begin{array}{ll}
-& (\neg g \vee \neg g') \wedge (\neg g \vee r') \wedge \\
-& \highlight{(g)} \wedge (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$ \\
-yields assignment $\{g' = \top\}$ giving
-& yields assignment $\{g = \top\}$ giving \\[1em]
-  %%%%%%%
-$\begin{array}{ll}
-& {(\neg r')} \,\wedge\, (\neg g) \,\wedge\, \\
-& (\neg g \vee r') \,\wedge\, \\
-& {(\neg g)} \,\wedge\, (r')
-\end{array}$ &
-%%%
-$\begin{array}{ll}
-& {(\neg g')} \,\wedge\, (r') \,\wedge\, \\
-& (\neg r' \vee g') \,\wedge\, (\neg g' \vee r')
- \end{array}$ \\[2em]
-  \textit{1. Unit propagation:} on the unit $\neg r'$ &
-  \textit{1. Unit propagation:} on the unit $\neg g'$ \\
-$\begin{array}{ll}
-& \highlight{(\neg r')} \,\wedge\, (\neg g) \,\wedge\, \\
-& (\neg g \vee r') \,\wedge\, \\
-& {(\neg g)} \,\wedge\, (r')
-\end{array}$ &
-%%%
-$\begin{array}{ll}
-& \highlight{(\neg g')} \,\wedge\, (r') \,\wedge\, \\
-& (\neg r' \vee g') \,\wedge\, (\neg g' \vee r')
- \end{array}$ \\[2em]
-yields assignment $\{r' = \bot \}$ giving &
-yields assignment $\{g' = \bot\}$ giving \\[1em]
-  %%%%%%%
-$\begin{array}{ll}
-& (\neg g) \wedge (\neg g) \wedge (\neg g) \wedge \bot
- \end{array}$ &
-%%%
-$\begin{array}{ll}
-& (r') \wedge (\neg r')
- \end{array}$  \\
- & \\[-0.6em]
- & \textit{1. Unit propagation:} on the unit $r'$ \\
-simplifies to & yields assignment $\{r' = \top\}$ giving \\
-$\bot$ & $\bot$
-\end{longtable}
-
-\noindent
-Both branches have ended with $\bot$ hence $\neg(\textit{model}
-\rightarrow \textit{specification})$ is unsatisfiable and
-therefore $\textit{model} \rightarrow \textit{specification}$
-is valid! Hurray!
-\end{example}
-
-\begin{restatable}{exc}{full}
-Apply the full DPLL procedure to the following formula (already
-in CNF):
-%
+  \vspace{-0.25em}
 \begin{equation*}
-(x \vee y \vee z)
-\wedge (\neg x \vee y)
-\wedge (\neg x \vee \neg y \vee \neg z)
+  \forall x . \mathsf{mammal}(x) \rightarrow (\mathsf{legs}(x) = 4) \;
+  \equiv \; \neg \exists x . \mathsf{mammal}(x) \wedge
+  \mathsf{legs}(x)
+  \neq 4
 \end{equation*}
 \end{restatable}
-
-\section{Exercises from this section}
-
-%
-\unitFoo*
-\unitFooTwo*
-\pureLiteral*
-\split*
-\full*
+\vspace{-1em}
