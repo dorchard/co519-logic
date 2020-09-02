@@ -1,0 +1,166 @@
+\documentclass[a4paper]{article}
+
+\usepackage[margin=3.5cm]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[table,x11names,dvipsnames]{xcolor}
+\usepackage{logicproof}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xypic}
+
+\usepackage{titlesec}
+\usepackage{longtable}
+
+\usepackage{afterpage}
+\usepackage{colortbl}
+\usepackage{forloop}
+
+% For restatables
+\usepackage{thmtools}
+\usepackage{thm-restate}
+\usepackage[hypertexnames=false, hidelinks]{hyperref}
+\usepackage{cleveref}
+\usepackage[numbered, open=true]{bookmark}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+\newtheorem*{remark}{Remark}
+\declaretheorem[name=Exercise,numberwithin=section]{exc}
+
+\newif\ifprinting
+\printingfalse
+
+\ifprinting
+
+ % Make highlights black and white
+ \definecolor{lightgray}{rgb}{0.9,0.9,0.9}
+ \let\oldrowcolor\rowcolor
+ \renewcommand{\rowcolor}[1]{\oldrowcolor{lightgray}}
+
+ \newcommand{\highlight}[1]{%
+  \underline{\colorbox{lightgray}{$\displaystyle#1$}}}
+
+ \definecolor{freshVariableColor}{rgb}{0.3,0.3,0.3}
+ \newcommand{\freshVariableColorName}{gray}
+
+ \newcommand{\version}{print}
+
+\else
+
+\newcommand{\highlight}[1]{%
+ \underline{\colorbox{yellow!50}{$\displaystyle#1$}}}
+
+ \definecolor{freshVariableColor}{rgb}{0,0,0.9}
+ \newcommand{\freshVariableColorName}{blue}
+
+ \newcommand{\version}{full-\textcolor{red}{c}\textcolor{orange}{o}\textcolor{ForestGreen}{l}\textcolor{blue}{o}\textcolor{purple}{u}\textcolor{red}{r}}
+
+
+\fi
+
+% Writing
+\newcommand{\ie}{{i.e.}}
+\newcommand{\eg}{{e.g.}}
+
+\renewcommand\thepart{\Alph{part}}
+\titleformat{\part}{\Large\filcenter\scshape}{\textnormal{\textbf{Part \thepart}}}{1em}{\\}
+
+\title{\vspace{-3em}CO519 - Theory of Computing - Logic}
+\author{Dominic Orchard \\
+  {\small{School of Computing, University of Kent}}}
+
+\date{Last updated on \today\ {\small{(\version{} version)}}}
+
+\begin{document}
+\maketitle
+
+\noindent
+These are the accompanying notes for the logic part of CO519. They
+provide a counterpart to the lectures, but they do not replace them; \textbf{the
+lectures will provide content, examples, detail, and discussion not given in
+these notes}.  However, the notes also provide additional exercises and
+examples, and some additional detail beyond what is assessed on this
+course---this will be pointed out when it happens.
+
+These notes also act as a counterpart to the \textbf{course textbook},
+\emph{Logic in Computer Science} (by Huth and Ryan) which I
+recommend. We will only cover some of the material from the first two
+chapters due to the short length of this part of the course. I
+recommend reading these chapters (they have further exercises and
+examples), but the assessable material for this course is covered in
+lectures and these notes (excluding the appendices); the textbook
+contains extra detail which is not assessed, but worth learning.
+
+If you spot any errors or have suggested edits, the notes are written
+in LaTeX and are available on GitHub at
+\url{http://github.com/dorchard/co519-logic}. Please fork and submit a
+pull request with any suggested changes.
+
+The \textbf{last page of these notes} provides a section for you to
+write down any topics you do not yet understand, or feel that you need
+to work on more. By writing these down during the course, you offload
+the task of remembering what you need to work on. You can then look
+back at this list when you are studying, and eventually cross off items
+as you get to grips with the material.
+
+\part{Propositional logic \& its natural deduction proofs}
+\input{partA-notes.tex}
+
+\part{Satisfiability for propositional logic}
+\setcounter{section}{0}
+\input{partC-notes.tex}
+
+\part{First-order logic and its natural deduction proofs}
+\setcounter{section}{0}
+\input{partD-notes.tex}
+
+\newpage
+\afterpage{
+  \newgeometry{bottom=0cm,top=1.5cm,left=1.5cm,right=1.5cm}
+\thispagestyle{empty}
+
+\section*{Aide-m\'{e}moire}
+
+\noindent
+Write down any terms, symbols, concepts, techniques, etc. that
+you don't yet understand or would like to grasp better.
+You can cross these out (and move them to the right-hand column) as you make progress:
+it might be 5 minutes after you first write the
+item down here, or it might be 5 minutes before the exam.
+This will help you to keep a record of the things you
+need to work on and to understand what you need to know to make progress.
+
+% Set column and row heights
+\setlength{\tabcolsep}{0.9em}
+\renewcommand{\arraystretch}{1.85}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+  \textbf{Things I don't understand yet} &
+  \textbf{Things I need to get better at} &
+  \textbf{Things I'm getting the hang of} \\ \hline
+
+  % Create the lines
+  \newcounter{loop}
+  \forloop{loop}{1}{\value{loop}<29}{& & \\ \arrayrulecolor{gray}\hline}
+  & &
+\end{tabular}
+\end{center}
+
+\clearpage
+\restoregeometry
+}
+
+{\Huge{\textsc{Online version: \\ extra material}}}
+
+\newpage
+\input{online-appendix.tex}
+
+
+\end{document}
