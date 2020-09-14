@@ -1,636 +1,312 @@
-% \newcommand{\subst}[3]{#3[#1/#2]}
-\newcommand{\subst}[3]{\textit{replace}(#2, #1, #3)}
+\newcommand{\atomr}{\textsf{r}}
+\newcommand{\atomrp}{\textsf{r'}}
+\newcommand{\atomg}{\textsf{g}}
+\newcommand{\atomgp}{\textsf{g'}}
 
-\section{Satisfiable formula}
+In this part we are going to briefly cover using propositional
+formula to model systems. This is a common approach in hardware design
+where a complete or partial model of a circuit or processor is defined in logic,
+against which specifications of particular properties are checked.
+The starting point is to work out a good way to represent/model a
+system as a logical formula. In this part of the course, we will
+consider systems modelled as simple state machines, with states and
+transitions between the states describing how a system can
+change/evolve. We will then convert this model into a propositional
+formula.
 
-This section covers \emph{satisfiability} of propositional
-formula. Recall from Part A that a formula is \emph{satisfiable} if it
-is true for a particular ``assignment'' of either true or false to
-variables in the formula. For example, $a \wedge b$ is satisfiable
-since we can make it true by setting $a$ to be true and $b$ to be
-true. We say this is the \emph{satisfying assignment}, and will write
-this as:
+
+To verify a system based on its model we then need a specification of
+either good behaviour that we want to make sure follows from our model
+or of bad behaviour which we want to ensure does not follow from the
+model.  We formulate such a specification as a propositional formula
+\emph{spec}, and then prove that the following is valid:
 %
 \begin{equation*}
-\{a = \top, \; b = \top\}
+\emph{model} \rightarrow \emph{spec}
 \end{equation*}
 %
-A valid formula is trivially satisfiable since it is true no matter
-how we assign truth or falsehood to the variables.
+The use of implication means that if the model holds then
+the specification must hold. Alternatively, and equivalently,
+we could state this as judgment $\emph{model} \vdash \emph{spec}$,
+\ie{}, the specified behaviour follows from the model.
 
-The general problem of finding a satisfying assignment for a formula
-is known in computer science as the \emph{Boolean satisfiability
-  problem} or simply SAT for short. There are various
-algorithmic approaches to solving the SAT problem, \ie{}, for
-calculating a satisfying assignment for a propositional formula.  SAT
-is used in many areas of formal verification, such as AI, planning,
-circuit design, and theorem provers, and is applied to problems with
-thousands of variables.
+\section{State-transition models as propositions}
 
-One approach is to exhaustively list all possible assignments of
-true/false to variables in a formula by constructing its truth
-tables. Thus for a formula with $n$ variables we need to calculate
-$2^n$ rows. This is completely infeasible for problems with hundreds
-or even thousands of variables. Instead, we'll look at the \emph{DPLL
-  algorithm} which utilises properties of propositional
-logic to be more efficient for many problems.
-
-We can use SAT solving algorithms to prove validity of a formula $P$
-by applying SAT to $\neg P$. If the algorithm shows us that $\neg P$
-is unsatisfiable, that implies $\neg P$ is false for any assignment of
-its variables and thus $P$ is true for any assignment of its
-variables, \ie{}, \emph{valid}. This is very useful for modelling
-problems where we have a complex model of some system in logic, and a
-complex specification, and we want to prove the validity of:
-%%
-\begin{equation}
-\textit{model} \rightarrow \textit{specification}
-\label{eq:model-property}
-\end{equation}
-Instead of proving this valid using natural deduction, we can instead
-use an algorithm to show unsatisfiability of
-$\neg (\textit{model} \rightarrow \textit{specification})$. If we find
-a satisfying assignment to this negated formula, then we have a
-counterexample to the original property, that is, a set of variable
-assignments which makes equation~\eqref{eq:model-property} false and
-thus shows us a configuration which leads to a bug in our system.
-
-\section{The DPLL algorithm}
-
-DPLL stands for \emph{Davis-Putnam-Logemann-Loveland} (who proposed
-this algorithm)\footnote{Actually the history is more complicated,
-  just like the history of most science! In 1960 Davis and Putnam did some
-  work on automatically showing validity of formulae following a
-  different technique, and David, Logemann, and Loveland built on some
-  of the ideas to create their SAT in algorithm 1962.}. We'll go over
-the technique since its a nice algorithm and makes some clever use of
-the properties of propositional logic to simplify the exploration of
-the state space. Despite the fact it is more than 50 years old, DPLL
-still forms the basis of many SAT solvers, though there has been
-some progress since.
-
-\subsection{CNF}
-
-The input to the DPLL algorithm is a formula in \emph{conjunctive
-  normal form} (CNF for short).  A formula in Conjunction Normal
-Form is a conjunction of disjunctions of literals. A literal is
-either a variable or the negation of a variable. Thus, CNF formula are
-of the form:
+\paragraph{States}
+Our running example will be a very simple traffic light comprising
+a red light and a green light, with two possible states:
 %
-\begin{equation*}
-  (\textit{x} \vee \neg \textit{y} \vee ...) \wedge
-  (\textit{z} \vee \ldots) \wedge \ldots \wedge
-  (\neg \textit{w} \vee \textit{x} \vee \textit{y})
-\end{equation*}
+\setlength{\tabcolsep}{0.4em}
+\begin{center}
+  \begin{tabular}{m{1.1cm} m{1.5cm} m{1.1cm}}
+    State 1 & & State 2 \\
+{\scalebox{0.2}{\includegraphics{images/red-on.pdf}}}
+  &
+  &
+{\scalebox{0.2}{\includegraphics{images/green-on.pdf}}}
+\end{tabular}
+\end{center}
 %
-We refer to a disjunction of literals as a \emph{clause}.
-For example, the following highlights the middle clause:
+Either the red light is on (left) or the green light is on (right),
+but never both at the same time, and there is always at least one
+light on. We will use two atoms (propositional
+variables that can be true or false) $\atomr{}$ and $\atomg$ to represent the state of
+each light separately, where:
 %
-\begin{equation}
-(x \vee \neg w) \wedge {\highlight{(y \vee z)}} \wedge (\neg z \vee \neg x)
-\end{equation}
-%
-A CNF formula consists of a set of clauses all of which have to be
-true, since they are combined using conjunction. Within each clause,
-just one of literals has to be true since they are combined via
-disjunction.
-
-Any formula can be converted into CNF by applying algebraic properties
-of logic (see Part A, Section~\ref{sec:algebraic}) to rewrite a formula. Informally, this can be done by
-doing the following:
-%
-\begin{itemize}[leftmargin=1em]
-\item Replace implication $\rightarrow$ with disjunction $\vee$
-and negation $\neg$, via: $$P \rightarrow Q = \neg P \vee Q$$
-\item Use De Morgan's law to push negation inside of
-disjunction and conjunction:
-\begin{align*}
-\neg (P \vee Q) & = \neg P \wedge \neg Q \\
-\neg (P \wedge Q) & = \neg P \vee \neg Q
-\end{align*}
-\item Push disjunction inside and pull conjunction out (using
-  distributive laws):
-%
-\begin{align*}
-(P \wedge Q) \vee R & = (P \vee R) \wedge (Q \vee R) \\
-P \vee (Q \wedge R) & = (P \vee Q) \wedge (P \vee R)
-\end{align*}
-\item Eliminate double negation $\neg\neg P = P$
-%
+\begin{itemize}
+  \item \atomr{} means the red light is on; $\neg\atomr{}$ therefore
+  means the red light is off;
+  \item \atomg{} means the green light is on; $\neg\atomg{}$ means the
+  green light is off.
 \end{itemize}
 %
-By repeatedly applying these equations as rewrites (orienting the
-equalities from left to the right), we end up with a formula
-in CNF which is ready for DPLL.
-
-\subsection{DPLL, step-by-step}
-
-DPLL can be summarised in pseudo code as follows, which
-has four main steps which I remember using the acronym \textbf{TUPS}:
+The two valid states of the system can then be modelled as two propositions:
 %
 \begin{align*}
-\textsf{DPLL}(\top) = &\textit{satisfiable} \\
-\textsf{DPLL}(\bot) = & \textit{unsatisfiable} \\
-\textsf{DPLL}(P) = & \\
-    1. & \; \textit{\textbf{T}autology elimination} \\
-    2. & \; \textit{\textbf{U}nit propagation} \\
-    3. & \; \textit{\textbf{P}ure literal elimination} \\
-    4. & \; \textit{\textbf{S}plit on a variable: choose a variable $v$} \\
-       &  \quad \textsf{DPLL}(P') \{v = \top\}  \\
-       & \quad \textsf{DPLL}(P') \{v = \bot\}
+  \text{State 1} & \qquad\qquad \text{State 2} \\
+  \atomr{} \wedge \neg\atomg{} &
+  \qquad\qquad
+  \neg\atomr{} \wedge \atomg{}
 \end{align*}
 %
-Note that this is a recursive algorithm which branches
-into two executions at the last step.
-The four steps gradually reduce the size of the input CNF formula and
-create an assignment for its variables (setting variables to be true
-or false). %We can think of the input to DPLL as being a list of
-%formula which are all joined together by conjunction. If this list is
-%empty then we are done and the formula is satisfied.
+For $n$-propositional atoms there are $2^n$ possible states that can
+be modelled. Thus in our model, there are four possible states, two of
+which we want to treat as valid (the above two).
 
-The first step is a simplification step using properties
-of propositional logic and the structure of CNF
-formula. The next two steps provide simplification and can give us
-some satisfying assignments.  The last step splits the problem into
-two by picking a variable and repeating the DPLL procedure with that
-variable assigned to be true in one branch (written above as $\{v = \top\}$)
-and repeating DPLL with that variable assigned to false ($\{v = \bot\}$).
-
-\paragraph{Step 1. Tautology elimination}
-
-Consider a formula in CNF where one clause (highlighted in yellow
-bellow) contains both $x$ and $\neg x$, e.g., a formula of
-the form:
-%
-\begin{equation*}
-P \wedge (\highlight{\ldots x \vee \ldots \vee \neg x}) \wedge Q
-\end{equation*}
-%
-Such a formula can be simplified by completely removing the
-highlighted clause. This is because a disjunction of a formula with
-its negation is a tautology (always true) by \emph{complementation}:
- $P \vee \neg P = \top$.
-Furthermore, since disjunction of anything with truth is equivalent to truth:
-$P \vee \top = \top$ and for conjunction $P \wedge \top = P$
-(\emph{unitality} properties) we can
-completely filter out clauses that have a tautology, \ie{}
-%
-\begin{equation*}
-P \wedge (\highlight{\ldots x \vee \ldots \vee \neg x}) \wedge Q
-\;\;\; \longrightarrow \;\;\;
-P \wedge (\top) \wedge Q
-\;\;\; \longrightarrow \;\;\;
-P \wedge Q
-\end{equation*}
-%
-Note that this doesn't tell us whether to assign true or false to
-$x$ yet. So far we just know that this clause didn't depend on the
-truth or falsehood of $x$ because it contained this tautology.
-
-\paragraph{Step 2: Unit propagation}
-
-In CNF terminology, a ``unit'' is a clause which contains just one
-literal (a variable or negation of a variable), \eg{},
-%
-\begin{equation*}
-P \wedge (\highlight{x}) \wedge Q
-\quad
-\textit{or}
-\quad
-P \wedge (\highlight{\neg x}) \wedge Q
-\end{equation*}
-%
-where the ``unit'' clauses are highlighted.
-
-If we see a formula in the left form, then we know that $x$ must be
-true if we want the overall formula to be true, since we are taking
-the conjunction of $x$ with all the other formula. If we have a
-formula with the right form, then we know that $x$ must be false so
-that $\neg x$ is true to make the overall formula true. Thus
-in the left case we get the assignment $x = \top$ and in the right
-case we get $x = \bot$. We then \emph{propagate} this assignment to
-the rest of the clauses $P$ and $Q$, replacing any occurrences of $x$
-with its assignment:
-%
-\begin{align*}
-  \begin{array}{lrcll}
-& P \wedge (\highlight{x}) \wedge Q
-& \longrightarrow &
-\subst{\top}{x}{P} \wedge \subst{\top}{x}{Q} & \qquad
-\{x = \top\} \\
-\textit{or} \qquad & P \wedge
-(\highlight{\neg x}) \wedge Q
-& \longrightarrow &
-\subst{\bot}{x}{P} \wedge \subst{\bot}{x}{Q} & \qquad
-\{x = \bot\}
-\end{array}
-\end{align*}
-%
-The assignment that is output by this step is written on the
-right-hand side. We have also removed the unit clause since it has
-been made true and is therefore redundant now. Thus, unit propagation
-gives us both a simplification and an assignment when we have unit
-clauses in our formula.
-
-Here we are using a function on the syntax of formulas called
-\emph{replace} where $\subst{\top}{x}{P}$ means replace/substitute any
-occurrence of $x$ in $P$ with $\top$, and similarly $\subst{\bot}{x}{P}$
-replaces any occurrence of $x$ in $P$ with $\bot$.
-For example, $\subst{\top}{x}{\neg x \vee \neg y}$ would be
-the formula $\neg \top \vee \neg y$.
-This idea of
-substituting one proposition for another will crop up again in Part D
-when we look at first-order logic proofs.
-
-\begin{example}
-The following formula has a unit clause highlighted in yellow and underlined:
-%
-\begin{equation*}
-(\neg x \vee \neg y) \wedge \highlight{x} \wedge (y \vee x)
-\end{equation*}
-%
-Since it is ``positive'' (\ie{}, not negated) then unit propagation
-emits the assignment $\{x = \top\}$ and then propagates this
-assignment by replacement:
-%%
-\begin{equation*}
-\subst{\top}{x}{(\neg x \vee \neg y)} \wedge \subst{\top}{x}{(y \vee x)}
-\end{equation*}
-%%
-Applying the replacement function then gives us:
-%
-\begin{equation*}
-(\neg \top \vee \neg y) \wedge (y \vee \top)
-\end{equation*}
-%
-which simplifies via the following steps
-%
-\begin{align*}
- & (\neg \top \vee \neg y) \wedge (y \vee \top) \\
-= \; & (\neg \top \vee \neg y) \wedge \top \\
-= \; & (\neg \top \vee \neg y) \\
-= \; & (\bot \vee \neg y) \\
-= \; & \neg y
-\end{align*}
-%
-In DPLL, we need only apply simplifications that involve disjunction
-or conjunction with $\top$ or $\bot$. It is straightforward to build
-this into an implementation so that these steps are implicit and
-automatic: essentially the ``replacement'' can remove entire clauses when
-we know we are making a literal true, or remove literals when they
-are false.
-
-Performing just one step of unit propagation has greatly simplified
-our original formula from $(\neg x \vee \neg y) \wedge (x)
-\wedge (y \vee x)$ to $\neg y$, along with giving the assignment
-$\{x = \top\}$.  Since $\neg y$ is itself a unit, we apply unit
-propagation again, yielding the assignment $\{y = \bot\}$ and
-the formula $\top$. Thus we have reached a satisfying assignment
-$\{x = \top, y = \bot\}$ just by applying unit propagation twice.
-\end{example}
-
-\begin{restatable}{exc}{unitFoo}
-Convince yourself that $\{x = \top, y = \bot\}$ is a satisfying
-assignment for $(\neg x \vee \neg y) \wedge (x)
-\wedge (y \vee x)$ by substituting the variables
-for their assignment and simplifying.
-\end{restatable}
-
-\begin{restatable}{exc}{unitFooTwo}
-Perform unit propagation on the formula $(y \vee \neg x)
-\wedge (\neg y)$.
-\end{restatable}
-
-\paragraph{Step 3: Pure literal elimination}
-
-In DPLL terminology, a pure literal is a literal whose
-negation does not appear anywhere else in the entire formula, \eg{}
-%
-\begin{align*}
-P \wedge (\ldots \vee \highlight{x} \vee \ldots) \wedge Q
-\end{align*}
-%
-where its dual $\neg x$ does not appear in $P$ nor is it in $Q$.
-For example, $x$ is a pure literal in this formula:
-%
-\begin{equation*}
-(x \vee y \vee \neg z) \wedge (\neg y \vee z \vee x)
-\end{equation*}
-%
-The literal $x$ can appear multiple times, what makes it ``pure'' is
-that its negation never appears anywhere. This means we can assign $x$
-to be true. We could assign $x$ to be false, but it might be the wrong
-decision later, for example if the other literals in the clause turn
-out to false as well. It turns out that the most useful approach is to
-assign $x$ to true by following the principle of progressing towards
-a true formula as quickly as possible.
-
-A pure literal might also be negative, for example:
-\begin{align*}
-P \wedge (\ldots \vee \highlight{\neg x} \vee \ldots) \wedge Q
-\end{align*}
-where $x$ does not appear in $P$ and $Q$. In this case, we can assign
-$x$ to be false, and propagate this assignment into $P$ and $Q$.
-
-Pure literal elimination therefore has the two dual rules:
-%
-\begin{align*}
-\begin{array}{rlcll}
-  & P \wedge (\ldots \vee \highlight{x} \vee \ldots) \wedge Q
-  & \longrightarrow & \subst{\top}{x}{P} \wedge \subst{\top}{x}{Q}
-& \quad \{x = \top\}
-  \\[0.25em]
-\textit{or} & P \wedge (\ldots \vee \highlight{\neg x} \vee \ldots) \wedge Q
-  & \longrightarrow & \subst{\bot}{x}{P} \wedge \subst{\bot}{x}{Q}
-& \quad \{x = \bot\}
-\end{array}
-\end{align*}
-%
-\begin{example}
-The following formula has pure literal $x$:
-%
-\begin{equation*}
-(\highlight{x} \vee y \vee \neg z) \wedge (\neg y \vee x)
-\wedge (y \vee z)
-\end{equation*}
-%
-Pure literal elimination then produces the assignment
-$\{x = \top\}$, eliminates the first clause (since it is now true),
-and rewrites the rest of the formula as follows:
-%
-\begin{align*}
-  & \subst{\top}{x}{(\neg y \vee x) \wedge (y \vee z)} \\
-= \; & (\neg y \vee \top) \wedge (y \vee z) \\
-= \; & (y \vee z)
-\end{align*}
-%
-We are left with a clause where both $y$ and $z$ are now pure
-literals, so pure literal elimination can be applied to either.
-
-Let's pick $y$ and assign it to $\{y = \top\}$. This gives us $\top$
-as the resulting formula.  Thus, we have found that
-$({x} \vee y \vee \neg z) \wedge (\neg y \vee x) \wedge (y
-\vee z)$
-is satisfiable with $\{x = \top, y = \top\}$, and it doesn't matter
-whether $z$ is true or false.
-\end{example}
-
-\begin{restatable}{exc}{pureLiteral}
-Apply pure literal elimination to the formula:
-%
-\begin{equation*}
-(\neg x \vee y \vee \neg z) \wedge (\neg y \vee z) \wedge (\neg x \vee z)
-\end{equation*}
-%
-\end{restatable}
-
-\paragraph{Step 4: Split a variable}
-
-The previous steps have applied the rules of logic, and the shape
-of CNF formula, to make simplifications and assignments. Once we've
-done all that we can with those steps, the last step falls back to
-a ``brute force'' approach. We pick a variable, and ``split it'', that is,
-we assign it to be true and apply DPLL on the result and separately
-assign it to false and apply DPLL on the result. This results
-in us running two DPLL separate procedures from this
-point forwards. That is, given a formula $P$, splitting recursively calls the
-DPLL algorithm under two new assignments:
-%
-\begin{align*}
-             & \textsf{DPLL}(\subst{\top}{x}{P}) \qquad\qquad\qquad \{x =
-               \top\}  \\
-\textit{and} \qquad &  \textsf{DPLL}(\subst{\bot}{x}{P}) \qquad\qquad\qquad \{x = \bot\}
-\end{align*}
-%
-These recursive calls will be separate, producing
-possibly different assignments in each.
-
-\begin{example}
-The following formula has no tautologies, units, or pure literals
-(\ie{}, none of the first three steps of DPLL apply):
-%
-\begin{equation*}
-(x \vee \neg y) \wedge (y \vee z) \wedge (\neg z \vee \neg x)
-\end{equation*}
-%
-The splitting step chooses any variable in the formula, let's say
-$z$, and splits the DPLL process.
-Let's follow the branch with the assignment $\{z = \top\}$,
-which is then propagated to the rest of the formula by replacement:
-%%
-\begin{align*}
-\begin{array}{rll}
-= & \subst{\top}{z}{(x \vee \neg y) \wedge (y \vee z) \wedge (\neg z \vee \neg x)}
-& \qquad \{z = \top\} \\
-= & (x \vee \neg y) \wedge (y \vee \top) \wedge (\bot \vee \neg x) \\
-= & (x \vee \neg y) \wedge (\neg x) \\
-\end{array}
-\end{align*}
-%%
-The other branched DPLL process has assignment $\{z = \bot\}$ which
-produces:
-%
-\begin{align*}
-\begin{array}{rll}
-= & \subst{\bot}{z}{(x \vee \neg y) \wedge (y \vee z) \wedge (\neg z \vee \neg x)}
-& \qquad \{z = \bot\} \\
-= & (x \vee \neg y) \wedge (y \vee \bot) \wedge (\top \vee \neg x) \\
-= & (x \vee \neg y) \wedge (y)
-\end{array}
-%
-\end{align*}
-We then return to step 1 for both branches, and continue with two
-separate instances of the DPLL procedure on the above two formulas.
-%
-\end{example}
-
-\begin{restatable}{exc}{split}
-Apply the splitting step to the following formula on variable $y$:
-%
-\begin{equation*}
-(x \vee y \vee \neg z) \wedge (x \vee \neg y \vee z) \wedge (y \vee z)
-\end{equation*}
-%
-Write down the two resulting formula after replacement and doing trivial
-simplifications.
-\end{restatable}
-
-The following gives an example putting all the steps together.
-
-\begin{example}
-  Consider the following formula: $(\neg x \rightarrow y) \wedge x$.
-  Is it satisfiable? Before we apply DPLL we first have to
-convert it to CNF:
-  %
-   \begin{align*}
-      \begin{array}{lll}
-        & (\neg x \rightarrow y) \wedge x & \textit{\{$\rightarrow$ as
-                                          $\vee$\}} \\
-      = & (\neg \neg x \vee y) \wedge x & \textit{\{Double negation
-                                          elimination}\} \\
-      = & (x \vee y) \wedge x &
-      \end{array}
-    \end{align*}
-    %
-  Now we have the formula in CNF, we can apply DPLL. I'll write
-  the steps in a table: \\[1em]
-%
-  \vspace{2em}
-  \begin{tabular}{l|l|l|l}
-    Step & Note & Resulting CNF formula & Satisfying assignments \\ \hline
-      & start & $(x \vee y) \wedge x$ &  \\
-    1 & Tautology elim & $(x \vee y) \wedge x$ &  \\
-    2 & Unit propagation $x$ & $\top$ & $\{x = \top\}$
-  \end{tabular} \\[-1em]
-  %
-  Thus the original formula is satisfiable with assignment $x = \top$
-  (and $y$ can be anything). We reached this conclusion quickly,
-  just by applying tautology elimination and unit propagation.
-This tabulated form is handy for small examples; you might like
-to use it for class exercises.
-\end{example}
-
-\begin{example}
-The following is the proposition $\neg (\textit{model}
-\rightarrow \textit{specification})$ for the traffic light
-example shown in Part B, but in CNF:
-%
-\begin{align*}
-& (\neg r \vee g') \wedge (\neg r \vee \neg r') \wedge (\neg g \vee \neg
-  g') \wedge (\neg g \vee r') \\[-0.3em]
-\wedge \; & (r \vee g) \wedge (\neg r \vee \neg g) \wedge \highlight{(\neg r' \vee r')} \\[-0.4em]
-\wedge  \; & (\neg r' \vee g') \wedge (\neg g' \vee r') \wedge \highlight{(\neg g' \vee g)}
-\end{align*}
-%
-We'll apply DPLL to it here. Due to the large size of the formula,
-I'll use a more free-form style rather than the tabulated form
-used above.
-
-\textit{Step 1: Tautology elimination} - There are two immediate
-tautologies in the above formula which are highlighted.
-These are eliminated to give:
-%
-\begin{align*}
-& (\neg r \vee g') \wedge (\neg r \vee \neg r') \wedge (\neg g \vee \neg
-  g') \wedge (\neg g \vee r') \\
- \wedge \; & (r \vee g) \wedge (\neg r \vee \neg g) \\
-\wedge \; & (\neg r' \vee g') \wedge (\neg g' \vee r')
-\end{align*}
-%
-There are no units or pure literals so we move to step 4.
-
-\textit{Step 4: Splitting a variable} - Choose $r$:
-%
-\begin{longtable}{c|c}
-%%%%
-$\{r = \top\}$  & $\{r = \bot\}$ \\[0.5em]
-yielding: & yielding: \\[0.5em]
-$\begin{array}{ll}
-& (\neg \top \vee g') \wedge (\neg \top \vee \neg r')
-  \wedge \\
-& (\neg g \vee \neg
-  g') \wedge (\neg g \vee r') \wedge \\
-& (\top \vee g) \wedge (\neg \top \vee \neg g) \wedge \\
-& (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$ &
-%%%
-$\begin{array}{ll}
-& (\neg \bot \vee g') \wedge (\neg \bot \vee \neg r')
-  \wedge \\
-& (\neg g \vee \neg
-  g') \wedge (\neg g \vee r') \wedge \\
-& (\bot \vee g) \wedge (\neg \bot \vee \neg g) \wedge \\
-& (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$ \\[3em]
-%%%%%%%%
-which simplifies to & which simplifies to \\[1em]
-$\begin{array}{ll}
-& {g'} \wedge (\neg r') \wedge (\neg g \vee \neg
-  g') \wedge \\
-& (\neg g \vee r') \wedge {(\neg g)} \wedge \\
-& (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$ &
-%%%
-$\begin{array}{ll}
-& (\neg g \vee \neg g') \wedge (\neg g \vee r') \wedge \\
-& {(g)} \wedge (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$  \\ \hline \\[-1em]
-  \textit{1. Unit propagation} on the unit $g'$ &
-  \textit{1. Unit propagation} on the unit $g$ \\
-$\begin{array}{ll}
-& \highlight{g'} \wedge (\neg r') \wedge (\neg g \vee \neg
-  g') \wedge \\
-& (\neg g \vee r') \wedge {(\neg g)} \wedge \\
-& (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$ &
-$\begin{array}{ll}
-& (\neg g \vee \neg g') \wedge (\neg g \vee r') \wedge \\
-& \highlight{(g)} \wedge (\neg r' \vee g') \wedge (\neg g' \vee r')
- \end{array}$ \\
-yields assignment $\{g' = \top\}$ giving
-& yields assignment $\{g = \top\}$ giving \\[1em]
-  %%%%%%%
-$\begin{array}{ll}
-& {(\neg r')} \,\wedge\, (\neg g) \,\wedge\, \\
-& (\neg g \vee r') \,\wedge\, \\
-& {(\neg g)} \,\wedge\, (r')
-\end{array}$ &
-%%%
-$\begin{array}{ll}
-& {(\neg g')} \,\wedge\, (r') \,\wedge\, \\
-& (\neg r' \vee g') \,\wedge\, (\neg g' \vee r')
- \end{array}$ \\[2em]
-  \textit{1. Unit propagation:} on the unit $\neg r'$ &
-  \textit{1. Unit propagation:} on the unit $\neg g'$ \\
-$\begin{array}{ll}
-& \highlight{(\neg r')} \,\wedge\, (\neg g) \,\wedge\, \\
-& (\neg g \vee r') \,\wedge\, \\
-& {(\neg g)} \,\wedge\, (r')
-\end{array}$ &
-%%%
-$\begin{array}{ll}
-& \highlight{(\neg g')} \,\wedge\, (r') \,\wedge\, \\
-& (\neg r' \vee g') \,\wedge\, (\neg g' \vee r')
- \end{array}$ \\[2em]
-yields assignment $\{r' = \bot \}$ giving &
-yields assignment $\{g' = \bot\}$ giving \\[1em]
-  %%%%%%%
-$\begin{array}{ll}
-& (\neg g) \wedge (\neg g) \wedge (\neg g) \wedge \bot
- \end{array}$ &
-%%%
-$\begin{array}{ll}
-& (r') \wedge (\neg r')
- \end{array}$  \\
- & \\[-0.6em]
- & \textit{1. Unit propagation:} on the unit $r'$ \\
-simplifies to & yields assignment $\{r' = \top\}$ giving \\
-$\bot$ & $\bot$
-\end{longtable}
+\begin{exc}
+Define a propositions for each of the two invalid states in the
+traffic light.
+\end{exc}
 
 \noindent
-Both branches have ended with $\bot$ hence $\neg(\textit{model}
-\rightarrow \textit{specification})$ is unsatisfiable and
-therefore $\textit{model} \rightarrow \textit{specification}$
-is valid! Hurray!
-\end{example}
+\textbf{State transitions} \hspace{0.5em} So far we have modelled the states as propositions, but we also want to
+model the behaviour of the system in terms of the possible
+transitions between states. We can represent this
+with a simple diagram:
+%
+\setlength{\tabcolsep}{0.4em}
+\begin{center}
+  \begin{tabular}{m{1.1cm} m{1.5cm} m{1.1cm}}
+       State 1 & & State 2 \\[-0.5em]
+{\scalebox{0.2}{\includegraphics{images/red-on.pdf}}}
+  &
+    \xymatrix{
+    \ar[rr]^{\textit{\normalsize{go}}} & & \\
+     & & \ar[ll]^{\textit{\normalsize{stop}}}
+    }
+  &
+{\scalebox{0.2}{\includegraphics{images/green-on.pdf}}}
+\end{tabular}
+\end{center}
+%
+\ie{}, when just the red light is on it is possible to
+transition to a state with just the green light on, and back again.
 
-\begin{restatable}{exc}{full}
-Apply the full DPLL procedure to the following formula (already
-in CNF):
+To model state transitions we will introduce two additional atoms
+that model the future state of the lights in the system:
+%
+%
+\begin{itemize}
+\item \atomrp{} for the red light being on in the \emph{next time step};
+\item \atomgp{} for the green light being on in the \emph{next time step}.
+\end{itemize}
+%
+We can now express the above two transitions as implications:
+%
+\begin{align*}
+  (\textit{go}) : \qquad & \atomr{} \wedge \neg\atomg{} \; \rightarrow \;
+                           \neg\atomr{}' \wedge \atomg{}' \\
+  (\textit{stop}): \qquad & \neg\atomr{} \wedge \atomg{} \; \rightarrow \;
+                            \atomr{}' \wedge \neg\atomg{}'
+\end{align*}
+%
+Said another way, (\textit{go}) defines that if State 1 is true now
+we can move to State 2 in the future (in the ``next'' time step of the
+system), and (\textit{stop}) conversely defines that if State 2 is
+true now we can move to State 1 in the future.
+
+We can now describe the full transition behaviour of the system as
+the conjunction of the above two formula:
 %
 \begin{equation*}
-(x \vee y \vee z)
-\wedge (\neg x \vee y)
-\wedge (\neg x \vee \neg y \vee \neg z)
+\textit{model} =
+(\atomr{} \wedge \neg\atomg{} \; \rightarrow \; \neg\atomr{}' \wedge
+\atomg{}')
+\, \wedge \,
+(\neg\atomr{} \wedge \atomg{} \; \rightarrow \; \atomr{}' \wedge \neg\atomg{}')
 \end{equation*}
-\end{restatable}
-
-\section{Exercises from this section}
-
 %
-\unitFoo*
-\unitFooTwo*
-\pureLiteral*
-\split*
-\full*
+This provides our model of the system. You might be wondering why we
+don't add more to this, \eg{}, ruling out invalid states. We will come
+back to this point in Section~\ref{subsec:whenisamodelgood}.
+
+% TODO: guiding principles, why not and this with the valid states?
+% want to make a small formula and this follows
+% need to come back to this?
+
+\paragraph{A general approach}
+
+The general approach to modelling a system in this way is to:
+%
+\begin{itemize}
+  \item Decide what to represent about the state space of the system
+  and introduce propositional atoms for these components.
+  \item Model future states using ``next step'' atoms (usually written with
+  an apostrophe, and called the ``primed'' atoms, \eg{}, \atomrp{} is
+  read as ``r prime'').
+ \item Write a propositional formula \emph{model} using these
+  variables which takes the conjunction of state transitions expressed
+  as implications.
+\end{itemize}
+
+\begin{exc}
+Write down a model for a more realistic traffic light, \ie{}, that can
+be described by the following states and transitions:
+%
+
+\begin{center}
+\scalebox{0.28}{\includegraphics{images/full-light.pdf}}
+\end{center}
+\end{exc}
+
+\section{Defining specifications as propositions}
+\label{sec:spec}
+
+Consider the following property which we might want to check
+for our system:
+%
+\begin{quote}
+\emph{If we are in a valid state and change state, then our new state
+  is also valid.}
+\end{quote}
+%
+We can abstract the notion of a valid state with the following
+meta-level operation (you can think of this as a syntax function mapping from the
+two propositions to a proposition):
+%
+\begin{equation*}
+\textsf{valid-state}(r, g) = (r \wedge \neg g) \vee (\neg r \wedge g)
+\end{equation*}
+%
+From this, we can then capture our specification as the proposition:
+%
+\begin{equation*}
+  \textit{specification} = \textsf{valid-state}(\atomr, \atomg)
+  \rightarrow \textsf{valid-state}(\atomrp, \atomgp)
+\end{equation*}
+%
+\ie{}, a valid state now implies a valid state in the next time step.
+To verify that our system (based on its model) satisfies this
+property, we then need to prove that the following is true:
+%
+\begin{align*}
+ & \textit{model} \rightarrow \textit{specification} \\
+  \equiv \; &
+((\atomr{} \wedge \neg\atomg{} \; \rightarrow \; \neg\atomr{}' \wedge
+\atomg{}')
+\wedge
+(\neg\atomr{} \wedge \atomg{} \; \rightarrow \; \atomr{}' \wedge
+  \neg\atomg{}'))
+  \rightarrow
+   (\textsf{valid-state}(\atomr, \atomg)
+           \rightarrow \textsf{valid-state}(\atomrp, \atomgp)) \\
+  \equiv \; &
+((\atomr{} \wedge \neg\atomg{} \; \rightarrow \; \neg\atomr{}' \wedge
+\atomg{}')
+\wedge
+(\neg\atomr{} \wedge \atomg{} \; \rightarrow \; \atomr{}' \wedge
+  \neg\atomg{}'))
+              \rightarrow
+              (((\atomr \wedge \neg \atomg) \vee (\neg \atomr \wedge \atomg))
+              \rightarrow ((\atomrp \wedge \neg \atomgp) \vee (\neg \atomrp \wedge \atomgp)))
+\end{align*}
+%
+This is quite a big proposition so we might not want to prove it by
+hand. Instead, in the next part of the course we are going to use an
+algorithmic technique for proving that this holds (Part C,
+specifically \textbf{Example 5} in the notes). We will later see that
+this does indeed hold, and thus the system (as described by the model)
+satisfies our specification.
+
+
+\section{When is a model a good model?}
+\label{subsec:whenisamodelgood}
+
+\begin{quote}
+\emph{All models are wrong but some are useful} (Box, 1978)
+\end{quote}
+
+\noindent
+Indeed, a model is necessarily ``wrong'' in the sense that a model
+abstracts some of the details of a real system; we are not
+capturing every aspect of the system, such as: how are the transitions
+triggered? or, what happens if a car crashes into the traffic light? Some
+models, though eliding details, are useful in the sense that we
+can detect when the system does not behave according to our
+specification or we can verify that it always behaves according to our
+specification. Just enough detail is needed in the model to capture what
+we want to prove.
+
+Our running example has the model:
+\begin{equation*}
+\mathit{model} =
+(\atomr{} \wedge \neg\atomg{} \; \rightarrow \; \neg\atomr{}' \wedge
+\atomg{}')
+\wedge
+(\neg\atomr{} \wedge \atomg{} \; \rightarrow \; \atomr{}' \wedge \neg\atomg{}')
+\end{equation*}
+%
+We might add to this model the explicit exclusion of invalid
+states. Let's define the condition of the invalid states via the meta-level function:
+%
+\begin{equation*}
+\textsf{invalid-state}(r, g) = (\neg r \wedge \neg g) \vee (r \wedge g)
+\end{equation*}
+%
+Then we could define an alternate model as:
+%
+\begin{equation*}
+\mathit{model2} = \mathit{model} \wedge \neg \textsf{invalid-state}(\atomr, \atomg)
+\end{equation*}
+%
+Thus, the new model adds to the old model that the current state is not
+invalid.
+
+In the case of the proving our specification from
+Section~\ref{sec:spec} (that valid states transition to valid states)
+we do not need this additional detail in the model. But we might want
+to have this more restrictive model if we want to prove, for example,
+that we can never be in an invalid state, regardless of what state we
+started from. This can be captured by the new specification:
+%
+\begin{equation*}
+\mathit{specification2} = \textsf{invalid-state}(\atomr, \atomg)
+\vee \textsf{invalid-state}(\atomr', \atomg')
+\end{equation*}
+%
+and proving that the following proposition is valid:
+$$
+\mathit{model2} \rightarrow
+\neg \mathit{specification2}
+$$
+Note we are using a negative property
+here: we show that the new model (\textit{model2}) implies that the bad behaviour is not possible.
+For the old model (\textit{model}), a similar proposition capturing the same idea is valid:
+$$
+\mathit{model} \rightarrow \neg \mathit{specification2}
+$$
+However, the following proposition is also valid!!!
+$$
+\mathit{model} \rightarrow \mathit{specification2}
+$$
+Why? If the right-hand side of the implication is true (we have an
+invalid state) the left-hand side is still true (the premise of each
+transition implication is false, therefore the implications are
+trivially true); the original model never excludes invalid states on
+their own, only as the result of a transition from a valid
+state. Thus, the original model was not a good model for checking the
+$\mathit{specification2}$ property, but it was sufficient for
+$\mathit{specification}$.
+
+Creating a rich enough model is up to you, and requires some care and
+thought about the domain and what properties are of interest.
